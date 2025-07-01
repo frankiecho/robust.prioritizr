@@ -1,4 +1,4 @@
-Package: robustprioritzr
+Package: robust.prioritizr
 Type: Package
 Title: Spatial conservation planning under uncertainty
 Version: 0.0.1

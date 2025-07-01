@@ -2,8 +2,6 @@
 % Please edit documentation in R/package.R
 \docType{package}
 \name{robust.prioritizr}
-\alias{robust.prioritzr}
-\alias{robust.prioritzr-package}
 \alias{robust.prioritizr}
 \alias{robust.prioritizr-package}
 \title{robust.prioritizr: Spatial conservation planning under uncertainty}

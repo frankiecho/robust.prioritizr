@@ -1,4 +1,4 @@
-#' robustprioritizr: Spatial conservation planning under uncertainty
+#' robust.prioritizr: Spatial conservation planning under uncertainty
 #'
 #' TODO.
 #'
@@ -17,9 +17,9 @@
 #' @references
 #' TODO.
 #'
-#' @name robustprioritizr
+#' @name robust.prioritizr
 #' @docType package
-#' @aliases robustprioritizr-package
+#' @aliases robust.prioritizr-package
 "_PACKAGE"
 
 # avoid CRAN check NOTES due to R6 classes
@@ -30,5 +30,5 @@ if (getRversion() >= "2.15.1")  utils::globalVariables(c("self"))
 #' @importFrom Rcpp evalCpp
 NULL
 
-#' @useDynLib robustprioritizr, .registration = TRUE
+#' @useDynLib robust.prioritizr, .registration = TRUE
 NULL

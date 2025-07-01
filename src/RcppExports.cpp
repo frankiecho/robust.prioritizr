@@ -12,7 +12,7 @@ Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 
 // rcpp_new_optimization_problem
 SEXP rcpp_new_optimization_problem(std::size_t nrow, std::size_t ncol, std::size_t ncell);
-RcppExport SEXP _robustprioritzr_rcpp_new_optimization_problem(SEXP nrowSEXP, SEXP ncolSEXP, SEXP ncellSEXP) {
+RcppExport SEXP _robust_prioritizr_rcpp_new_optimization_problem(SEXP nrowSEXP, SEXP ncolSEXP, SEXP ncellSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -25,7 +25,7 @@ END_RCPP
 }
 // rcpp_copy_optimization_problem
 SEXP rcpp_copy_optimization_problem(SEXP x);
-RcppExport SEXP _robustprioritzr_rcpp_copy_optimization_problem(SEXP xSEXP) {
+RcppExport SEXP _robust_prioritizr_rcpp_copy_optimization_problem(SEXP xSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -36,7 +36,7 @@ END_RCPP
 }
 // rcpp_predefined_optimization_problem
 SEXP rcpp_predefined_optimization_problem(Rcpp::List l);
-RcppExport SEXP _robustprioritzr_rcpp_predefined_optimization_problem(SEXP lSEXP) {
+RcppExport SEXP _robust_prioritizr_rcpp_predefined_optimization_problem(SEXP lSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -47,7 +47,7 @@ END_RCPP
 }
 // rcpp_optimization_problem_as_list
 Rcpp::List rcpp_optimization_problem_as_list(SEXP x);
-RcppExport SEXP _robustprioritzr_rcpp_optimization_problem_as_list(SEXP xSEXP) {
+RcppExport SEXP _robust_prioritizr_rcpp_optimization_problem_as_list(SEXP xSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -58,7 +58,7 @@ END_RCPP
 }
 // rcpp_get_optimization_problem_ncol
 std::size_t rcpp_get_optimization_problem_ncol(SEXP x);
-RcppExport SEXP _robustprioritzr_rcpp_get_optimization_problem_ncol(SEXP xSEXP) {
+RcppExport SEXP _robust_prioritizr_rcpp_get_optimization_problem_ncol(SEXP xSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -69,7 +69,7 @@ END_RCPP
 }
 // rcpp_get_optimization_problem_nrow
 std::size_t rcpp_get_optimization_problem_nrow(SEXP x);
-RcppExport SEXP _robustprioritzr_rcpp_get_optimization_problem_nrow(SEXP xSEXP) {
+RcppExport SEXP _robust_prioritizr_rcpp_get_optimization_problem_nrow(SEXP xSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -80,7 +80,7 @@ END_RCPP
 }
 // rcpp_get_optimization_problem_ncell
 std::size_t rcpp_get_optimization_problem_ncell(SEXP x);
-RcppExport SEXP _robustprioritzr_rcpp_get_optimization_problem_ncell(SEXP xSEXP) {
+RcppExport SEXP _robust_prioritizr_rcpp_get_optimization_problem_ncell(SEXP xSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -91,7 +91,7 @@ END_RCPP
 }
 // rcpp_get_optimization_problem_A
 Rcpp::List rcpp_get_optimization_problem_A(SEXP x);
-RcppExport SEXP _robustprioritzr_rcpp_get_optimization_problem_A(SEXP xSEXP) {
+RcppExport SEXP _robust_prioritizr_rcpp_get_optimization_problem_A(SEXP xSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -102,7 +102,7 @@ END_RCPP
 }
 // rcpp_get_optimization_problem_modelsense
 std::string rcpp_get_optimization_problem_modelsense(SEXP x);
-RcppExport SEXP _robustprioritzr_rcpp_get_optimization_problem_modelsense(SEXP xSEXP) {
+RcppExport SEXP _robust_prioritizr_rcpp_get_optimization_problem_modelsense(SEXP xSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -113,7 +113,7 @@ END_RCPP
 }
 // rcpp_get_optimization_problem_number_of_planning_units
 std::size_t rcpp_get_optimization_problem_number_of_planning_units(SEXP x);
-RcppExport SEXP _robustprioritzr_rcpp_get_optimization_problem_number_of_planning_units(SEXP xSEXP) {
+RcppExport SEXP _robust_prioritizr_rcpp_get_optimization_problem_number_of_planning_units(SEXP xSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -124,7 +124,7 @@ END_RCPP
 }
 // rcpp_get_optimization_problem_number_of_features
 std::size_t rcpp_get_optimization_problem_number_of_features(SEXP x);
-RcppExport SEXP _robustprioritzr_rcpp_get_optimization_problem_number_of_features(SEXP xSEXP) {
+RcppExport SEXP _robust_prioritizr_rcpp_get_optimization_problem_number_of_features(SEXP xSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -135,7 +135,7 @@ END_RCPP
 }
 // rcpp_get_optimization_problem_number_of_zones
 std::size_t rcpp_get_optimization_problem_number_of_zones(SEXP x);
-RcppExport SEXP _robustprioritzr_rcpp_get_optimization_problem_number_of_zones(SEXP xSEXP) {
+RcppExport SEXP _robust_prioritizr_rcpp_get_optimization_problem_number_of_zones(SEXP xSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -146,7 +146,7 @@ END_RCPP
 }
 // rcpp_get_optimization_problem_vtype
 std::vector<std::string> rcpp_get_optimization_problem_vtype(SEXP x);
-RcppExport SEXP _robustprioritzr_rcpp_get_optimization_problem_vtype(SEXP xSEXP) {
+RcppExport SEXP _robust_prioritizr_rcpp_get_optimization_problem_vtype(SEXP xSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -157,7 +157,7 @@ END_RCPP
 }
 // rcpp_get_optimization_problem_obj
 std::vector<double> rcpp_get_optimization_problem_obj(SEXP x);
-RcppExport SEXP _robustprioritzr_rcpp_get_optimization_problem_obj(SEXP xSEXP) {
+RcppExport SEXP _robust_prioritizr_rcpp_get_optimization_problem_obj(SEXP xSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -168,7 +168,7 @@ END_RCPP
 }
 // rcpp_get_optimization_problem_rhs
 std::vector<double> rcpp_get_optimization_problem_rhs(SEXP x);
-RcppExport SEXP _robustprioritzr_rcpp_get_optimization_problem_rhs(SEXP xSEXP) {
+RcppExport SEXP _robust_prioritizr_rcpp_get_optimization_problem_rhs(SEXP xSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -179,7 +179,7 @@ END_RCPP
 }
 // rcpp_get_optimization_problem_sense
 std::vector<std::string> rcpp_get_optimization_problem_sense(SEXP x);
-RcppExport SEXP _robustprioritzr_rcpp_get_optimization_problem_sense(SEXP xSEXP) {
+RcppExport SEXP _robust_prioritizr_rcpp_get_optimization_problem_sense(SEXP xSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -190,7 +190,7 @@ END_RCPP
 }
 // rcpp_get_optimization_problem_lb
 std::vector<double> rcpp_get_optimization_problem_lb(SEXP x);
-RcppExport SEXP _robustprioritzr_rcpp_get_optimization_problem_lb(SEXP xSEXP) {
+RcppExport SEXP _robust_prioritizr_rcpp_get_optimization_problem_lb(SEXP xSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -201,7 +201,7 @@ END_RCPP
 }
 // rcpp_get_optimization_problem_ub
 std::vector<double> rcpp_get_optimization_problem_ub(SEXP x);
-RcppExport SEXP _robustprioritzr_rcpp_get_optimization_problem_ub(SEXP xSEXP) {
+RcppExport SEXP _robust_prioritizr_rcpp_get_optimization_problem_ub(SEXP xSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -212,7 +212,7 @@ END_RCPP
 }
 // rcpp_get_optimization_problem_col_ids
 std::vector<std::string> rcpp_get_optimization_problem_col_ids(SEXP x);
-RcppExport SEXP _robustprioritzr_rcpp_get_optimization_problem_col_ids(SEXP xSEXP) {
+RcppExport SEXP _robust_prioritizr_rcpp_get_optimization_problem_col_ids(SEXP xSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -223,7 +223,7 @@ END_RCPP
 }
 // rcpp_get_optimization_problem_row_ids
 std::vector<std::string> rcpp_get_optimization_problem_row_ids(SEXP x);
-RcppExport SEXP _robustprioritzr_rcpp_get_optimization_problem_row_ids(SEXP xSEXP) {
+RcppExport SEXP _robust_prioritizr_rcpp_get_optimization_problem_row_ids(SEXP xSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -234,7 +234,7 @@ END_RCPP
 }
 // rcpp_get_optimization_problem_compressed_formulation
 bool rcpp_get_optimization_problem_compressed_formulation(SEXP x);
-RcppExport SEXP _robustprioritzr_rcpp_get_optimization_problem_compressed_formulation(SEXP xSEXP) {
+RcppExport SEXP _robust_prioritizr_rcpp_get_optimization_problem_compressed_formulation(SEXP xSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -245,7 +245,7 @@ END_RCPP
 }
 // rcpp_set_optimization_problem_shuffled
 Rcpp::IntegerVector rcpp_set_optimization_problem_shuffled(SEXP x, std::vector<std::size_t> shuffle_key);
-RcppExport SEXP _robustprioritzr_rcpp_set_optimization_problem_shuffled(SEXP xSEXP, SEXP shuffle_keySEXP) {
+RcppExport SEXP _robust_prioritizr_rcpp_set_optimization_problem_shuffled(SEXP xSEXP, SEXP shuffle_keySEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -257,7 +257,7 @@ END_RCPP
 }
 // rcpp_apply_robust_min_set_objective
 bool rcpp_apply_robust_min_set_objective(SEXP x, const Rcpp::List targets_list, const Rcpp::NumericMatrix costs, const Rcpp::IntegerVector feature_group_ids);
-RcppExport SEXP _robustprioritzr_rcpp_apply_robust_min_set_objective(SEXP xSEXP, SEXP targets_listSEXP, SEXP costsSEXP, SEXP feature_group_idsSEXP) {
+RcppExport SEXP _robust_prioritizr_rcpp_apply_robust_min_set_objective(SEXP xSEXP, SEXP targets_listSEXP, SEXP costsSEXP, SEXP feature_group_idsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -271,7 +271,7 @@ END_RCPP
 }
 // rcpp_apply_robust_min_shortfall_objective
 bool rcpp_apply_robust_min_shortfall_objective(SEXP x, const Rcpp::List targets_list, const Rcpp::NumericMatrix costs, const Rcpp::IntegerVector feature_group_ids);
-RcppExport SEXP _robustprioritzr_rcpp_apply_robust_min_shortfall_objective(SEXP xSEXP, SEXP targets_listSEXP, SEXP costsSEXP, SEXP feature_group_idsSEXP) {
+RcppExport SEXP _robust_prioritizr_rcpp_apply_robust_min_shortfall_objective(SEXP xSEXP, SEXP targets_listSEXP, SEXP costsSEXP, SEXP feature_group_idsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
