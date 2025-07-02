@@ -49,13 +49,13 @@ add_robust_constraints <- function(x, feature_groupings) {
     assertthat::noNA(feature_groupings)
   )
   # add objective to problem
-  x$add_objective(
+  x$add_constraint(
     R6::R6Class(
       "RobustConstraint",
       inherit = prioritizr::Constraint,
-      data = list(feature_groupings = feature_groupings),
       public = list(
         name = "robust constraints",
+        data = list(feature_groupings = feature_groupings),
         apply = function(x, y) {
           # note that these constraints are just used as a dummy place holder
           # to store the feature grouping information, and so the $apply()

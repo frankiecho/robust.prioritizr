@@ -38,10 +38,10 @@ get_feature_groupings <- function(x, convert_to_integer = TRUE) {
   feature_groupings <- x$constraints[[i]]$get_data("feature_groupings")
 
   # assert feature groupings are valid given the problem
-  if (!is.Waiver(y$targets)) {
+  if (!inherits(x$targets, "Waiver") && !is.null(x$targets)) {
     ## if targets specified, then we should have a grouping id for
     ## each target
-    n_targets <- nrow(y$targets$output())
+    n_targets <- nrow(x$targets$output())
     assert(
       identical(length(feature_groupings), n_targets),
       call = rlang::expr(add_robust_constraints()),

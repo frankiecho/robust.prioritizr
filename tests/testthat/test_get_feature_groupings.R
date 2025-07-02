@@ -13,9 +13,9 @@ test_that("works (convert_to_integer = TRUE)", {
     add_robust_constraints(feature_groupings = x) |>
     prioritizr::add_binary_decisions()
   # extract groupings
-  y <- get_feature_groupings(p)
+  y <- get_feature_groupings(p, convert_to_integer = TRUE)
   # tests
-  expect_inherits(p, "ConservationProblem")
+  expect_s3_class(p, "ConservationProblem")
   expect_equal(
     y,
     rep_len(c(0, 1, 2), terra::nlyr(sim_features))
@@ -37,9 +37,9 @@ test_that("works (convert_to_integer = FALSE)", {
     add_robust_constraints(feature_groupings = x) |>
     prioritizr::add_binary_decisions()
   # extract groupings
-  y <- get_feature_groupings(p)
+  y <- get_feature_groupings(p, convert_to_integer = FALSE)
   # tests
-  expect_inherits(p, "ConservationProblem")
+  expect_s3_class(p, "ConservationProblem")
   expect_equal(x, y)
 })
 
@@ -48,6 +48,11 @@ test_that("invalid inputs", {
   # import data
   sim_pu_raster <- prioritizr::get_sim_pu_raster()
   sim_features <- prioritizr::get_sim_features()
+  # not a problem
+  expect_error(
+    get_feature_groupings(1),
+    "ConservationProblem"
+  )
   # throws error if no robust constraints
   expect_error(
     prioritizr::problem(sim_pu_raster, sim_features) |>
