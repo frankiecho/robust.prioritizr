@@ -7,6 +7,12 @@ NULL
 #'
 #' @param x [prioritizr::problem()] object.
 #'
+#' @param budget `numeric` value specifying the maximum expenditure of
+#'   the prioritization. For problems with multiple zones, the argument
+#'   to `budget` can be (i) a single `numeric` value to specify a single budget
+#'   for the entire solution or (ii) a `numeric` vector to specify
+#'   a separate budget for each management zone.
+#'
 #' @details
 #' TODO.
 #'

@@ -8,6 +8,12 @@ add_robust_min_shortfall_objective(x, budget)
 }
 \arguments{
 \item{x}{\code{\link[prioritizr:problem]{prioritizr::problem()}} object.}
+
+\item{budget}{\code{numeric} value specifying the maximum expenditure of
+the prioritization. For problems with multiple zones, the argument
+to \code{budget} can be (i) a single \code{numeric} value to specify a single budget
+for the entire solution or (ii) a \code{numeric} vector to specify
+a separate budget for each management zone.}
 }
 \value{
 An updated \code{\link[prioritizr:problem]{prioritizr::problem()}} object with the objective added

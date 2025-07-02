@@ -22,5 +22,5 @@ NULL
 #' \dontrun{
 #' # TODO
 #' }
-#' @name objectives
+#' @name robust_objectives
 NULL
