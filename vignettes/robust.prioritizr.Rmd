@@ -50,7 +50,103 @@ print <- function(x, ...) {
 
 ## Introduction
 
-TODO.
+Most systematic conservation planning problems require users to parameterize planning unit data and costs based on statistical models or future projections that are bound to contain uncertainty. For example, conservation planning problems that involve designing protected areas that are resilient across future climate change have to ensure that the targets are met not just only one predicted scenario, but also across most plausible climate scenarios. Likewise, conservation planning problems that involve the use of predictions from species distribution models carry uncertainty that, if ignored, can mean that targets of the conservation planning problem are frequently violated.
+
+## Motivation
+
+To illustrate the extent of the issue, we look at a simplified conservation planning problem with a minimum set objective. It contains 100 planning units with equal costs, 2 features, and an absolute target of 30. We focus on `feature_1` in this example. Across all planning units, `feature_1` is an uncertain value that takes a normal distribution of mean 1 and standard deviation 0.2. Suppose the researcher does not know this underlying distribution, goes into the field and obtains an estimate of `feature_1` as a random draw from the distribution for use in the planning problem. In other words, the value of `feature_1` in some planning units are overestimated (above 1), and some are underestimated (below 1). `feature_2` is certain, and takes the value 1.5 across all planning units.
+
+We solve this problem in `prioritizr`.
+
+```{r}
+library(terra)
+library(prioritizr)
+library(ggplot2)
+library(dplyr)
+
+set.seed(500)
+
+mu <- 1
+sigma <- 0.2
+
+target <- 20
+
+feature_1 <- matrix(rnorm(100, mean = mu, sd = sigma), nrow = 10, ncol = 10)
+feature_2 <- matrix(1.5, nrow = 10, ncol = 10)
+sim_features_raster <- c(rast(feature_1),
+                         rast(feature_2))
+names(sim_features_raster) <- c("feature_1", "feature_2")
+
+pu <- matrix(1, nrow = 10, ncol = 10)
+sim_pu_raster <- rast(pu)
+names(sim_pu_raster) <- c("Cost")
+
+p1 <- problem(sim_pu_raster, sim_features_raster) %>%
+  add_min_set_objective() %>%
+  add_absolute_targets(target) %>%
+  add_binary_decisions() %>%
+  add_default_solver(verbose = FALSE)
+
+s1 <- solve(p1)
+names(s1) <- c('solution')
+
+plot(c(sim_features_raster, sim_pu_raster, s1))
+
+```
+
+Within this solution, it is clear that `prioritizr` would prioritize planning units that have an overestimated `feature_1` and avoid planning units with an underestimated `feature_1`, even though these planning units have the same underlying feature value and costs.
+
+```{r}
+df <- data.frame(
+  feature_1 = values(sim_features_raster[[1]]),
+  solution = values(s1)
+  )
+
+df %>%
+  arrange(feature_1) %>%
+  mutate(selected = if_else(solution == 1, "Yes", "No")) %>%
+  mutate(rank = nrow(.)-row_number()+1) %>%
+  ggplot(aes(x = rank, y = feature_1, fill = selected)) +
+  geom_bar(stat = 'identity') +
+  labs(x = "Rank of Feature 1", y = "Feature 1 value", fill = "Selected") +
+  theme_bw() +
+  theme(panel.grid = element_blank())
+```
+
+If `prioritizr` overwhelmingly selects planning units with overpredicted features, we can be over-optimistic about the targets we can achieve with our planning solution. This means that there is a good chance that the target will be violated if we get a different draw from the distribution.
+
+To see this, we generate 1000 realisations of feature_1 from the same distribution and evaluate how good our solution is across each of these realisations. We can estimate how likely it is that our solution violates the target constraint.
+
+```{r}
+# Number of simulations
+n_sims <- 1000
+sim_feature_1 <- replicate(n_sims, matrix(rnorm(100, mean = mu, sd = sigma), nrow = 10, ncol = 10)) %>%
+  rast
+feature_1_outcomes <- sim_feature_1 * s1
+feature_1_targets <- values(feature_1_outcomes) %>%
+  apply(2, sum) %>%
+  unname
+
+expected_target <- sum(df$feature_1 * df$solution)
+
+data.frame(feature_1 = unname(feature_1_targets)) %>%
+  mutate(violated = if_else(feature_1 < target, "Violated", "Not violated")) %>%
+  mutate(violated = factor(violated, c("Violated", "Not violated"))) %>%
+  ggplot(aes(x = feature_1, fill = violated)) +
+  geom_histogram(color = 'white', bins = 30) +
+  theme_bw() +
+  geom_vline(xintercept = target, linetype = 2) +
+  geom_vline(xintercept = expected_target, color = '#009e73') +
+  scale_fill_manual('', values = c('#d55e00', '#0072b2'), drop = FALSE) +
+  theme(panel.grid = element_blank())
+```
+
+The green vertical line depicts where we expected `feature_1` to be, and the orange bars show what `feature_1` would actually be.
+
+We can see that the planning solution identified violated the target for `feature_1` in most if not all of the realizations we draw from the statistical distribution. Why did the planning solution disproportionately violate the constraint, even though it was identified using an unbiased estimate of `feature_1`? This is because in the prioritization process, the planning units with an overestimate of `feature_1` would be disproportionately selected, as it appears that these planning units have more features. 
+
+In what operations researchers call the "Curse of Optimality", prioritization could amplify errors that are present in the data, selectively choosing planning units with overestimated features or underestimated costs. If robust approaches are not used, the planning solution is likely to violate targets, leading to disappointment in the end result of the prioritization process.
+
 
 ## Usage
 

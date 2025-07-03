@@ -62,7 +62,7 @@ The latest development version can be installed to gain access to new functional
 
 ```{r, eval = FALSE}
 if (!require(remotes)) install.packages("remotes")
-remotes::install_github("frankiecho/roubust.prioritizr")
+remotes::install_github("frankiecho/robust.prioritizr")
 ```
 
 ## Citation
