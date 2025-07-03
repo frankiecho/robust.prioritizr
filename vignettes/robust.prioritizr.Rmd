@@ -145,7 +145,7 @@ The green vertical line depicts where we expected `feature_1` to be, and the ora
 
 We can see that the planning solution identified violated the target for `feature_1` in most if not all of the realizations we draw from the statistical distribution. Why did the planning solution disproportionately violate the constraint, even though it was identified using an unbiased estimate of `feature_1`? This is because in the prioritization process, the planning units with an overestimate of `feature_1` would be disproportionately selected, as it appears that these planning units have more features. 
 
-In what operations researchers call the "Curse of Optimality", prioritization could amplify errors that are present in the data, selectively choosing planning units with overestimated features or underestimated costs. If robust approaches are not used, the planning solution is likely to violate targets, leading to disappointment in the end result of the prioritization process.
+In what operations researchers call the "Curse of Optimality", prioritization could amplify errors that are present in the data, selectively choosing planning units with overestimated features or underestimated costs. If robust approaches are not used, the planning solution is likely to violate targets, leading to solutions that disappoint and fall far behind what we want from the prioritization process.
 
 
 ## Usage
