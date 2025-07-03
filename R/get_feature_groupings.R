@@ -43,7 +43,7 @@ get_feature_groupings <- function(x, convert_to_integer = TRUE) {
     ## each target
     n_targets <- nrow(x$targets$output())
     assert(
-      identical(length(unique(feature_groupings)), n_targets),
+      identical(length(feature_groupings), n_targets),
       call = rlang::expr(add_robust_constraints()),
       msg = c(
         "!" = paste(
@@ -52,7 +52,7 @@ get_feature_groupings <- function(x, convert_to_integer = TRUE) {
         ),
         "x" = paste(
           "Number of feature groupings = ",
-          "{.val {length(unique(feature_groupings))}}."
+          "{.val {length(feature_groupings)}}."
         ),
         "x" = "Number of targets = {.val {n_targets}}."
       )

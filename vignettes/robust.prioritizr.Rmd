@@ -115,11 +115,11 @@ df %>%
 
 If `prioritizr` overwhelmingly selects planning units with overpredicted number of features, the solution can be over-optimistic about the targets we can achieve with our planning solution. This means that there is a good chance that the target will be violated if we get a different draw from the distribution.
 
-To see this, we generate 1000 realisations of feature_1 from the same distribution and evaluate how good our solution is across each of these realisations. We can estimate how likely it is that our solution violates the target constraint.
+To see this, we generate 500 realisations of feature_1 from the same distribution and evaluate how good our solution is across each of these realisations. We can estimate how likely it is that our solution violates the target constraint.
 
 ```{r}
 # Number of simulations
-n_sims <- 1000
+n_sims <- 500
 sim_feature_1 <- replicate(n_sims, matrix(rnorm(100, mean = mu, sd = sigma), nrow = 10, ncol = 10)) %>%
   rast
 feature_1_outcomes <- sim_feature_1 * s1
@@ -149,25 +149,49 @@ In what operations researchers call the "Curse of Optimality", prioritization co
 
 
 ## Usage
-
 ```{r}
-sim_features_robust_raster <- c(sim_feature_1[[1]], sim_feature_1[[2]], rast(feature_2))
-names(sim_features_robust_raster) <- c('sim_feature_1_1', 'sim_feature_1_2', 'sim_feature_2')
-feature_groupings <- c('f1', 'f1', 'f2')
+## Note: here I exploited the fact that the min set objective does not actually use the feature groupings behind the scenes
+## Note: add_relative_targets will be a bit tricky to interpret as the "number of features" in each realization is different... will need to override with the max of the group (i.e. relative to the maximum of number of features across all realisations), or the mean... need to be transparent
+
+sim_features_robust_raster <- c(sim_feature_1, rast(feature_2))
+names(sim_features_robust_raster) <- c(paste0(rep('f1', nlyr(sim_feature_1)),1:nlyr(sim_feature_1)), 'sim_feature_2')
+feature_groupings <- c(rep('f1', nlyr(sim_feature_1)), 'f2')
 
 p2 <- problem(sim_pu_raster, sim_features_robust_raster) %>%
   add_robust_constraints(feature_groupings = feature_groupings) %>%
-  add_absolute_targets(20) %>%
+  add_absolute_targets(target) %>%
   add_robust_min_set_objective() %>%
   add_binary_decisions() %>%
   add_default_solver(verbose = FALSE)
 
-c2 <- compile(p2)
-solve(p2)
+s2 <- solve(p2)
+plot(s2)
+```
+Using the same approach, we can evaluate the representation of the new solution `s2` across all the realizations of Feature 1.
+
+
+```{r}
+feature_1_targets_robust <- values(sim_feature_1 * s2) %>%
+  apply(2, sum) %>%
+  unname
+
+data.frame(`not_robust` = unname(feature_1_targets),
+           `robust` = unname(feature_1_targets_robust)) %>%
+  tidyr::pivot_longer(c('not_robust', 'robust'), names_to = 'name', values_to = 'values') %>%
+  mutate(name = factor(name, c('not_robust', 'robust'), c('Not Robust', 'Robust'))) %>%
+  mutate(violated = if_else(values < target, "Violated", "Not violated")) %>%
+  mutate(violated = factor(violated, c("Violated", "Not violated"))) %>%
+  ggplot(aes(x = values, fill = violated)) +
+  geom_histogram(color = 'white', bins = 30) +
+  theme_bw() +
+  geom_vline(xintercept = target, linetype = 2) +
+  geom_vline(xintercept = expected_target, color = '#009e73') +
+  scale_fill_manual('', values = c('#d55e00', '#0072b2'), drop = FALSE) +
+  facet_wrap(vars(name), ncol = 1) +
+  theme(panel.grid = element_blank())
 ```
 
-
-TODO.
+The representation of Feature 1 is dramatically improved when evaluated across the entire distribution of Feature 1, with all realizations having Feature 1 representation above the target value. 
 
 ## Conclusion
 
