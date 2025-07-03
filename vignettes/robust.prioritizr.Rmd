@@ -54,7 +54,7 @@ Most systematic conservation planning problems require users to parameterize pla
 
 ## Motivation
 
-To illustrate the extent of the issue, we look at a simplified conservation planning problem with a minimum set objective. It contains 100 planning units with equal costs, 2 features, and an absolute target of 30. We focus on `feature_1` in this example. Across all planning units, `feature_1` is an uncertain value that takes a normal distribution of mean 1 and standard deviation 0.2. Suppose the researcher does not know this underlying distribution, goes into the field and obtains an estimate of `feature_1` as a random draw from the distribution for use in the planning problem. In other words, the value of `feature_1` in some planning units are overestimated (above 1), and some are underestimated (below 1). `feature_2` is certain, and takes the value 1.5 across all planning units.
+To illustrate the extent of the issue, we consider a simplified conservation planning problem with a minimum set objective. It contains 100 planning units with equal costs, 2 features, and an absolute target of 30. We focus on `feature_1` in this example. Across all planning units, `feature_1` is an uncertain value that takes a normal distribution of mean 1 and standard deviation 0.2. Suppose the researcher does not know this underlying distribution, goes into the field and obtains an estimate of `feature_1` as a random draw from the distribution for use in the planning problem. In other words, the value of `feature_1` in some planning units are overestimated (above 1), and some are underestimated (below 1). `feature_2` does not have uncertainty and takes on the value 1.5 across all planning units.
 
 We solve this problem in `prioritizr`.
 
@@ -113,7 +113,7 @@ df %>%
   theme(panel.grid = element_blank())
 ```
 
-If `prioritizr` overwhelmingly selects planning units with overpredicted features, we can be over-optimistic about the targets we can achieve with our planning solution. This means that there is a good chance that the target will be violated if we get a different draw from the distribution.
+If `prioritizr` overwhelmingly selects planning units with overpredicted number of features, the solution can be over-optimistic about the targets we can achieve with our planning solution. This means that there is a good chance that the target will be violated if we get a different draw from the distribution.
 
 To see this, we generate 1000 realisations of feature_1 from the same distribution and evaluate how good our solution is across each of these realisations. We can estimate how likely it is that our solution violates the target constraint.
 
@@ -141,14 +141,31 @@ data.frame(feature_1 = unname(feature_1_targets)) %>%
   theme(panel.grid = element_blank())
 ```
 
-The green vertical line depicts where we expected `feature_1` to be, and the orange bars show what `feature_1` would actually be.
+The green vertical line depicts where we expected `feature_1` to be, and the orange bars shows the distribution of where `feature_1` would actually be. We can see that the planning solution identified violated the target for `feature_1` in most of the realizations we draw from the statistical distribution. 
 
-We can see that the planning solution identified violated the target for `feature_1` in most if not all of the realizations we draw from the statistical distribution. Why did the planning solution disproportionately violate the constraint, even though it was identified using an unbiased estimate of `feature_1`? This is because in the prioritization process, the planning units with an overestimate of `feature_1` would be disproportionately selected, as it appears that these planning units have more features. 
+Why did the planning solution violate the constraint in such a large number of realisations, even though it was solved using an unbiased estimate of `feature_1`? This is because in the prioritization process, the planning units with an overestimate of `feature_1` would be disproportionately selected, as it appears that these planning units have more features. 
 
 In what operations researchers call the "Curse of Optimality", prioritization could amplify errors that are present in the data, selectively choosing planning units with overestimated features or underestimated costs. If robust approaches are not used, the planning solution is likely to violate targets, leading to solutions that disappoint and fall far behind what we want from the prioritization process.
 
 
 ## Usage
+
+```{r}
+sim_features_robust_raster <- c(sim_feature_1[[1]], sim_feature_1[[2]], rast(feature_2))
+names(sim_features_robust_raster) <- c('sim_feature_1_1', 'sim_feature_1_2', 'sim_feature_2')
+feature_groupings <- c('f1', 'f1', 'f2')
+
+p2 <- problem(sim_pu_raster, sim_features_robust_raster) %>%
+  add_robust_constraints(feature_groupings = feature_groupings) %>%
+  add_absolute_targets(20) %>%
+  add_robust_min_set_objective() %>%
+  add_binary_decisions() %>%
+  add_default_solver(verbose = FALSE)
+
+c2 <- compile(p2)
+solve(p2)
+```
+
 
 TODO.
 

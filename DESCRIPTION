@@ -20,7 +20,7 @@ LazyData: true
 Imports:
     utils,
     methods,
-    Rcpp (>= 1.0.7),
+    Rcpp,
     prioritizr (>= 8.0.6.6),
     R6 (>= 2.5.1),
     rlang (>= 1.0.6),
@@ -34,7 +34,9 @@ Suggests:
     Matrix (>= 1.3-0)
 Depends:
     R (>= 4.1.0)
-LinkingTo: Rcpp
+LinkingTo: 
+    Rcpp,
+    RcppArmadillo
 Collate:
     'RcppExports.R'
     'internal.R'
