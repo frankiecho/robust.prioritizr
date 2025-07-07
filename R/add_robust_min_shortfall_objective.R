@@ -87,7 +87,7 @@ add_robust_min_shortfall_objective <- function(x, budget) {
           feature_groupings <- get_feature_groupings(y)
           # apply objective
           invisible(
-            rcpp_apply_min_shortfall_objective(
+            rcpp_apply_robust_min_shortfall_objective(
               x$ptr,
               y$feature_targets(),
               y$planning_unit_costs(),

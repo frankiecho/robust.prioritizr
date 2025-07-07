@@ -93,7 +93,7 @@ rcpp_apply_robust_min_set_objective <- function(x, targets_list, costs, feature_
     .Call(`_robust_prioritizr_rcpp_apply_robust_min_set_objective`, x, targets_list, costs, feature_group_ids)
 }
 
-rcpp_apply_robust_min_shortfall_objective <- function(x, targets_list, costs, feature_group_ids) {
-    .Call(`_robust_prioritizr_rcpp_apply_robust_min_shortfall_objective`, x, targets_list, costs, feature_group_ids)
+rcpp_apply_robust_min_shortfall_objective <- function(x, targets_list, costs, budget, feature_group_ids) {
+    .Call(`_robust_prioritizr_rcpp_apply_robust_min_shortfall_objective`, x, targets_list, costs, budget, feature_group_ids)
 }
 

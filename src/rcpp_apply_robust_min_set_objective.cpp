@@ -26,6 +26,18 @@ bool rcpp_apply_robust_min_set_objective(
     }
   }
 
+  // Find the maximum target within the feature group, for use within relative targets
+  Rcpp::NumericVector robust_target_value(targets_value.size());
+  for (std::size_t i = 0; i < static_cast<std::size_t>(targets_value.size()); ++i) {
+    int max_target = 0;
+    for (std::size_t j = 0; j < static_cast<std::size_t>(targets_value.size()) ; ++j) {
+      if (targets_value[feature_group_ids[j]] > max_target) {
+        max_target = targets_value[feature_group_ids[j]];
+      }
+    }
+    robust_target_value[i] = max_target;
+  }
+
   // add constraints
   for (std::size_t i = 0; i < static_cast<std::size_t>(targets_value.size()); ++i) {
     // Loop through all the targets and find the corresponding features
@@ -33,13 +45,12 @@ bool rcpp_apply_robust_min_set_objective(
     for (std::size_t j = 0; j < static_cast<std::size_t>(feature_group_ids.size()); ++j) {
       // Loop through all the feature grouping indices
 
-      if (i == feature_group_ids[j]) {
+      if (i == static_cast<std::size_t>(feature_group_ids[j])) {
         // If the target index is equal to the feature group ID, meaning that this target applies to this feature
-        ptr->_rhs.push_back(targets_value[i]);
+        ptr->_rhs.push_back(robust_target_value[i]);
         ptr->_sense.push_back(Rcpp::as<std::string>(targets_sense[i]));
         ptr->_row_ids.push_back("spp_target");
       }
-
     }
 
   }

@@ -1,5 +1,5 @@
 ---
-title: "Getting started"
+title: "Motivations for a robust approach to systematic conservation planning"
 output:
   rmarkdown::html_vignette:
     toc: true
@@ -69,19 +69,19 @@ set.seed(500)
 mu <- 1
 sigma <- 0.2
 
-target <- 20
+target <- 10
 
 feature_1 <- matrix(rnorm(100, mean = mu, sd = sigma), nrow = 10, ncol = 10)
 feature_2 <- matrix(1.5, nrow = 10, ncol = 10)
-sim_features_raster <- c(rast(feature_1),
-                         rast(feature_2))
-names(sim_features_raster) <- c("feature_1", "feature_2")
+sim_features_not_robust_raster <- c(rast(feature_1),
+                                    rast(feature_2))
+names(sim_features_not_robust_raster) <- c("feature_1", "feature_2")
 
 pu <- matrix(1, nrow = 10, ncol = 10)
 sim_pu_raster <- rast(pu)
 names(sim_pu_raster) <- c("Cost")
 
-p1 <- problem(sim_pu_raster, sim_features_raster) %>%
+p1 <- problem(sim_pu_raster, sim_features_not_robust_raster) %>%
   add_min_set_objective() %>%
   add_absolute_targets(target) %>%
   add_binary_decisions() %>%
@@ -90,7 +90,7 @@ p1 <- problem(sim_pu_raster, sim_features_raster) %>%
 s1 <- solve(p1)
 names(s1) <- c('solution')
 
-plot(c(sim_features_raster, sim_pu_raster, s1))
+plot(c(sim_features_not_robust_raster, sim_pu_raster, s1))
 
 ```
 
@@ -98,7 +98,7 @@ Within this solution, it is clear that `prioritizr` would prioritize planning un
 
 ```{r}
 df <- data.frame(
-  feature_1 = values(sim_features_raster[[1]]),
+  feature_1 = values(sim_features_not_robust_raster[[1]]),
   solution = values(s1)
   )
 
@@ -113,9 +113,9 @@ df %>%
   theme(panel.grid = element_blank())
 ```
 
-If `prioritizr` overwhelmingly selects planning units with overpredicted number of features, the solution can be over-optimistic about the targets we can achieve with our planning solution. This means that there is a good chance that the target will be violated if we get a different draw from the distribution.
+If `prioritizr` overwhelmingly selects planning units with over predicted number of features, the solution can be over-optimistic about the targets we can achieve with our planning solution. This means that there is a good chance that the target will be violated if we get a different draw from the distribution.
 
-To see this, we generate 500 realisations of feature_1 from the same distribution and evaluate how good our solution is across each of these realisations. We can estimate how likely it is that our solution violates the target constraint.
+To see this, we generate 500 realizations of feature_1 from the same distribution and evaluate how good our solution is across each of these realizations. We can estimate how likely it is that our solution violates the target constraint.
 
 ```{r}
 # Number of simulations
@@ -130,8 +130,8 @@ feature_1_targets <- values(feature_1_outcomes) %>%
 expected_target <- sum(df$feature_1 * df$solution)
 
 data.frame(feature_1 = unname(feature_1_targets)) %>%
-  mutate(violated = if_else(feature_1 < target, "Violated", "Not violated")) %>%
-  mutate(violated = factor(violated, c("Violated", "Not violated"))) %>%
+  mutate(violated = if_else(feature_1 < target, "Below target", "Above target")) %>%
+  mutate(violated = factor(violated, c("Below target", "Above target"))) %>%
   ggplot(aes(x = feature_1, fill = violated)) +
   geom_histogram(color = 'white', bins = 30) +
   theme_bw() +
@@ -141,14 +141,14 @@ data.frame(feature_1 = unname(feature_1_targets)) %>%
   theme(panel.grid = element_blank())
 ```
 
-The green vertical line depicts where we expected `feature_1` to be, and the orange bars shows the distribution of where `feature_1` would actually be. We can see that the planning solution identified violated the target for `feature_1` in most of the realizations we draw from the statistical distribution. 
+The green vertical line depicts where we expected `feature_1` to be, and the orange bars shows the distribution of where `feature_1` would actually be. We can see that the planning solution identified violated the target for `feature_1` in most of the realizations we draw from the statistical distribution.
 
-Why did the planning solution violate the constraint in such a large number of realisations, even though it was solved using an unbiased estimate of `feature_1`? This is because in the prioritization process, the planning units with an overestimate of `feature_1` would be disproportionately selected, as it appears that these planning units have more features. 
+Why did the planning solution violate the constraint in such a large number of realizations, even though it was solved using an unbiased estimate of `feature_1`? This is because in the prioritization process, the planning units with an overestimate of `feature_1` would be disproportionately selected, as it appears that these planning units have more features.
 
-In what operations researchers call the "Curse of Optimality", prioritization could amplify errors that are present in the data, selectively choosing planning units with overestimated features or underestimated costs. If robust approaches are not used, the planning solution is likely to violate targets, leading to solutions that disappoint and fall far behind what we want from the prioritization process.
-
+In what operations researchers call the "Curse of Optimality", the prioritization process could amplify errors that are present in the data, selectively choosing planning units with overestimated features or underestimated costs. If robust approaches are not used, the planning solution is likely to violate targets, leading to solutions that disappoint and fall far behind what we want from the prioritization process.
 
 ## Usage
+
 ```{r}
 ## Note: here I exploited the fact that the min set objective does not actually use the feature groupings behind the scenes
 ## Note: add_relative_targets will be a bit tricky to interpret as the "number of features" in each realization is different... will need to override with the max of the group (i.e. relative to the maximum of number of features across all realisations), or the mean... need to be transparent
@@ -167,8 +167,8 @@ p2 <- problem(sim_pu_raster, sim_features_robust_raster) %>%
 s2 <- solve(p2)
 plot(s2)
 ```
-Using the same approach, we can evaluate the representation of the new solution `s2` across all the realizations of Feature 1.
 
+Using the same approach, we can evaluate the representation of the new solution `s2` across all the realizations of Feature 1.
 
 ```{r}
 feature_1_targets_robust <- values(sim_feature_1 * s2) %>%
@@ -179,8 +179,8 @@ data.frame(`not_robust` = unname(feature_1_targets),
            `robust` = unname(feature_1_targets_robust)) %>%
   tidyr::pivot_longer(c('not_robust', 'robust'), names_to = 'name', values_to = 'values') %>%
   mutate(name = factor(name, c('not_robust', 'robust'), c('Not Robust', 'Robust'))) %>%
-  mutate(violated = if_else(values < target, "Violated", "Not violated")) %>%
-  mutate(violated = factor(violated, c("Violated", "Not violated"))) %>%
+  mutate(violated = if_else(values < target, "Below target", "Above target")) %>%
+  mutate(violated = factor(violated, c("Below target", "Above target"))) %>%
   ggplot(aes(x = values, fill = violated)) +
   geom_histogram(color = 'white', bins = 30) +
   theme_bw() +
@@ -191,10 +191,225 @@ data.frame(`not_robust` = unname(feature_1_targets),
   theme(panel.grid = element_blank())
 ```
 
-The representation of Feature 1 is dramatically improved when evaluated across the entire distribution of Feature 1, with all realizations having Feature 1 representation above the target value. 
+The representation of Feature 1 is dramatically improved when evaluated across the entire distribution of Feature 1, with all realizations having Feature 1 representation above the target value.
+
+## Robust minimum shortfall objective
+
+Likewise, the problem can be solved for a minimum shortfall objective, where the objective is to minimize the weighted average of the shortfall between the species representation target of each feature to its target.
+
+We demonstrate this first with the use of the standard (not robust) use of `prioritizr`, focusing again on minimizing the shortfall of `feature_1` to the target.
+
+```{r}
+budget <- 20
+
+p3 <- problem(sim_pu_raster, sim_features_not_robust_raster) %>%
+  add_absolute_targets(target) %>%
+  add_min_shortfall_objective(budget = budget) %>%
+  add_binary_decisions() %>%
+  add_default_solver(verbose = FALSE)
+
+s3 <- solve(p3)
+plot(s3)
+```
+
+Using the same approach as before, we evaluate the full distribution of possible representations of `feature_1` across the realizations we have simulated above.
+
+```{r}
+feature_1_outcomes <- sim_feature_1 * s3
+feature_1_targets <- values(feature_1_outcomes) %>%
+  apply(2, sum) %>%
+  unname
+
+representation_summary <- eval_feature_representation_summary(p3, s3)
+
+expected_target <- representation_summary[
+  representation_summary$feature == 'feature_1',
+  'absolute_held'
+] %>%
+  as.numeric
+
+data.frame(feature_1 = unname(feature_1_targets)) %>%
+  mutate(violated = if_else(feature_1 < target, "Below target", "Above target")) %>%
+  mutate(violated = factor(violated, c("Below target", "Above target"))) %>%
+  ggplot(aes(x = feature_1, fill = violated)) +
+  geom_histogram(color = 'white', bins = 30) +
+  theme_bw() +
+  geom_vline(xintercept = 5, linetype = 2) +
+  geom_vline(xintercept = expected_target, color = '#009e73') +
+  scale_fill_manual('', values = c('#d55e00', '#0072b2'), drop = FALSE) +
+  theme(panel.grid = element_blank())
+```
+
+Observe that while `prioritizr` sees `feature_1` as being achieved at `r expected_target`, indicated in the green line, the actual representation as simulated from the distribution is nowhere near the expected level. This implies that the shortfall metric used in the standard `prioritizr` is an under-representation of the shortfall target.
+
+Now, let's observe how the solution will differ if we instead used robust approaches. In this robust approach, the shortfall is instead quantified as the minimum value in the distribution of representation for `feature_1`.
+
+```{r}
+p4 <- problem(sim_pu_raster, sim_features_robust_raster) %>%
+  add_robust_constraints(feature_groupings = feature_groupings) %>%
+  add_absolute_targets(target) %>%
+  add_robust_min_shortfall_objective(budget = budget) %>%
+  add_binary_decisions() %>%
+  add_default_solver(verbose = FALSE)
+
+s4 <- solve(p4)
+plot(s4)
+```
+
+Importantly, the relative improvement of the solution here will be limited by the budget constraint that was imposed on the function.
+
+```{r}
+feature_1_targets_robust <- values(sim_feature_1 * s4) %>%
+  apply(2, sum) %>%
+  unname
+
+representation_summary <- eval_feature_representation_summary(p4, s4)
+
+expected_robust_target <- representation_summary %>%
+  filter(substr(feature, 0, 2) == 'f1') %>%
+  summarise(absolute_held = min(absolute_held))
+expected_robust_target <- as.numeric(expected_robust_target)
+
+plot_df <- data.frame(`not_robust` = unname(feature_1_targets),
+           `robust` = unname(feature_1_targets_robust)) %>%
+  tidyr::pivot_longer(c('not_robust', 'robust'), names_to = 'name', values_to = 'values') %>%
+  mutate(name = factor(name, c('not_robust', 'robust'), c('Not Robust', 'Robust'))) %>%
+  mutate(violated = if_else(values < target, "Violated", "Not violated")) %>%
+  mutate(violated = factor(violated, c("Violated", "Not violated")))
+
+plot_df %>%
+  ggplot(aes(x = values, fill = violated)) +
+  geom_histogram(color = 'white', bins = 30) +
+  theme_bw() +
+  geom_vline(xintercept = target, linetype = 2) +
+  geom_vline(data = filter(plot_df, name == 'Not Robust'), aes(xintercept = expected_target), 
+             color = '#009e73') +
+    geom_vline(data = filter(plot_df, name == 'Robust'), aes(xintercept = expected_robust_target), 
+               color = '#0072b2') +
+  scale_fill_manual('', values = c('#d55e00', '#0072b2'), drop = FALSE) +
+  facet_wrap(vars(name), ncol = 1) +
+  theme(panel.grid = element_blank())
+```
+
+The robust approach is able to find a solution that has a much higher probability of reaching the species target because it is accurately able to use the minimum, or the worst-case, realization in the data to identify the solution with the least amount of shortfall.
+
+Though it is important to recognize that the amount of improvement that are yielded by a robust solution is dependent on other constraints being imposed on it. Consider these alternative problems with the same formulation, but a much smaller budget.
+
+```{r}
+# Use a small budget
+small_budget <- 5
+
+# Not robust version
+p5 <- problem(sim_pu_raster, sim_features_not_robust_raster) %>%
+  add_absolute_targets(target) %>%
+  add_min_shortfall_objective(budget = small_budget) %>%
+  add_binary_decisions() %>%
+  add_default_solver(verbose = FALSE)
+
+s5 <- solve(p5)
+
+representation_summary <- eval_feature_representation_summary(p5, s5)
+
+expected_target <- representation_summary[
+  representation_summary$feature == 'feature_1',
+  'absolute_held'
+] %>%
+  as.numeric
+
+p6 <- problem(sim_pu_raster, sim_features_robust_raster) %>%
+  add_robust_constraints(feature_groupings = feature_groupings) %>%
+  add_absolute_targets(target) %>%
+  add_robust_min_shortfall_objective(budget = small_budget) %>%
+  add_binary_decisions() %>%
+  add_default_solver(verbose = FALSE)
+
+s6 <- solve(p6)
+
+plot(c(s5,s6))
+```
+
+```{r}
+
+representation_summary <- eval_feature_representation_summary(p6, s6)
+
+expected_robust_target <- representation_summary %>%
+  filter(substr(feature, 0, 2) == 'f1') %>%
+  summarise(absolute_held = min(absolute_held))
+expected_robust_target <- as.numeric(expected_robust_target)
+
+feature_1_targets <- values(sim_feature_1 * s5) %>%
+  apply(2, sum) %>%
+  unname
+
+feature_1_targets_robust <- values(sim_feature_1 * s6) %>%
+  apply(2, sum) %>%
+  unname
+
+plot_df <- data.frame(`not_robust` = unname(feature_1_targets),
+           `robust` = unname(feature_1_targets_robust)) %>%
+  tidyr::pivot_longer(c('not_robust', 'robust'), names_to = 'name', values_to = 'values') %>%
+  mutate(name = factor(name, c('not_robust', 'robust'), c('Not Robust', 'Robust'))) %>%
+  mutate(violated = if_else(values < target, "Violated", "Not violated")) %>%
+  mutate(violated = factor(violated, c("Violated", "Not violated")))
+
+plot_df %>%
+  ggplot(aes(x = values, fill = violated)) +
+  geom_histogram(color = 'white', bins = 30) +
+  theme_bw() +
+  geom_vline(xintercept = target, linetype = 2) +
+  geom_vline(data = filter(plot_df, name == 'Not Robust'), aes(xintercept = expected_target), 
+             color = '#009e73') +
+    geom_vline(data = filter(plot_df, name == 'Robust'), aes(xintercept = expected_robust_target), 
+               color = '#0072b2') +
+  scale_fill_manual('', values = c('#d55e00', '#0072b2'), drop = FALSE) +
+  facet_wrap(vars(name), ncol = 1) +
+  theme(panel.grid = element_blank())
+```
+
+We can see that the distribution of outcomes did not change much in this case. This is because the budget is tightly constrained, which means that even the robust approach is not able to find a solution within the budget that reduces the total amount of shortfall for `feature_1`.
+
+## Specification of uncertain information
+
+For its current version, `robust.prioritizr` accommodates two ways uncertainty information, which we refer to in the following ways:
+
++--------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|                                            | Realization uncertainty                                                                                                                                                                                                                                                                                                                                                                                                                                                      | Range uncertainty                                                                                                                                                                                                                                         |
++============================================+==============================================================================================================================================================================================================================================================================================================================================================================================================================================================================+===========================================================================================================================================================================================================================================================+
+| Description                                | Uncertainty is specified in terms of a list of plausible realizations of the world. These realizations are assumed to affect all planning units at once, such that, if "Realization 1" is "true", then planning units 1,...,N take the value as described in "Realization 1". Realizations are assumed to be discrete, such that either "Realization 1" or "Realization 2" (or another realization) is "true", and values in between realizations are considered impossible. | Uncertainty is defined over a numerical range, within which every value in the range is considered "possible" and every value outside the range is considered "impossible". For example, + or - 10% of a planning unit feature, or + or - \$1000 of cost. |
++--------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Typical usage                              | -   Climate model and emissions pathway projections of species ranges (e.g., Representative Concentration Pathways)                                                                                                                                                                                                                                                                                                                                                          | -   Measurement error intervals                                                                                                                                                                                                                           |
+|                                            |                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |                                                                                                                                                                                                                                                           |
+|                                            | -   Shared socioeconomic pathways (SSP) projections, or SSP-RCP scenarios                                                                                                                                                                                                                                                                                                                                                                                                    | -   Sensitivity analysis of parameters                                                                                                                                                                                                                    |
+|                                            |                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |                                                                                                                                                                                                                                                           |
+|                                            | -   Outputs of Monte Carlo simulation                                                                                                                                                                                                                                                                                                                                                                                                                                        | -   Data-limited uncertainties                                                                                                                                                                                                                            |
+|                                            |                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |                                                                                                                                                                                                                                                           |
+|                                            | -   Replicates generated from a stochastic model or a process                                                                                                                                                                                                                                                                                                                                                                                                                | -   Problems that are difficult to scale using realization uncertainty approaches                                                                                                                                                                         |
+|                                            |                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |                                                                                                                                                                                                                                                           |
+|                                            |                                                                                                                                                                                                                                                                                                                                                                                                                                                                              | -   Problems involving uncertainty in conservation costs (as not yet implemented for realization uncertainty)                                                                                                                                             |
++--------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Complexity                                 | Increases with respect to:                                                                                                                                                                                                                                                                                                                                                                                                                                                   | Increases with respect to:                                                                                                                                                                                                                                |
+|                                            |                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |                                                                                                                                                                                                                                                           |
+|                                            | -   Number of planning units                                                                                                                                                                                                                                                                                                                                                                                                                                                 | -   Number of planning units                                                                                                                                                                                                                              |
+|                                            |                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |                                                                                                                                                                                                                                                           |
+|                                            | -   Number of zones                                                                                                                                                                                                                                                                                                                                                                                                                                                          | -   Number of zones                                                                                                                                                                                                                                       |
+|                                            |                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |                                                                                                                                                                                                                                                           |
+|                                            | -   Number of features                                                                                                                                                                                                                                                                                                                                                                                                                                                       | -   Number of features                                                                                                                                                                                                                                    |
+|                                            |                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |                                                                                                                                                                                                                                                           |
+|                                            | -   Number of realizations                                                                                                                                                                                                                                                                                                                                                                                                                                                   |                                                                                                                                                                                                                                                           |
++--------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Linear Programming Formulation             | Minimax                                                                                                                                                                                                                                                                                                                                                                                                                                                                      | Robust uncertainty set (only polyhedral budgeted uncertainty sets implemented right now)                                                                                                                                                                  |
++--------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Ability to control the level of robustness | No, though robustness can be altered implicitly by removing realizations from the data                                                                                                                                                                                                                                                                                                                                                                                       | Yes, controlled through a numeric parameter                                                                                                                                                                                                               |
++--------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+The treatment of realization uncertainty is already covered in the above vignette, but will be given a full treatment in the vignette "Realization Uncertainty" with a simulated example consisting of species projection under different climate change scenarios.
+
+The specification of range uncertainty will be given in the vignette "Range Uncertainty".
 
 ## Conclusion
 
-TODO.
+`robust.prioritizr` extends upon a list of popular objective functions in `prioritizr` to incorporate robust constraints, and must be used in conjunction with other `prioritizr` functions. To get started with formulating your own spatial conservation planning problem, the user is recommended to follow the guides in the `prioritizr` documentation first, prototyping a first version of the planning problem without robust constraints first, and then gradually updating the problem specification with robust constraints in this package.
+
+Also note that objective function specifications in `robust.prioritizr` often increases the number of constraints present in a prioritization problem. Therefore, it would increase the computational requirements of the solution. Translating `prioritizr` problems to `robust.prioritizr` is unlikely to help improve the computational efficiency of the problem or rectify issues with the problem formulation itself.
 
 ## References
