@@ -325,8 +325,12 @@ p6 <- problem(sim_pu_raster, sim_features_robust_raster) %>%
 
 s6 <- solve(p6)
 
-plot(c(s5,s6))
+fig_rast <- c(s5,s6)
+names(fig_rast) <- c('Not robust', 'Robust')
+
+plot(fig_rast)
 ```
+Here, the budget is constrained tightly at 5 cells. Robustness is typically achieved by selecting more planning units. Therefore, even though a robust solution is used, the solution did not improve much.
 
 ```{r}
 

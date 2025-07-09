@@ -17,6 +17,7 @@ bool rcpp_apply_robust_min_shortfall_objective(
   std::size_t A_extra_ncol;
   std::size_t A_extra_nrow;
   const std::size_t n_targets = targets_value.size();
+  const std::size_t n_feature_groups = Rcpp::max(feature_group_ids) + 1;
 
   // The index to start for adding in shortfall and target variables
   A_extra_ncol = ptr->_number_of_zones * ptr->_number_of_planning_units *
@@ -91,9 +92,8 @@ bool rcpp_apply_robust_min_shortfall_objective(
   if (!ptr->_compressed_formulation)
     for (std::size_t i = 0; i < A_extra_ncol; ++i)
       ptr->_obj.push_back(0.0);
-  // add target totals to convert total amounts to proportions
   for (std::size_t i = 0; i < n_targets; ++i)
-    ptr->_obj.push_back(robust_target_value[i] > 1.0e-5 ? 1.0 / ( robust_target_value[i] * n_realisations_of_feature[i] ) : 0);
+    ptr->_obj.push_back(0.0);
   // add in upper and lower bounds for the decision variables representing if
   // each species is adequately conserved
   for (std::size_t i = 0; i < n_targets; ++i)
@@ -112,6 +112,7 @@ bool rcpp_apply_robust_min_shortfall_objective(
       ptr->_number_of_planning_units) + A_extra_ncol + i);
   for (std::size_t i = 0; i < n_targets; ++i)
     ptr->_A_x.push_back(1.0);
+
   // add in budget constraints
   if (budget.size() == 1) {
     for (std::size_t i = 0;
@@ -132,15 +133,58 @@ bool rcpp_apply_robust_min_shortfall_objective(
       );
     }
   }
+
+  std::size_t A_row_start = ptr->_number_of_features + budget.size();
+  std::size_t A_col_start = (ptr->_number_of_zones) * (ptr->_number_of_planning_units);
+
+  // Find the minimum of the features within each feature grouping
+  std::string feature_group_sense = "<=";
+  for (std::size_t i=0; i < n_targets; ++i) {
+    // Find target shortfall of the realization
+    ptr->_A_i.push_back(A_row_start + i);
+    ptr->_A_j.push_back(A_col_start + i);
+    ptr->_A_x.push_back(1.0);
+
+    // Ensure that the target shortfall of the realization is larger than the max of the target shortfall
+    ptr->_A_i.push_back(A_row_start + i);
+    ptr->_A_j.push_back(A_col_start + n_targets + feature_group_ids[i]);
+    ptr->_A_x.push_back(-1.0);
+
+    // Add new constraints to the right hand side and the sense
+    ptr->_rhs.push_back(0.0);
+    ptr->_sense.push_back(feature_group_sense);
+  }
+
+  for (std::size_t i = 0; i < static_cast<std::size_t>(n_feature_groups); ++i) {
+    std::size_t robust_target = 0;
+    for (std::size_t j = 0; j < static_cast<std::size_t>(targets_value.size()) ; ++j) {
+      // Loop over feature groupings id
+      if (i == static_cast<std::size_t>(feature_group_ids[j]) && targets_value[j] > robust_target) {
+        robust_target = targets_value[j];
+      }
+    }
+
+    ptr->_obj.push_back(robust_target > 1.0e-5 ? 1.0 / ( robust_target ) : 0);
+    ptr->_ub.push_back( std::numeric_limits<double>::infinity());
+    ptr->_lb.push_back(-std::numeric_limits<double>::infinity());
+    ptr->_vtype.push_back("C");
+  }
+
   // add in row and col ids
   for (std::size_t i = 0; i < n_targets; ++i)
     ptr->_col_ids.push_back("spp_met");
+  for (std::size_t i = 0; i < static_cast<std::size_t>(n_feature_groups); ++i)
+    ptr->_col_ids.push_back("feature_group");
   for (std::size_t i = 0; i < n_targets; ++i)
     ptr->_row_ids.push_back("spp_target");
   for (std::size_t i = 0; i < static_cast<std::size_t>(budget.size()); ++i)
     ptr->_row_ids.push_back("budget");
+  for (std::size_t i = 0; i < static_cast<std::size_t>(n_targets); ++i)
+    ptr->_row_ids.push_back("feature_targets");
+
   // set model sense
   ptr->_modelsense = "min";
+
   // return success
   return true;
 }
