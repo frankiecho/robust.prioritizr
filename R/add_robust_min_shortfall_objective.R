@@ -37,7 +37,7 @@ NULL
 #' unit \eqn{i}{i} in realization \eqn{k}{k}, \eqn{t_j}{tj} is the representation target for feature
 #' \eqn{j}{j}, \eqn{y_j}{yj} denotes the robust representation shortfall for
 #' the target \eqn{t_j}{tj} for feature \eqn{j}{j} across all realizations \eqn{k}{k},
-#' \eqn{v_{jk}}{vjk} is the shortfall for feature {j} under realization {k}, and \eqn{w_j}{wj} is the
+#' \eqn{v_{jk}}{vjk} is the shortfall for feature \eqn{j}{j} under realization \eqn{k}{k}, and \eqn{w_j}{wj} is the
 #' weight for feature \eqn{j}{j} (defaults to 1 for all features; see
 #' [add_feature_weights()] to specify weights). Additionally,
 #' \eqn{B}{B} is the budget allocated for the solution, \eqn{c_i}{ci} is the

@@ -28,6 +28,7 @@ a set of realizations (\eqn{K} indexed by \eqn{k}) as:
 
 \deqn{\mathit{Minimize} \space \sum_{i = 1}^{I} x_i c_i \\
 \mathit{subject \space to} \\
+\sum_{i = 1}^{I} x_i r_{ijk} \geq \max_k (T_{jk}) \space \forall \space j \in J, \space k \in K}{
 Minimize sum_i^I (xi * ci) subject to sum_i^I (xi * rij) >= Tj for all
 j in J}
 
