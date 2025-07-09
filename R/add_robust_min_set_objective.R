@@ -26,7 +26,8 @@ NULL
 #' specifying whether planning unit \eqn{i}{i} has been selected (1) or not
 #' (0)), \eqn{c_i}{ci} is the cost of planning unit \eqn{i}{i},
 #' \eqn{r_{ijk}}{rijk} is the amount of feature \eqn{j}{j} in planning unit
-#' \eqn{i}{i} under realization \eqn{k}, and \eqn{T_{jk}}{Tj} is the target for feature \eqn{j}{j}. The
+#' \eqn{i}{i} under realization \eqn{k}, and \eqn{T_{jk}}{Tj} is the target for feature \eqn{j}{j}
+#' under realization \eqn{k}{k}. The
 #' first term is the objective function and the second is the set of
 #' constraints. In words this says find the set of planning units that meets
 #' all the representation targets across all realizations while minimizing the overall cost.
