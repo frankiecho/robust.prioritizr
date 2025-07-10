@@ -65,35 +65,52 @@ bool rcpp_apply_robust_probability_constraints(
     }
   }
 
+  // Pre-compute the rhs of the probability of violation constraint first
+  // If the rhs is smaller than 1 (due to a low number of realizations in
+  // the feature group), as the sum of the lhs is integer, the lhs will all be
+  // zero, meaning no constraint can be violated. This can improve efficiency.
+  Rcpp::NumericVector prob_violation_rhs(n_groups, 0.0);
+  Rcpp::LogicalVector apply_prob_constraint(n_groups, FALSE);
+
+  for (std::size_t i = 0; i < n_groups; ++i) {
+    // RHS of the constraint
+    prob_violation_rhs[i] = (1.0 - prob_violation_group[i]) * feature_group_cardinality[i];
+
+    // If the RHS is smaller than 1, there is no other solution on the LHS other
+    // than have everything 0. This means the constraint/ variable is redundant
+    // and can be safely omitted
+    apply_prob_constraint[i] = prob_violation_rhs[i] >= 1.0;
+  }
+
   // Add to the constraint matrix and create new objective values
   for (std::size_t i = 0; i < n_targets; ++i)
-    ptr->_A_i.push_back(i);
+    if (apply_prob_constraint[feature_group_ids[i]]) ptr->_A_i.push_back(i);
   for (std::size_t i = 0; i < n_targets; ++i)
-    ptr->_A_j.push_back(A_extra_ncol + i);
+    if (apply_prob_constraint[feature_group_ids[i]]) ptr->_A_j.push_back(A_extra_ncol + i);
   for (std::size_t i = 0; i < n_targets; ++i)
-    ptr->_A_x.push_back(big_m[i]);
+    if (apply_prob_constraint[feature_group_ids[i]]) ptr->_A_x.push_back(big_m[i]);
   for (std::size_t i = 0; i < n_targets; ++i)
-    ptr->_obj.push_back(0.0);
+    if (apply_prob_constraint[feature_group_ids[i]]) ptr->_obj.push_back(0.0);
   for (std::size_t i = 0; i < n_targets; ++i)
-    ptr->_col_ids.push_back("big_m");
+    if (apply_prob_constraint[feature_group_ids[i]]) ptr->_col_ids.push_back("big_m");
   for (std::size_t i = 0; i < n_targets; ++i)
-    ptr->_vtype.push_back("B");
+    if (apply_prob_constraint[feature_group_ids[i]]) ptr->_vtype.push_back("B");
   for (std::size_t i = 0; i < n_targets; ++i)
-    ptr->_ub.push_back(1);
+    if (apply_prob_constraint[feature_group_ids[i]]) ptr->_ub.push_back(1);
   for (std::size_t i = 0; i < n_targets; ++i)
-    ptr->_lb.push_back(0);
+    if (apply_prob_constraint[feature_group_ids[i]]) ptr->_lb.push_back(0);
 
   // Add in the constraint to ensure that the sum of the violations do not
   // exceed the probability
   for (std::size_t i = 0; i < n_targets; ++i)
-    ptr->_A_i.push_back(A_extra_nrow + feature_group_ids[i]);
+    if (apply_prob_constraint[feature_group_ids[i]]) ptr->_A_i.push_back(A_extra_nrow + feature_group_ids[i]);
   for (std::size_t i = 0; i < n_targets; ++i)
-    ptr->_A_j.push_back(A_extra_ncol + i);
+    if (apply_prob_constraint[feature_group_ids[i]]) ptr->_A_j.push_back(A_extra_ncol + i);
   for (std::size_t i = 0; i < n_targets; ++i)
-    ptr->_A_x.push_back(1.0);
+    if (apply_prob_constraint[feature_group_ids[i]]) ptr->_A_x.push_back(1.0);
 
   for (std::size_t i = 0; i < n_groups; ++i)
-    ptr->_rhs.push_back((1.0 - prob_violation_group[i]) * feature_group_cardinality[i]);
+    ptr->_rhs.push_back(prob_violation_rhs[i]);
   for (std::size_t i = 0; i < n_groups; ++i)
     ptr->_row_ids.push_back("prob_violation");
   for (std::size_t i = 0; i < n_groups; ++i)

@@ -70,15 +70,16 @@ set.seed(500)
 mu <- 1
 sigma <- 0.2
 
-target <- 10
+N <- 10
+target <- N
 
-feature_1 <- matrix(rnorm(100, mean = mu, sd = sigma), nrow = 10, ncol = 10)
-feature_2 <- matrix(1.5, nrow = 10, ncol = 10)
+feature_1 <- matrix(rnorm(100, mean = mu, sd = sigma), nrow = N, ncol = N)
+feature_2 <- matrix(1.5, nrow = N, ncol = N)
 sim_features_not_robust_raster <- c(rast(feature_1),
                                     rast(feature_2))
 names(sim_features_not_robust_raster) <- c("feature_1", "feature_2")
 
-pu <- matrix(1, nrow = 10, ncol = 10)
+pu <- matrix(1, nrow = N, ncol = N)
 sim_pu_raster <- rast(pu)
 names(sim_pu_raster) <- c("Cost")
 
@@ -123,7 +124,7 @@ To see this, we generate 500 realizations of feature_1 from the same distributio
 ```{r}
 # Number of simulations
 n_sims <- 500
-sim_feature_1 <- replicate(n_sims, matrix(rnorm(100, mean = mu, sd = sigma), nrow = 10, ncol = 10)) %>%
+sim_feature_1 <- replicate(n_sims, matrix(rnorm(N^2, mean = mu, sd = sigma), nrow = N, ncol = N)) %>%
   rast
 feature_1_outcomes <- sim_feature_1 * s1
 feature_1_targets <- values(feature_1_outcomes) %>%
@@ -161,7 +162,7 @@ names(sim_features_robust_raster) <- c(paste0(rep('f1', nlyr(sim_feature_1)),1:n
 feature_groupings <- c(rep('f1', nlyr(sim_feature_1)), 'f2')
 
 p2 <- problem(sim_pu_raster, sim_features_robust_raster) %>%
-  add_robust_constraints(feature_groupings = feature_groupings, probability = 0.95) %>%
+  add_robust_constraints(feature_groupings = feature_groupings, probability = 1) %>%
   add_absolute_targets(target) %>%
   add_robust_min_set_objective() %>%
   add_binary_decisions() %>%
