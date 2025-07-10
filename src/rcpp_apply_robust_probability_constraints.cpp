@@ -1,0 +1,103 @@
+#include "package.h"
+#include "prioritizr_optimization_problem.h"
+
+// [[Rcpp::export]]
+bool rcpp_apply_robust_probability_constraints(
+    SEXP x,
+    const Rcpp::List targets_list,
+    const Rcpp::IntegerVector feature_group_ids,
+    const Rcpp::NumericVector prob_violation
+) {
+  Rcpp::XPtr<OPTIMIZATIONPROBLEM> ptr = Rcpp::as<Rcpp::XPtr<OPTIMIZATIONPROBLEM>>(x);
+  Rcpp::NumericVector targets_value = targets_list["value"];
+  Rcpp::CharacterVector targets_sense = targets_list["sense"];
+  const std::size_t n_targets = static_cast<std::size_t>(targets_value.size());
+
+  // Adds probability constraints to the min set objective function or the min shortfall functions
+
+  std::size_t A_extra_ncol;
+  std::size_t A_extra_nrow;
+
+  // declare constants
+  const std::size_t n_groups = *std::max_element(
+    feature_group_ids.begin(), feature_group_ids.end()
+  ) + 1;
+
+  // Find feature group cardinality
+  Rcpp::NumericVector feature_group_cardinality(n_groups, 0.0);
+  for (std::size_t i = 0; i < n_targets; ++i) {
+    ++feature_group_cardinality[feature_group_ids[i]];
+  }
+
+  // Determine the current A matrix size and work out the index to start from
+  A_extra_nrow = static_cast<std::size_t>(*std::max_element(ptr->_A_i.begin(), ptr->_A_i.end())) + 1;
+  A_extra_ncol = static_cast<std::size_t>(*std::max_element(ptr->_A_j.begin(), ptr->_A_j.end())) + 1;
+
+  // Find maximum target for each group
+  Rcpp::NumericVector feature_group_target(
+      n_groups, std::numeric_limits<double>::lowest()
+  );
+  for (std::size_t i = 0; i < n_targets; ++i) {
+    feature_group_target[feature_group_ids[i]] = std::max(
+      targets_value[feature_group_ids[i]], targets_value[i]
+    );
+  }
+
+  // Find the maximum probability violation within each group (supposed to be the equal)
+  Rcpp::NumericVector prob_violation_group(
+      n_groups, std::numeric_limits<double>::lowest()
+  );
+  for (std::size_t i = 0; i < n_targets; ++i) {
+    prob_violation_group[feature_group_ids[i]] = std::max(
+      prob_violation_group[feature_group_ids[i]], prob_violation[i]
+    );
+  }
+
+  // Initialise new variables to allow for violations to the robust constraints
+  // Checks for the sense of the targets list and assigns the sign accordingly
+  Rcpp::NumericVector big_m(n_targets, 0.0);
+
+  for (std::size_t i = 0; i < n_targets; ++i) {
+    if ((targets_sense[i] == "<=") | (targets_sense[i] == "<")) {
+      big_m[i] = -targets_value[feature_group_target[feature_group_ids[i]]];
+    } else {
+      big_m[i] = targets_value[feature_group_target[feature_group_ids[i]]];
+    }
+  }
+
+  // Add to the constraint matrix and create new objective values
+  for (std::size_t i = 0; i < n_targets; ++i)
+    ptr->_A_i.push_back(i);
+  for (std::size_t i = 0; i < n_targets; ++i)
+    ptr->_A_j.push_back(A_extra_ncol + i);
+  for (std::size_t i = 0; i < n_targets; ++i)
+    ptr->_A_x.push_back(big_m[i]);
+  for (std::size_t i = 0; i < n_targets; ++i)
+    ptr->_obj.push_back(0.0);
+  for (std::size_t i = 0; i < n_targets; ++i)
+    ptr->_col_ids.push_back("big_m");
+  for (std::size_t i = 0; i < n_targets; ++i)
+    ptr->_vtype.push_back("B");
+  for (std::size_t i = 0; i < n_targets; ++i)
+    ptr->_ub.push_back(1);
+  for (std::size_t i = 0; i < n_targets; ++i)
+    ptr->_lb.push_back(0);
+
+  // Add in the constraint to ensure that the sum of the violations do not
+  // exceed the probability
+  for (std::size_t i = 0; i < n_targets; ++i)
+    ptr->_A_i.push_back(A_extra_nrow + feature_group_ids[i]);
+  for (std::size_t i = 0; i < n_targets; ++i)
+    ptr->_A_j.push_back(A_extra_ncol + i);
+  for (std::size_t i = 0; i < n_targets; ++i)
+    ptr->_A_x.push_back(1.0);
+
+  for (std::size_t i = 0; i < n_groups; ++i)
+    ptr->_rhs.push_back((1.0 - prob_violation_group[i]) * feature_group_cardinality[i]);
+  for (std::size_t i = 0; i < n_groups; ++i)
+    ptr->_row_ids.push_back("prob_violation");
+  for (std::size_t i = 0; i < n_groups; ++i)
+    ptr->_sense.push_back("<=");
+
+  return true;
+}

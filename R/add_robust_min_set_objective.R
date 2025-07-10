@@ -82,6 +82,7 @@ add_robust_min_set_objective <- function(x) {
           )
           # get feature groupings
           feature_groupings <- get_feature_groupings(y)
+          probability <- get_probability(y)
           # apply the objective
           invisible(
             rcpp_apply_robust_min_set_objective(
@@ -91,6 +92,21 @@ add_robust_min_set_objective <- function(x) {
               feature_groupings
             )
           )
+
+          # Check if the probabilities are not 1. If any are not 1, apply probability constraints
+
+          # TODO: additional checks to see whether or not probability constraints are really needed
+
+          if (any(probability != 1)) {
+            invisible(
+              rcpp_apply_robust_probability_constraints(
+                x$ptr,
+                y$feature_targets(),
+                feature_groupings,
+                probability
+              )
+            )
+          }
         }
       )
     )$new()
