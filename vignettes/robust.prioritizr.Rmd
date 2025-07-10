@@ -61,6 +61,7 @@ We solve this problem in `prioritizr`.
 ```{r}
 library(terra)
 library(prioritizr)
+library(robust.prioritizr)
 library(ggplot2)
 library(dplyr)
 
@@ -94,7 +95,7 @@ plot(c(sim_features_not_robust_raster, sim_pu_raster, s1))
 
 ```
 
-Within this solution, it is clear that `prioritizr` would prioritize planning units that have an overestimated `feature_1` and avoid planning units with an underestimated `feature_1`, even though these planning units have the same underlying feature value and costs.
+By design, `prioritizr` would prioritize planning units that have a higher number of `feature_1` in the planning unit over other planning units with less of `feature_1`. As shown below, `prioritizr` selects the planning units with the highest estimated number of features.
 
 ```{r}
 df <- data.frame(
@@ -113,7 +114,9 @@ df %>%
   theme(panel.grid = element_blank())
 ```
 
-If `prioritizr` overwhelmingly selects planning units with over predicted number of features, the solution can be over-optimistic about the targets we can achieve with our planning solution. This means that there is a good chance that the target will be violated if we get a different draw from the distribution.
+This would give desirable results if the estimate of the number of features in planning units are accurate and do not carry uncertainty. However, when the number of features in the planning units are not perfect estimates, we can see that the constraint could be violated. In this synthetic case, we know that the number of features in each planning unit all follow the same distribution, which means that the variations we see across features are only caused by estimation error and does not represent underlying variations in the planning units' features. Planning units that were selected here were only those with an overestimated number of features (number of features greater than 1).
+
+If uncertainties in features are not accounted for, a prioritization problem would overwhelmingly select planning units with over predicted number of features. This will cause the solution to be over-optimistic about the targets we can achieve with our planning solution. There is a good chance that the target constraints will be violated in practice.
 
 To see this, we generate 500 realizations of feature_1 from the same distribution and evaluate how good our solution is across each of these realizations. We can estimate how likely it is that our solution violates the target constraint.
 
@@ -330,6 +333,7 @@ names(fig_rast) <- c('Not robust', 'Robust')
 
 plot(fig_rast)
 ```
+
 Here, the budget is constrained tightly at 5 cells. Robustness is typically achieved by selecting more planning units. Therefore, even though a robust solution is used, the solution did not improve much.
 
 ```{r}

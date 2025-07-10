@@ -16,7 +16,7 @@ bool rcpp_apply_robust_min_shortfall_objective(
 
   std::size_t A_extra_ncol;
   std::size_t A_extra_nrow;
-  const std::size_t n_targets = targets_value.size();
+  const std::size_t n_targets = static_cast<std::size_t>(targets_value.size());
   const std::size_t n_feature_groups = Rcpp::max(feature_group_ids) + 1;
 
   // The index to start for adding in shortfall and target variables
@@ -26,36 +26,22 @@ bool rcpp_apply_robust_min_shortfall_objective(
 
   // Find the maximum of the feature targets using its groupings, as relative targets would generate different targets across the same feature
   Rcpp::NumericVector robust_target_value(targets_value.size());
-  for (std::size_t i = 0; i < static_cast<std::size_t>(targets_value.size()); ++i) {
-    int max_target = 0;
 
-    for (std::size_t j = 0; j < static_cast<std::size_t>(targets_value.size()) ; ++j) {
-      // Loop over feature groupings id
-      if (i == j && targets_value[j] > max_target) {
-        max_target = targets_value[feature_group_ids[j]];
-      }
-    }
-    robust_target_value[i] = max_target;
+  // declare constants
+  const std::size_t n_groups = *std::max_element(
+    feature_group_ids.begin(), feature_group_ids.end()
+  ) + 1;
+
+  // Find maximum target for each group
+  Rcpp::NumericVector feature_group_target(
+      n_groups, std::numeric_limits<double>::lowest()
+  );
+  for (std::size_t i = 0; i < n_targets; ++i) {
+    feature_group_target[feature_group_ids[i]] = std::max(
+      targets_value[feature_group_ids[i]], targets_value[i]
+    );
+    robust_target_value[i] = feature_group_target[feature_group_ids[i]];
   }
-
-  // Need to find the number of realisations per feature, such that if a feature has more realisations than
-  // another feature, it is still weighted equally compared to other features
-
-  Rcpp::NumericVector n_realisations_of_feature(targets_value.size());
-
-  for (std::size_t i = 0; i < static_cast<std::size_t>(targets_value.size()); ++i) {
-
-    // Count the number of features in the feature group
-    std::size_t counter = 0;
-
-    for (std::size_t j = 0; j < static_cast<std::size_t>(targets_value.size()); ++j) {
-      if (feature_group_ids[i] == feature_group_ids[j]) {
-        counter = counter + 1;
-      }
-    }
-    n_realisations_of_feature[i] = counter;
-  }
-
 
   if (ptr->_compressed_formulation) {
     A_extra_ncol = 0;
@@ -75,8 +61,7 @@ bool rcpp_apply_robust_min_shortfall_objective(
     ptr->_sense.push_back(Rcpp::as<std::string>(targets_sense[i]));
   for (std::size_t z = 0; z < static_cast<std::size_t>(budget.size()); ++z)
     ptr->_sense.push_back("<=");
-  // add in small negative number to objective for planning unit variables to
-  // break ties in solution and select solution with cheapest cost
+
   for (std::size_t z = 0; z < (ptr->_number_of_zones); ++z) {
     for (std::size_t j = 0; j < (ptr->_number_of_planning_units); ++j) {
       if (Rcpp::NumericMatrix::is_na(costs(j, z))) {
@@ -139,36 +124,37 @@ bool rcpp_apply_robust_min_shortfall_objective(
 
   // Find the minimum of the features within each feature grouping
   std::string feature_group_sense = "<=";
-  for (std::size_t i=0; i < n_targets; ++i) {
+
     // Find target shortfall of the realization
+  for (std::size_t i=0; i < n_targets; ++i)
     ptr->_A_i.push_back(A_row_start + i);
+  for (std::size_t i=0; i < n_targets; ++i)
     ptr->_A_j.push_back(A_col_start + i);
+  for (std::size_t i=0; i < n_targets; ++i)
     ptr->_A_x.push_back(1.0);
 
     // Ensure that the target shortfall of the realization is larger than the max of the target shortfall
+  for (std::size_t i=0; i < n_targets; ++i)
     ptr->_A_i.push_back(A_row_start + i);
+  for (std::size_t i=0; i < n_targets; ++i)
     ptr->_A_j.push_back(A_col_start + n_targets + feature_group_ids[i]);
+  for (std::size_t i=0; i < n_targets; ++i)
     ptr->_A_x.push_back(-1.0);
 
     // Add new constraints to the right hand side and the sense
+  for (std::size_t i=0; i < n_targets; ++i)
     ptr->_rhs.push_back(0.0);
+  for (std::size_t i=0; i < n_targets; ++i)
     ptr->_sense.push_back(feature_group_sense);
-  }
 
-  for (std::size_t i = 0; i < static_cast<std::size_t>(n_feature_groups); ++i) {
-    std::size_t robust_target = 0;
-    for (std::size_t j = 0; j < static_cast<std::size_t>(targets_value.size()) ; ++j) {
-      // Loop over feature groupings id
-      if (i == static_cast<std::size_t>(feature_group_ids[j]) && targets_value[j] > robust_target) {
-        robust_target = targets_value[j];
-      }
-    }
-
-    ptr->_obj.push_back(robust_target > 1.0e-5 ? 1.0 / ( robust_target ) : 0);
+  for (std::size_t i = 0; i < static_cast<std::size_t>(n_feature_groups); ++i)
+    ptr->_obj.push_back(feature_group_target[i] > 1.0e-5 ? 1.0 / ( feature_group_target[i] ) : 0);
+  for (std::size_t i = 0; i < static_cast<std::size_t>(n_feature_groups); ++i)
     ptr->_ub.push_back( std::numeric_limits<double>::infinity());
+  for (std::size_t i = 0; i < static_cast<std::size_t>(n_feature_groups); ++i)
     ptr->_lb.push_back(-std::numeric_limits<double>::infinity());
+  for (std::size_t i = 0; i < static_cast<std::size_t>(n_feature_groups); ++i)
     ptr->_vtype.push_back("C");
-  }
 
   // add in row and col ids
   for (std::size_t i = 0; i < n_targets; ++i)
