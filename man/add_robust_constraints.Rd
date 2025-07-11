@@ -4,7 +4,7 @@
 \alias{add_robust_constraints}
 \title{Add robust constraints}
 \usage{
-add_robust_constraints(x, feature_groupings)
+add_robust_constraints(x, feature_groupings, probability = 1)
 }
 \arguments{
 \item{x}{\code{\link[prioritizr:problem]{prioritizr::problem()}} object.}
@@ -14,6 +14,11 @@ should be grouped together for the purposes of characterizing uncertainty.
 For example, if some of the features correspond to alternative predictions
 for the same species under different scenarios, then these features should
 contain the same grouping name.}
+
+\item{probability}{\code{numeric} scalar or vector corresponding to the number of
+targets, referring to the probability that a robust constraint is held. If specified
+as a scalar, it assumes that all feature groups will have the same probability
+of violating the robust constraint.}
 }
 \value{
 An updated \code{\link[prioritizr:problem]{prioritizr::problem()}} object with the constraint added

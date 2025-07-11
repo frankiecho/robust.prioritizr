@@ -59,9 +59,9 @@ get_feature_groupings <- function(x, convert_to_integer = TRUE) {
     )
   } else {
     ## otherwise, we should have a grouping id for each feature
-    n_features <- prioritizr::number_of_features(y)
+    n_features <- prioritizr::number_of_features(x)
     assert(
-      identical(length(groupings), n_features),
+      identical(length(feature_groupings), n_features),
       call = rlang::expr(add_robust_constraints()),
       msg = c(
         "!" = paste(
@@ -72,7 +72,7 @@ get_feature_groupings <- function(x, convert_to_integer = TRUE) {
           "Number of feature groupings = ",
           "{.val {length(feature_groupings)}}."
         ),
-        "x" = "Number of features = {.val {n_feaures}}."
+        "x" = "Number of features = {.val {n_features}}."
       )
     )
   }

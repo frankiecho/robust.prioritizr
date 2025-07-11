@@ -21,7 +21,26 @@ TODO.
 }
 \section{Mathematical formulation}{
 
-TODO.
+This objective can be expressed
+mathematically for a set of planning units (\eqn{I}{I} indexed by
+\eqn{i}{i}), a set of features (\eqn{J}{J} indexed by \eqn{j}{j}), and
+a set of realizations (\eqn{K} indexed by \eqn{k}) as:
+
+\deqn{\mathit{Minimize} \space \sum_{i = 1}^{I} x_i c_i \\
+\mathit{subject \space to} \\
+\sum_{i = 1}^{I} x_i r_{ijk} \geq \max_k (T_{jk}) \space \forall \space j \in J, \space k \in K}{
+Minimize sum_i^I (xi * ci) subject to sum_i^I (xi * rij) >= Tj for all
+j in J}
+
+Here, \eqn{x_i}{xi} is the \link{decisions} variable (e.g.,
+specifying whether planning unit \eqn{i}{i} has been selected (1) or not
+(0)), \eqn{c_i}{ci} is the cost of planning unit \eqn{i}{i},
+\eqn{r_{ijk}}{rijk} is the amount of feature \eqn{j}{j} in planning unit
+\eqn{i}{i} under realization \eqn{k}, and \eqn{T_{jk}}{Tj} is the target for feature \eqn{j}{j}
+under realization \eqn{k}{k}. The
+first term is the objective function and the second is the set of
+constraints. In words this says find the set of planning units that meets
+all the representation targets across all realizations while minimizing the overall cost.
 }
 
 \examples{

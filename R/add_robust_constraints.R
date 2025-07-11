@@ -12,6 +12,10 @@ NULL
 #'  For example, if some of the features correspond to alternative predictions
 #'  for the same species under different scenarios, then these features should
 #'  contain the same grouping name.
+#' @param probability `numeric` scalar or vector corresponding to the number of
+#' targets, referring to the probability that a robust constraint is held. If specified
+#' as a scalar, it assumes that all feature groups will have the same probability
+#' of violating the robust constraint.
 #'
 #' @details
 #' TODO.
@@ -39,7 +43,9 @@ NULL
 
 #' @rdname add_robust_constraints
 #' @export
-add_robust_constraints <- function(x, feature_groupings) {
+add_robust_constraints <- function(x,
+                                   feature_groupings,
+                                   probability = 1) {
   # assert argument is valid
   assert_required(x)
   assert_required(feature_groupings)
@@ -48,6 +54,9 @@ add_robust_constraints <- function(x, feature_groupings) {
     is.character(feature_groupings),
     assertthat::noNA(feature_groupings)
   )
+
+  # TODO: Check the validity of the inputs of the probability vector
+
   # add objective to problem
   x$add_constraint(
     R6::R6Class(
@@ -55,7 +64,8 @@ add_robust_constraints <- function(x, feature_groupings) {
       inherit = prioritizr::Constraint,
       public = list(
         name = "robust constraints",
-        data = list(feature_groupings = feature_groupings),
+        data = list(feature_groupings = feature_groupings,
+                    probability = probability),
         apply = function(x, y) {
           # note that these constraints are just used as a dummy place holder
           # to store the feature grouping information, and so the $apply()

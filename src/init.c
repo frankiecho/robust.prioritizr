@@ -3,13 +3,14 @@
 #include <stdlib.h> // for NULL
 #include <R_ext/Rdynload.h>
 
-/* FIXME: 
+/* FIXME:
    Check these declarations against the C/Fortran source code.
 */
 
 /* .Call calls */
 extern SEXP _robust_prioritizr_rcpp_apply_robust_min_set_objective(SEXP, SEXP, SEXP, SEXP);
 extern SEXP _robust_prioritizr_rcpp_apply_robust_min_shortfall_objective(SEXP, SEXP, SEXP, SEXP);
+extern SEXP _robust_prioritizr_rcpp_apply_robust_probability_constraints(SEXP, SEXP, SEXP, SEXP);
 extern SEXP _robust_prioritizr_rcpp_copy_optimization_problem(SEXP);
 extern SEXP _robust_prioritizr_rcpp_get_optimization_problem_A(SEXP);
 extern SEXP _robust_prioritizr_rcpp_get_optimization_problem_col_ids(SEXP);
@@ -35,7 +36,8 @@ extern SEXP _robust_prioritizr_rcpp_set_optimization_problem_shuffled(SEXP, SEXP
 
 static const R_CallMethodDef CallEntries[] = {
     {"_robust_prioritizr_rcpp_apply_robust_min_set_objective",                    (DL_FUNC) &_robust_prioritizr_rcpp_apply_robust_min_set_objective,                    4},
-    {"_robust_prioritizr_rcpp_apply_robust_min_shortfall_objective",              (DL_FUNC) &_robust_prioritizr_rcpp_apply_robust_min_shortfall_objective,              4},
+    {"_robust_prioritizr_rcpp_apply_robust_min_shortfall_objective",              (DL_FUNC) &_robust_prioritizr_rcpp_apply_robust_min_shortfall_objective,              5},
+    {"_robust_prioritizr_rcpp_apply_robust_probability_constraints",              (DL_FUNC) &_robust_prioritizr_rcpp_apply_robust_probability_constraints,              4},
     {"_robust_prioritizr_rcpp_copy_optimization_problem",                         (DL_FUNC) &_robust_prioritizr_rcpp_copy_optimization_problem,                         1},
     {"_robust_prioritizr_rcpp_get_optimization_problem_A",                        (DL_FUNC) &_robust_prioritizr_rcpp_get_optimization_problem_A,                        1},
     {"_robust_prioritizr_rcpp_get_optimization_problem_col_ids",                  (DL_FUNC) &_robust_prioritizr_rcpp_get_optimization_problem_col_ids,                  1},
