@@ -80,24 +80,23 @@ add_robust_min_set_objective <- function(x) {
             inherits(y, "ConservationProblem"),
             .internal = TRUE
           )
-          # get feature groupings
-          feature_groupings <- get_feature_groupings(y)
-          probability <- get_probability(y)
-          # apply the objective
-          invisible(
-            rcpp_apply_robust_min_set_objective(
-              x$ptr,
-              y$feature_targets(),
-              y$planning_unit_costs(),
-              feature_groupings
-            )
-          )
-
-          # Check if the probabilities are not 1. If any are not 1, apply probability constraints
-
+          # get feature grouping data
+          d <- get_feature_group_data(y)
+          # determine if probability constraints are needed
+          is_prob_needed <- any(d$thresholds != 1)
           # TODO: additional checks to see whether or not probability constraints are really needed
-
-          if (any(probability != 1)) {
+          # apply objective
+          if (!isTRUE(is_prob_needed)) {
+            invisible(
+              rcpp_apply_robust_min_set_objective(
+                x$ptr,
+                y$feature_targets(),
+                y$planning_unit_costs(),
+                feature_groupings$ids,
+                feature_groupings$thresholds
+              )
+            )
+          } else {
             invisible(
               rcpp_apply_robust_probability_constraints(
                 x$ptr,
