@@ -83,26 +83,24 @@ add_robust_min_set_objective <- function(x) {
           # get feature grouping data
           d <- get_feature_group_data(y)
           # determine if probability constraints are needed
-          is_prob_needed <- any(d$thresholds != 1)
+          is_prob_needed <- any(d$confidence_level != 1)
           # TODO: additional checks to see whether or not probability constraints are really needed
           # apply objective
-          if (!isTRUE(is_prob_needed)) {
-            invisible(
-              rcpp_apply_robust_min_set_objective(
-                x$ptr,
-                y$feature_targets(),
-                y$planning_unit_costs(),
-                feature_groupings$ids,
-                feature_groupings$thresholds
-              )
+          invisible(
+            rcpp_apply_robust_min_set_objective(
+              x$ptr,
+              y$feature_targets(),
+              y$planning_unit_costs(),
+              d$ids
             )
-          } else {
+          )
+          if (isTRUE(is_prob_needed)) {
             invisible(
               rcpp_apply_robust_probability_constraints(
                 x$ptr,
                 y$feature_targets(),
                 feature_groupings,
-                probability
+                d$confidence_level
               )
             )
           }

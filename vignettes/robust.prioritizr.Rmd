@@ -96,7 +96,7 @@ plot(c(sim_features_not_robust_raster, sim_pu_raster, s1))
 
 ```
 
-By design, `prioritizr` would prioritize planning units that have a higher number of `feature_1` in the planning unit over other planning units with less of `feature_1`. As shown below, `prioritizr` selects the planning units with the highest estimated number of features.
+In the prioritization process, planning units that have a higher number of `feature_1` in the planning unit will be selected over other planning units with less of `feature_1`. As shown below, `prioritizr` selects the planning units with the highest estimated number of features.
 
 ```{r}
 df <- data.frame(
@@ -157,12 +157,13 @@ In what operations researchers call the "Curse of Optimality", the prioritizatio
 ## Note: here I exploited the fact that the min set objective does not actually use the feature groupings behind the scenes
 ## Note: add_relative_targets will be a bit tricky to interpret as the "number of features" in each realization is different... will need to override with the max of the group (i.e. relative to the maximum of number of features across all realisations), or the mean... need to be transparent
 
-sim_features_robust_raster <- c(sim_feature_1, rast(feature_2))
-names(sim_features_robust_raster) <- c(paste0(rep('f1', nlyr(sim_feature_1)),1:nlyr(sim_feature_1)), 'sim_feature_2')
-feature_groupings <- c(rep('f1', nlyr(sim_feature_1)), 'f2')
+sim_features_robust_raster <- c(sim_feature_1, rast(feature_2), rast(feature_2))
+names(sim_features_robust_raster) <- c(paste0(rep('f1_', nlyr(sim_feature_1)),1:nlyr(sim_feature_1)), 
+                                       'f2_1', 'f2_2')
+feature_groupings <- c(rep('f1', nlyr(sim_feature_1)), 'f2', 'f2')
 
 p2 <- problem(sim_pu_raster, sim_features_robust_raster) %>%
-  add_robust_constraints(feature_groupings = feature_groupings, probability = 1) %>%
+  add_constant_robust_constraints(groups = feature_groupings, confidence_level = 1) %>%
   add_absolute_targets(target) %>%
   add_robust_min_set_objective() %>%
   add_binary_decisions() %>%
@@ -250,7 +251,7 @@ Now, let's observe how the solution will differ if we instead used robust approa
 
 ```{r}
 p4 <- problem(sim_pu_raster, sim_features_robust_raster) %>%
-  add_robust_constraints(feature_groupings = feature_groupings) %>%
+  add_constant_robust_constraints(groups = feature_groupings) %>%
   add_absolute_targets(target) %>%
   add_robust_min_shortfall_objective(budget = budget) %>%
   add_binary_decisions() %>%
@@ -321,7 +322,7 @@ expected_target <- representation_summary[
   as.numeric
 
 p6 <- problem(sim_pu_raster, sim_features_robust_raster) %>%
-  add_robust_constraints(feature_groupings = feature_groupings) %>%
+  add_constant_robust_constraints(groups = feature_groupings) %>%
   add_absolute_targets(target) %>%
   add_robust_min_shortfall_objective(budget = small_budget) %>%
   add_binary_decisions() %>%

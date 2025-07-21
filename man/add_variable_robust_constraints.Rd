@@ -10,7 +10,7 @@ add_variable_robust_constraints(x, data)
 \item{x}{\code{\link[prioritizr:problem]{prioritizr::problem()}} object.}
 
 \item{data}{\code{\link[tibble:tibble]{tibble::tibble()}} data frame containing information the feature
-groupings and their desired level of risk aversion. See the Data format
+groupings and their desired confidence level. See the Data format
 section for details. Also, see the Examples section for example usage.}
 }
 \value{
@@ -20,17 +20,26 @@ to it.
 \description{
 Add robust constraints to a conservation problem to ensure that
 the priority areas are robust to uncertainty. In particular, this
-function is useful when the level of risk aversion is different for
+function is useful when the confidence level is different for
 different features. For example, this function may be especially
 useful when it is important to ensure that a prioritization is
 highly robust to uncertainty in the spatial distribution of threatened
 species, and only moderately robust to uncertainty in the spatial
 distribution of widespread species.
 }
+\details{
+The robust/ chance constraints ensures that the proportion of constraints that are held
+is greater than a specified \code{confidence_level}. If \code{confidence_level = 1},
+all constraints within the feature group must be held, meaning that the solution is fully
+robust to uncertainty. Lowering the \code{confidence_level} to less than
+1 allows a certain percentage of the constraints for each feature group to be
+violated, enabling the algorithm to search of solutions with better objective values, while
+keeping the percentage of constraints violated less than \code{1 - confidence_level}.
+}
 \section{Data format}{
 
 The \code{data} argument must be a \code{\link[tibble:tibble]{tibble::tibble()}} data frame that has
-information on the feature groupings and their levels of risk aversion.
+information on the feature groupings and their confidence levels.
 Here, each row corresponds to a different feature group and
 columns contain information about the groups.
 In particular, it has the following columns.
@@ -40,14 +49,14 @@ A \code{list} column with the names of the features that belong to each group.
 In particular, if a particular set of features should belong to the same
 group, then they should be stored in the same element of this column.
 }
-\item{threshold}{
-A \code{numeric} column with values that describe the level of risk aversion
+\item{confidence_level}{
+A \code{numeric} column with values that describe the confidence level
 associated with each feature group (ranging between 0 and 1).
 For example, a value of zero corresponds
-to a low level of risk aversion, and so the optimization process will not
-constrained to be robust against uncertainty for that particular group.
-Alternatively, a value of of one corresponds to a high level of risk
-version, and so the optimization process will be highly constrained to be
+to a low confidence level, and so the optimization process will not
+constrained by any constraints in that particular group.
+Alternatively, a value of of one corresponds to a high level of robustness,
+and so the optimization process will be highly constrained to be
 robust against uncertainty for that particular group.
 }
 }
@@ -56,7 +65,7 @@ robust against uncertainty for that particular group.
 \section{Data requirements}{
 
 The robust constraints require that you have multiple alternative
-realizations for each biodiversity elements of interest (e.g.,
+realizations for each biodiversity element of interest (e.g.,
 species, ecosystems, ecosystem services). For example, we might have 5
 species of interest. By applying different spatial modeling techniques,
 we might have 10 different models for each of the 5 different species.
@@ -76,7 +85,7 @@ TODO.
 
 }
 \references{
-TODO.
+Charnes, A., & Cooper, W. W. (1959). Chance-constrained programming. Management Science, 6(1), 73–79.
 }
 \seealso{
 See \link{robust_objectives} for an overview of all functions for adding

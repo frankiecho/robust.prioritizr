@@ -18,7 +18,7 @@ NULL
 #'
 #' @return
 #' A `list` containing the (`$ids`) `integer` group identifiers for each feature
-#' and (`$thresholds`) `numeric` thresholds for each group.
+#' and (`$confidence_level`) `numeric` confidence_level for each group.
 #'
 #' @noRd
 get_feature_group_data <- function(x) {
@@ -46,5 +46,5 @@ get_feature_group_data <- function(x) {
   feature_groupings <- group_ids[idx]
 
   # return result
-  list(ids = feature_groupings, thresholds = data$threshold)
+  list(ids = feature_groupings, confidence_level = data$confidence_level)
 }

@@ -4,7 +4,7 @@
 \alias{add_constant_robust_constraints}
 \title{Add constant robust constraints}
 \usage{
-add_constant_robust_constraints(x, groups, threshold)
+add_constant_robust_constraints(x, groups, confidence_level = 1)
 }
 \arguments{
 \item{x}{\code{\link[prioritizr:problem]{prioritizr::problem()}} object.}
@@ -17,29 +17,36 @@ For example, if some of the features correspond to alternative predictions
 for the same species under different scenarios, then these features should
 have the same grouping name.}
 
-\item{threshold}{\code{numeric} value describing the level of risk aversion
-required for the prioritization (ranging between 0 and 1).
-For example, a value of zero corresponds
-to a low level of risk aversion, and so the optimization process will not
-constrained to be robust against uncertainty. Alternatively, a value of
-of one corresponds to a high level of risk version, and so the
-optimization process will be highly constrained to be robust against
-uncertainty.}
+\item{confidence_level}{\code{numeric} value describing the level of robustness
+required for the prioritization (ranging between 0 and 1). For instance, a value
+of 0.95 guarantees that at least 95\% of the constraints will met for each
+feature group. A value of 1 ensures full robustness, i.e., all constraints
+are met. A value of 0 will cause none of the constraints to be applied,
+and is thus not recommended.}
 }
 \value{
 An updated \code{\link[prioritizr:problem]{prioritizr::problem()}} object with the constraint added
 to it.
 }
 \description{
-Add robust constraints to a conservation problem to ensure that
-the priority areas are robust to uncertainty. In particular, this
-function is useful when the level of risk aversion is constant
-across all features.
+Add robust or probabilistic constraints to a conservation problem to ensure that
+the priority areas are robust to uncertainty up to a certain confidence level. In particular, this
+function is useful when the confidence level that the constraint is held
+is constant across all features.
+}
+\details{
+The robust/ chance constraints ensures that the proportion of constraints that are held
+is greater than a specified \code{confidence_level}. If \code{confidence_level = 1},
+all constraints within the feature group must be held, meaning that the solution is fully
+robust to uncertainty. Lowering the \code{confidence_level} to less than
+1 allows a certain percentage of the constraints for each feature group to be
+violated, enabling the algorithm to search of solutions with better objective values, while
+keeping the percentage of constraints violated less than \code{1 - confidence_level}.
 }
 \section{Data requirements}{
 
 The robust constraints require that you have multiple alternative
-realizations for each biodiversity elements of interest (e.g.,
+realizations for each biodiversity element of interest (e.g.,
 species, ecosystems, ecosystem services). For example, we might have 5
 species of interest. By applying different spatial modeling techniques,
 we might have 10 different models for each of the 5 different species.
@@ -59,7 +66,7 @@ TODO.
 
 }
 \references{
-TODO.
+Charnes, A., & Cooper, W. W. (1959). Chance-constrained programming. Management Science, 6(1), 73–79.
 }
 \seealso{
 See \link{robust_objectives} for an overview of all functions for adding

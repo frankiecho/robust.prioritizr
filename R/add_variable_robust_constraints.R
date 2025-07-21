@@ -5,22 +5,30 @@ NULL
 #'
 #' Add robust constraints to a conservation problem to ensure that
 #' the priority areas are robust to uncertainty. In particular, this
-#' function is useful when the level of risk aversion is different for
+#' function is useful when the confidence level is different for
 #' different features. For example, this function may be especially
 #' useful when it is important to ensure that a prioritization is
 #' highly robust to uncertainty in the spatial distribution of threatened
 #' species, and only moderately robust to uncertainty in the spatial
 #' distribution of widespread species.
 #'
+#' The robust/ chance constraints ensures that the proportion of constraints that are held
+#' is greater than a specified `confidence_level`. If `confidence_level = 1`,
+#' all constraints within the feature group must be held, meaning that the solution is fully
+#' robust to uncertainty. Lowering the `confidence_level` to less than
+#' 1 allows a certain percentage of the constraints for each feature group to be
+#' violated, enabling the algorithm to search of solutions with better objective values, while
+#' keeping the percentage of constraints violated less than `1 - confidence_level`.
+#'
 #' @param x [prioritizr::problem()] object.
 #'
 #' @param data [tibble::tibble()] data frame containing information the feature
-#' groupings and their desired level of risk aversion. See the Data format
+#' groupings and their desired confidence level. See the Data format
 #' section for details. Also, see the Examples section for example usage.
 #'
 #' @section Data format:
 #' The `data` argument must be a [tibble::tibble()] data frame that has
-#' information on the feature groupings and their levels of risk aversion.
+#' information on the feature groupings and their confidence levels.
 #' Here, each row corresponds to a different feature group and
 #' columns contain information about the groups.
 #' In particular, it has the following columns.
@@ -30,14 +38,14 @@ NULL
 #' In particular, if a particular set of features should belong to the same
 #' group, then they should be stored in the same element of this column.
 #' }
-#' \item{threshold}{
-#' A `numeric` column with values that describe the level of risk aversion
+#' \item{confidence_level}{
+#' A `numeric` column with values that describe the confidence level
 #' associated with each feature group (ranging between 0 and 1).
 #'  For example, a value of zero corresponds
-#'  to a low level of risk aversion, and so the optimization process will not
-#'  constrained to be robust against uncertainty for that particular group.
-#'  Alternatively, a value of of one corresponds to a high level of risk
-#'  version, and so the optimization process will be highly constrained to be
+#'  to a low confidence level, and so the optimization process will not
+#'  constrained by any constraints in that particular group.
+#'  Alternatively, a value of of one corresponds to a high level of robustness,
+#'  and so the optimization process will be highly constrained to be
 #'  robust against uncertainty for that particular group.
 #' }
 #' }
@@ -68,10 +76,10 @@ add_variable_robust_constraints <- function(x, data) {
     is_conservation_problem(x),
     is.data.frame(data),
     assertthat::has_name(data, "features"),
-    assertthat::has_name(data, "threshold"),
+    assertthat::has_name(data, "confidence_level"),
     is.list(data$features),
-    is.numeric(data$threshold),
-    assertthat::noNA(data$threshold)
+    is.numeric(data$confidence_level),
+    assertthat::noNA(data$confidence_level)
   )
   # additional validation for feature groupings
   assert(
@@ -116,7 +124,7 @@ add_variable_robust_constraints <- function(x, data) {
       inherit = prioritizr::Constraint,
       public = list(
         name = ifelse(
-          identical(length(unique(data$threshold)), 1L),
+          identical(length(unique(data$confidence_level)), 1L),
           "constant robust constraints",
           "variable robust constraints"
         ),
