@@ -99,7 +99,7 @@ add_robust_min_set_objective <- function(x) {
               rcpp_apply_robust_probability_constraints(
                 x$ptr,
                 y$feature_targets(),
-                feature_groupings,
+                d$ids,
                 d$confidence_level
               )
             )

@@ -97,7 +97,7 @@ rcpp_apply_robust_min_shortfall_objective <- function(x, targets_list, costs, bu
     .Call(`_robust_prioritizr_rcpp_apply_robust_min_shortfall_objective`, x, targets_list, costs, budget, feature_group_ids)
 }
 
-rcpp_apply_robust_probability_constraints <- function(x, targets_list, feature_group_ids, prob_violation) {
-    .Call(`_robust_prioritizr_rcpp_apply_robust_probability_constraints`, x, targets_list, feature_group_ids, prob_violation)
+rcpp_apply_robust_probability_constraints <- function(x, targets_list, feature_group_ids, conf_levels) {
+    .Call(`_robust_prioritizr_rcpp_apply_robust_probability_constraints`, x, targets_list, feature_group_ids, conf_levels)
 }
 
