@@ -130,7 +130,7 @@ add_robust_min_shortfall_objective <- function(x, budget) {
               rcpp_apply_robust_probability_constraints(
                 x$ptr,
                 y$feature_targets(),
-                feature_groupings$ids,
+                feature_groupings,
                 d$confidence_level
               )
             )

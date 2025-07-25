@@ -70,10 +70,10 @@ set.seed(500)
 mu <- 1
 sigma <- 0.2
 
-N <- 10
+N <- 5
 target <- N
 
-feature_1 <- matrix(rnorm(100, mean = mu, sd = sigma), nrow = N, ncol = N)
+feature_1 <- matrix(rnorm(N^2, mean = mu, sd = sigma), nrow = N, ncol = N)
 feature_2 <- matrix(1.5, nrow = N, ncol = N)
 sim_features_not_robust_raster <- c(rast(feature_1),
                                     rast(feature_2))
@@ -163,7 +163,7 @@ names(sim_features_robust_raster) <- c(paste0(rep('f1_', nlyr(sim_feature_1)),1:
 feature_groupings <- c(rep('f1', nlyr(sim_feature_1)), 'f2', 'f2')
 
 p2 <- problem(sim_pu_raster, sim_features_robust_raster) %>%
-  add_constant_robust_constraints(groups = feature_groupings, confidence_level = 1) %>%
+  add_constant_robust_constraints(groups = feature_groupings, confidence_level = .9) %>%
   add_absolute_targets(target) %>%
   add_robust_min_set_objective() %>%
   add_binary_decisions() %>%
@@ -297,6 +297,8 @@ plot_df %>%
 ```
 
 The robust approach is able to find a solution that has a much higher probability of reaching the species target because it is accurately able to use the minimum, or the worst-case, realization in the data to identify the solution with the least amount of shortfall.
+
+## Interactions with other constraints
 
 Though it is important to recognize that the amount of improvement that are yielded by a robust solution is dependent on other constraints being imposed on it. Consider these alternative problems with the same formulation, but a much smaller budget.
 
