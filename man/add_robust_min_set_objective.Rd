@@ -4,7 +4,7 @@
 \alias{add_robust_min_set_objective}
 \title{Add robust minimum set objective}
 \usage{
-add_robust_min_set_objective(x)
+add_robust_min_set_objective(x, method = "CondValueAtRisk")
 }
 \arguments{
 \item{x}{\code{\link[prioritizr:problem]{prioritizr::problem()}} object.}

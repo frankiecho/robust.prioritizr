@@ -58,7 +58,13 @@ add_robust_min_set_objective <- function(x, method = "CondValueAtRisk") {
   # assert argument is valid
   assert_required(x)
   assert(is_conservation_problem(x))
-  assert(method %in% c("CondValueAtRisk", "Chance"))
+  assert(assertthat::is.string(method))
+  allowed_methods <- c("CondValueAtRisk", "Chance")
+  assert(assertthat::assert_that(method %in% allowed_methods),
+         msg = paste0(
+           "Invalid value for 'method' argument: '", method, "'. ",
+           "Please choose from: '", paste(allowed_methods, collapse = "', '"), "'."
+         ))
   # add objective to problem
   x$add_objective(
     R6::R6Class(

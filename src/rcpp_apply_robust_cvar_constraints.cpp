@@ -100,7 +100,7 @@ bool rcpp_apply_robust_cvar_constraints(
   // 1. Modify RHS to 0.0 and sense to ">=".
   //    The existing r_ijk * x_i coefficients for this row are already in place and remain.
   for (std::size_t k_idx = 0; k_idx < n_realizations; ++k_idx) {
-    Rcout << "The value of k:" << k_idx << "\n";
+    // Rcout << "The value of k:" << k_idx << "\n";
     ptr->_rhs[k_idx] = 0.0;
   }
   for (std::size_t k_idx = 0; k_idx < n_realizations; ++k_idx)
