@@ -54,10 +54,11 @@ NULL
 
 #' @rdname add_robust_min_set_objective
 #' @export
-add_robust_min_set_objective <- function(x) {
+add_robust_min_set_objective <- function(x, method = "CondValueAtRisk") {
   # assert argument is valid
   assert_required(x)
   assert(is_conservation_problem(x))
+  assert(method %in% c("CondValueAtRisk", "Chance"))
   # add objective to problem
   x$add_objective(
     R6::R6Class(
@@ -95,14 +96,25 @@ add_robust_min_set_objective <- function(x) {
             )
           )
           if (isTRUE(is_prob_needed)) {
-            invisible(
-              rcpp_apply_robust_probability_constraints(
-                x$ptr,
-                y$feature_targets(),
-                d$ids,
-                d$confidence_level
+            if (method == "CondValueAtRisk") {
+              invisible(
+                rcpp_apply_robust_cvar_constraints(
+                  x$ptr,
+                  y$feature_targets(),
+                  d$ids,
+                  d$confidence_level
+                )
               )
-            )
+            } else {
+              invisible(
+                rcpp_apply_robust_probability_constraints(
+                  x$ptr,
+                  y$feature_targets(),
+                  d$ids,
+                  d$confidence_level
+                )
+              )
+            }
           }
         }
       )

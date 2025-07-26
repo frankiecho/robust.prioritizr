@@ -89,6 +89,10 @@ rcpp_set_optimization_problem_shuffled <- function(x, shuffle_key) {
     .Call(`_robust_prioritizr_rcpp_set_optimization_problem_shuffled`, x, shuffle_key)
 }
 
+rcpp_apply_robust_cvar_constraints <- function(x, targets_list, feature_group_ids, conf_levels) {
+    .Call(`_robust_prioritizr_rcpp_apply_robust_cvar_constraints`, x, targets_list, feature_group_ids, conf_levels)
+}
+
 rcpp_apply_robust_min_set_objective <- function(x, targets_list, costs, feature_group_ids) {
     .Call(`_robust_prioritizr_rcpp_apply_robust_min_set_objective`, x, targets_list, costs, feature_group_ids)
 }

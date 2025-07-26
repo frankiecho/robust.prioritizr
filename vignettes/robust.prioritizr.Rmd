@@ -70,7 +70,7 @@ set.seed(500)
 mu <- 1
 sigma <- 0.2
 
-N <- 2
+N <- 4
 target <- N
 
 feature_1 <- matrix(rnorm(100, mean = mu, sd = sigma), nrow = N, ncol = N)
@@ -123,7 +123,7 @@ To see this, we generate 500 realizations of feature_1 from the same distributio
 
 ```{r}
 # Number of simulations
-n_sims <- 500
+n_sims <- 50
 sim_feature_1 <- replicate(n_sims, matrix(rnorm(N^2, mean = mu, sd = sigma), nrow = N, ncol = N)) %>%
   rast
 feature_1_outcomes <- sim_feature_1 * s1
@@ -151,7 +151,9 @@ Why did the planning solution violate the constraint in such a large number of r
 
 In what operations researchers call the "Curse of Optimality", the prioritization process could amplify errors that are present in the data, selectively choosing planning units with overestimated features or underestimated costs. If robust approaches are not used, the planning solution is likely to violate targets, leading to solutions that disappoint and fall far behind what we want from the prioritization process.
 
-## Usage
+## Robust minimum set objective
+
+To parameterize the uncertainty in the features, we need to supply the counts of each feature under each of the realizations we have simulated. The core of the `robust.prioritizr` approach is the use of `groupings`, that tell the algorithm which
 
 ```{r}
 ## Note: here I exploited the fact that the min set objective does not actually use the feature groupings behind the scenes
@@ -163,13 +165,13 @@ names(sim_features_robust_raster) <- c(paste0(rep('f1_', nlyr(sim_feature_1)),1:
 feature_groupings <- c(rep('f1', nlyr(sim_feature_1)), 'f2', 'f2')
 
 p2 <- problem(sim_pu_raster, sim_features_robust_raster) %>%
-  add_constant_robust_constraints(groups = feature_groupings, confidence_level = 1) %>%
+  add_constant_robust_constraints(groups = feature_groupings, confidence_level = .9) %>%
   add_absolute_targets(target) %>%
   add_robust_min_set_objective() %>%
   add_binary_decisions() %>%
   add_default_solver(verbose = FALSE)
 
-s2 <- solve(p2)
+s2 <- solve(p2, force = TRUE)
 plot(s2)
 ```
 
@@ -205,7 +207,7 @@ Likewise, the problem can be solved for a minimum shortfall objective, where the
 We demonstrate this first with the use of the standard (not robust) use of `prioritizr`, focusing again on minimizing the shortfall of `feature_1` to the target.
 
 ```{r}
-budget <- ceiling(N/2)
+budget <- target
 
 p3 <- problem(sim_pu_raster, sim_features_not_robust_raster) %>%
   add_absolute_targets(target) %>%
@@ -251,13 +253,13 @@ Now, let's observe how the solution will differ if we instead used robust approa
 
 ```{r}
 p4 <- problem(sim_pu_raster, sim_features_robust_raster) %>%
-  add_constant_robust_constraints(groups = feature_groupings, confidence_level = .9) %>%
+  add_constant_robust_constraints(groups = feature_groupings, confidence_level = 1) %>%
   add_absolute_targets(target) %>%
   add_robust_min_shortfall_objective(budget = budget) %>%
   add_binary_decisions() %>%
   add_default_solver(verbose = FALSE)
 
-s4 <- solve(p4)
+s4 <- solve(p4, force = TRUE)
 plot(s4)
 ```
 
