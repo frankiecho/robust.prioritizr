@@ -139,7 +139,7 @@ add_robust_min_set_objective <- function(x, method = "CondValueAtRisk") {
           # get feature grouping data
           d <- get_feature_group_data(y)
           # determine if probability constraints are needed
-          is_prob_needed <- any(d$confidence_level != 1)
+          is_prob_needed <- any(d$conf_level != 1)
           # TODO: additional checks to see whether or not probability constraints are really needed
           # apply objective
           invisible(
@@ -157,7 +157,7 @@ add_robust_min_set_objective <- function(x, method = "CondValueAtRisk") {
                   x$ptr,
                   y$feature_targets(),
                   d$ids,
-                  d$confidence_level
+                  d$conf_level
                 )
               )
             } else {
@@ -166,7 +166,7 @@ add_robust_min_set_objective <- function(x, method = "CondValueAtRisk") {
                   x$ptr,
                   y$feature_targets(),
                   d$ids,
-                  d$confidence_level
+                  d$conf_level
                 )
               )
             }

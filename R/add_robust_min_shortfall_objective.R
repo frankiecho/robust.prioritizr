@@ -140,7 +140,7 @@ add_robust_min_shortfall_objective <- function(x, budget) {
           # get feature groupings
           d <- get_feature_group_data(y)
           # determine if probability constraints are needed
-          is_prob_needed <- any(d$confidence_level != 1)
+          is_prob_needed <- any(d$conf_level != 1)
           # TODO: additional checks to see whether or not probability constraints are really needed
           # apply the objective
 
@@ -159,7 +159,7 @@ add_robust_min_shortfall_objective <- function(x, budget) {
                 x$ptr,
                 y$feature_targets(),
                 d$ids,
-                d$confidence_level
+                d$conf_level
               )
             )
           }

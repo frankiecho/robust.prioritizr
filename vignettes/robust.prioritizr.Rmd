@@ -166,7 +166,7 @@ feature_groupings <- c(rep('f1', nlyr(sim_feature_1)), 'f2', 'f2')
 
 p2 <- problem(sim_pu_raster, sim_features_robust_raster) %>%
   add_constant_robust_constraints(groups = feature_groupings,
-                                  confidence_level = .9) %>%
+                                  conf_level = .9) %>%
   add_absolute_targets(target) %>%
   add_robust_min_set_objective(method = 'CondValueAtRisk') %>%
   add_binary_decisions() %>%
@@ -254,7 +254,7 @@ Now, let's observe how the solution will differ if we instead used robust approa
 
 ```{r}
 p4 <- problem(sim_pu_raster, sim_features_robust_raster) %>%
-  add_constant_robust_constraints(groups = feature_groupings, confidence_level = 1) %>%
+  add_constant_robust_constraints(groups = feature_groupings, conf_level = 1) %>%
   add_absolute_targets(target) %>%
   add_robust_min_shortfall_objective(budget = budget) %>%
   add_binary_decisions() %>%

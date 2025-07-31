@@ -9,12 +9,12 @@ NULL
 #' is constant across all features.
 #'
 #' The robust/ chance constraints ensures that the proportion of constraints that are held
-#' is greater than a specified `confidence_level`. If `confidence_level = 1`,
+#' is greater than a specified `conf_level`. If `conf_level = 1`,
 #' all constraints within the feature group must be held, meaning that the solution is fully
-#' robust to uncertainty. Lowering the `confidence_level` to less than
+#' robust to uncertainty. Lowering the `conf_level` to less than
 #' 1 allows a certain percentage of the constraints for each feature group to be
 #' violated, enabling the algorithm to search of solutions with better objective values, while
-#' keeping the percentage of constraints violated less than `1 - confidence_level`.
+#' keeping the percentage of constraints violated less than `1 - conf_level`.
 #'
 #' @param x [prioritizr::problem()] object.
 #'
@@ -26,7 +26,7 @@ NULL
 #'  for the same species under different scenarios, then these features should
 #'  have the same grouping name.
 #'
-#' @param confidence_level `numeric` value describing the level of robustness
+#' @param conf_level `numeric` value describing the level of robustness
 #'  required for the prioritization (ranging between 0 and 1). For instance, a value
 #'  of 0.95 guarantees that at least 95% of the constraints will met for each
 #'  feature group. A value of 1 ensures full robustness, i.e., all constraints
@@ -67,7 +67,7 @@ NULL
 
 #' @rdname add_constant_robust_constraints
 #' @export
-add_constant_robust_constraints <- function(x, groups, confidence_level = 1) {
+add_constant_robust_constraints <- function(x, groups, conf_level = 1) {
   # assert arguments are valid
   assert_required(x)
   assert_required(groups)
@@ -75,10 +75,10 @@ add_constant_robust_constraints <- function(x, groups, confidence_level = 1) {
     is_conservation_problem(x),
     is.character(groups),
     assertthat::noNA(groups),
-    assertthat::is.number(confidence_level),
-    assertthat::noNA(confidence_level),
-    confidence_level >= 0,
-    confidence_level <= 1
+    assertthat::is.number(conf_level),
+    assertthat::noNA(conf_level),
+    conf_level >= 0,
+    conf_level <= 1
   )
   # additional validation for feature groupings
   assert(
@@ -104,7 +104,7 @@ add_constant_robust_constraints <- function(x, groups, confidence_level = 1) {
     x,
     data = tibble::tibble(
       features = split(prioritizr::feature_names(x), groups),
-      confidence_level = confidence_level
+      conf_level = conf_level
     )
   )
 }

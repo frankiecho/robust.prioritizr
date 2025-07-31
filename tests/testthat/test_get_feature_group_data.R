@@ -21,7 +21,7 @@ test_that("add_constant_robust_constraints()", {
     rep_len(c(0, 1), terra::nlyr(sim_features))
   )
   expect_equal(
-    y$confidence_level,
+    y$conf_level,
     rep(0.1, 2)
   )
 })
@@ -39,7 +39,7 @@ test_that("add_variable_robust_constraints()", {
       c("l2", "l4", "l6"),
       c("l5", "l7")
     ),
-    confidence_level = c(0.5, 0.2, 0.9)
+    conf_level = c(0.5, 0.2, 0.9)
   )
   # build problem
   p <-
@@ -57,8 +57,8 @@ test_that("add_variable_robust_constraints()", {
     c(0, 1, 0, 1, 2, 1, 2)
   )
   expect_equal(
-    y$confidence_level,
-    x$confidence_level
+    y$conf_level,
+    x$conf_level
   )
 })
 

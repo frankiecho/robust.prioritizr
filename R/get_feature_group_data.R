@@ -46,5 +46,5 @@ get_feature_group_data <- function(x) {
   feature_groupings <- group_ids[idx]
 
   # return result
-  list(ids = feature_groupings, confidence_level = data$confidence_level)
+  list(ids = feature_groupings, conf_level = data$conf_level)
 }

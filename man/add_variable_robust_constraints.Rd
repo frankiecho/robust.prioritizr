@@ -29,12 +29,12 @@ distribution of widespread species.
 }
 \details{
 The robust/ chance constraints ensures that the proportion of constraints that are held
-is greater than a specified \code{confidence_level}. If \code{confidence_level = 1},
+is greater than a specified \code{conf_level}. If \code{conf_level = 1},
 all constraints within the feature group must be held, meaning that the solution is fully
-robust to uncertainty. Lowering the \code{confidence_level} to less than
+robust to uncertainty. Lowering the \code{conf_level} to less than
 1 allows a certain percentage of the constraints for each feature group to be
 violated, enabling the algorithm to search of solutions with better objective values, while
-keeping the percentage of constraints violated less than \code{1 - confidence_level}.
+keeping the percentage of constraints violated less than \code{1 - conf_level}.
 }
 \section{Data format}{
 
@@ -49,7 +49,7 @@ A \code{list} column with the names of the features that belong to each group.
 In particular, if a particular set of features should belong to the same
 group, then they should be stored in the same element of this column.
 }
-\item{confidence_level}{
+\item{conf_level}{
 A \code{numeric} column with values that describe the confidence level
 associated with each feature group (ranging between 0 and 1).
 For example, a value of zero corresponds

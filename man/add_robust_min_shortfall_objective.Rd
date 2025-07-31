@@ -52,7 +52,7 @@ the target \eqn{t_j}{tj} for feature \eqn{j}{j} across all realizations \eqn{k}{
 weight for feature \eqn{j}{j} (defaults to 1 for all features; see
 \code{\link[=add_feature_weights]{add_feature_weights()}} to specify weights). \eqn{\alpha}{\alpha} is the
 specified \code{conf_level} confidence level for the uncertain constraint
-(as specified in \verb{add_*_robust_constraint}), and ensures that the proportion of
+(as specified in \verb{add_*_robust_constraints}), and ensures that the proportion of
 constraints for each feature group \eqn{k}{k} that are held is higher than the
 specified confidence level. Additionally,
 \eqn{B}{B} is the budget allocated for the solution, \eqn{c_i}{ci} is the
@@ -74,7 +74,7 @@ approach by reformulating the constraint into the following series of constraint
 m \in \{0, 1\}
 }
 
-where \eqn{m}{m} is a binary discrete variables indicating whether the constraint has been held or not, and
+where \eqn{m}{m} is a binary discrete variable indicating whether the constraint has been held or not, and
 \eqn{K_j}{K_j} is the number of realizations for the feature \eqn{j}{j}. The auxiliary variable
 \eqn{m}{m} is essentially a count of the number of times the probabilistic constraint
 has been violated (if \eqn{m_{jk}=1}{m_{jk}=1}), and the problem ensures that the
