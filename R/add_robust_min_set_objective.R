@@ -18,7 +18,7 @@ NULL
 #'
 #' \deqn{\mathit{Minimize} \space \sum_{i = 1}^{I} x_i c_i \\
 #' \mathit{subject \space to} \\
-#' \sum_{i = 1}^{I} x_i r_{ijk} \geq \max_k (T_{jk}) \space \forall \space j \in J, \space k \in K}{
+#' \Pr_k \{ \sum_{i = 1}^{I} x_i r_{ijk} \geq T_{j} \} \geq \alpha \space \forall \space j \in J}{
 #' Minimize sum_i^I (xi * ci) subject to sum_i^I (xi * rij) >= Tj for all
 #' j in J}
 #'
@@ -26,14 +26,63 @@ NULL
 #' specifying whether planning unit \eqn{i}{i} has been selected (1) or not
 #' (0)), \eqn{c_i}{ci} is the cost of planning unit \eqn{i}{i},
 #' \eqn{r_{ijk}}{rijk} is the amount of feature \eqn{j}{j} in planning unit
-#' \eqn{i}{i} under realization \eqn{k}, and \eqn{T_{jk}}{Tj} is the target for feature \eqn{j}{j}
-#' under realization \eqn{k}{k}. The
+#' \eqn{i}{i} under realization \eqn{k}, and \eqn{T_{j}}{Tj} is the target for feature \eqn{j}{j}
+#' under realization \eqn{k}{k}. The probabilistic constraint ensures that the proportion of constraints that
+#' are held are greater than the confidence level `conf_level` specified in `add_*_robust_constraints`.
+#' In other words, if \eqn{\alpha=1}{\alpha=1}, then the constraint is held across all of \eqn{k}{k}. The
 #' first term is the objective function and the second is the set of
 #' constraints. In words this says find the set of planning units that meets
 #' all the representation targets across all realizations while minimizing the overall cost.
 #'
+#' If \eqn{\alpha}{\alpha} is 1, then the probabilistic constraint simplifies to
+#' the following constraint:
+#' \deqn{
+#' \sum_{i = 1}^{I} x_i r_{ijk} \geq T_{j} \quad \forall \space j \in J, \space k \in K
+#' }{}
+#'
+#' If \eqn{\alpha}{\alpha} is less than 1, the probabilistic constraint is formulated using either a Chance Constraint
+#' Programming approach (`method = "Chance"`), or a Conditional Value-at-Risk
+#' `method = 'CondValueAtRisk'` approach.
+#'
+#' For the Chance Constraint approach, the probabilistic constraint is parameterised using a "big-M" formulation,
+#' which replaces the constraint as follows:
+#' \deqn{
+#' \sum_{i = 1}^{I} x_i r_{ijk} + T_j m_{jk} \geq T_{j} \quad \forall \space j \in J, \space k \in K \\
+#' \sum_{k = 1}^{K_j} m_{jk} / K_j \leq 1 - \alpha \quad \forall \space j \in J\\
+#' m \in \{0, 1\}
+#' }
+#'
+#' where \eqn{m}{m} is a binary discrete variables indicating whether the constraint has been held or not, and
+#' \eqn{K_j}{K_j} is the number of realizations for the feature \eqn{j}{j}. This formulation effectively
+#' uses the variable \eqn{m}{m} to allow for the constraint to be violated, and
+#' counts the number of times the constraint has been violated. The proportion of constraint violations that
+#' count is then constrained to be less than \eqn{1 - \alpha}{1 - \alpha}. This
+#' allows for a more intuitive interpretation of the confidence level parameter, but
+#' adds \eqn{J \times K} number of binary variables to the problem can significantly increase solve times.
+#' See Charnes and Cooper (1959) for more details about this original formulation.
+#'
+#' In contrast, the Conditional Value-at-Risk constraint is a tighter formulation than the Chance Constraint,
+#' as in, the proportion of constraints that are held will usually be much higher than \eqn{\alpha}{\alpha}.
+#' It avoids having to add discrete binary variables to the problem and can sometimes yield
+#' lower solve times. It replaces the probabilistic constraint with the constraints below:
+#' \deqn{
+#' \sum_{i = 1}^{I} x_i r_{ijk} - \eta_j + s_{jk} \geq 0 \quad \forall \space j \in J, \space k \in K \\
+#' \eta_j - \frac{1}{(1-\alpha) K_j} \sum_{k=1}^{K_j} s_{jk} \geq T_j \quad  \forall \space j \in J \\
+#' s_{jk} \geq 0 \quad \forall \space j \in J, \space k \in K \\
+#' \eta_j \in \mathbb{R}  \quad  \forall \space j \in J
+#' }
+#' where \eqn{\eta}{\eta} and \eqn{s}{s} are auxiliary variables introduced to represent the "tail" of the
+#' distribution of the uncertain quantity \eqn{\sum_{i = 1}^{I} x_i r_{ijk}}. In other words, it ensures
+#' that the average of the values of \eqn{\sum_{i = 1}^{I} x_i r_{ijk}} that fall below the \eqn{(1-\alpha)}{1-\alpha}
+#' quantile of the distribution is greater than \eqn{T_j}{T_j}. Using this constraint preserves the
+#' convexity of the problem (if other constraints were convex) and adds \eqn{J\times K+J}{J\times K+J} number of continuous
+#' variables to the problem. Though some users find it complicates the interpretation of
+#' the `conf_level` parameter. See Rockafellar and Uryasev (2000) for more details about this formulation.
+#'
 #' @references
-#' TODO.
+#' Charnes, A., & Cooper, W. W. (1959). Chance-Constrained Programming. Management Science, 6(1), 73-79.
+#'
+#' Rockafellar, R. T., & Uryasev, S. (2000). Optimization of Conditional Value-at-Risk. Journal of Risk, 2(3), 21-42.
 #'
 #' @seealso
 #' See [robust_objectives] for an overview of all functions for adding
