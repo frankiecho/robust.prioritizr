@@ -1,0 +1,75 @@
+---
+title: "Climate SDM Example"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Climate SDM Example}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(prioritizr)
+library(robust.prioritizr)
+```
+
+In this example we demonstrate how Robust Prioritizr works in an example applying it to species distributions predicted across different future climate scenarios. For simplicity, we use simulated data examining two species, with the following features:
+
+1. Feature 1: a species with a narrow climatic niche, best adapted to habitats with 17.5 Celsius and 50mm of monthly precipitation. Its occurrence drops significantly once we move away from 17.5C and 50mm of monthly precipitation. We assume that its occurrence only responds to temperature and precipitation.
+
+2. Feature 2: a species with a wider climatic niche, best adapted to habitats 
+
+```{r}
+set.seed(19895894)
+N <- 10
+
+# Prepare baseline temperature and precipitation simulated data
+temp <- matrix(seq(14, 22, length.out = N^2) + rnorm(N^2, 0, 0.2), N, N, byrow = TRUE)
+prec <- matrix(seq(20, 100, length.out = N^2) + rnorm(N^2, 0, 3), N, N, byrow = F)
+
+# Specify climate response function of the species, assume that its probability of occurrence
+# follow a multivariate Gaussian distribution of temperature and precipitation
+occurrence <- function(temp, prec, mu, sigma, Ntrials = 500, return_p = FALSE) {
+  t_unlist <- as.vector(temp)
+  p_unlist <- as.vector(prec)
+  p <- dmvnorm(cbind(t_unlist, p_unlist), mean = mu, sigma = sigma)
+  if (return_p) return(matrix(p, nrow = nrow(temp), ncol = ncol(temp)))
+  v <- rbinom(length(p), Ntrials, p)
+  v <- matrix(v, nrow = nrow(temp), ncol = ncol(temp))
+  return(v)
+}
+
+# Define functions for species 1 and 2, controlling mu for their optimal temperature and precipitation, 
+# and sigma for the range it can survive in, Ntrials for scaling the absolute number of occurrences
+occurrence_1 <- function(t, p,...) occurrence(t, p, mu = c(17.5, 50), 
+                                          sigma = matrix(c(1.5, -1, -1, 30), nrow = 2),
+                                          Ntrials = 200, ...)
+
+occurrence_2 <- function(t, p, ...) occurrence(t, p, mu = c(20, 60), 
+                                          sigma = matrix(c(20, 0, 0, 150), nrow = 2),
+                                          Ntrials = 2000,...)
+
+# Plot climate response of species 1 and 2
+x <- seq(14, 26, 0.01)
+resp_1 <- occurrence_1(matrix(x), 50, return_p = T)
+
+plot(x, occurrence_1(matrix(x), 50, return_p = T))
+```
+
+
+```{r}
+# Baseline occurrences for species 1 and 2
+baseline_1 <- occurrence_1(temp, prec)
+baseline_2 <- occurrence_2(temp, prec)
+
+baseline_rast <- c(rast(baseline_1), rast(baseline_2))
+names(baseline_rast) <- c("Baseline (Feature 1)", "Baseline (Feature 2)")
+plot(baseline_rast)
+```
+
