@@ -10,11 +10,14 @@ vignette: >
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  fig.width=8, 
+  fig.height=6,
+  fig.retina = TRUE
 )
 ```
 
-```{r setup}
+```{r setup, include=FALSE}
 library(prioritizr)
 library(robust.prioritizr)
 library(terra)
@@ -33,14 +36,14 @@ Robust Prioritizr is agnostic to the data generating process - users who only wi
 
 # Data generating process
 
-For simplicity, let's suppose the data analyst fitted the following statistical model of the species abundance based on data:
+Suppose the analyst fitted the following statistical model of the species abundance based on data:
 
 $$
 r_{ij} \sim \text{Poisson}(\theta_{ij}) \\
 \theta_{ij} = \log(\beta_0 + \beta_1 Temp_i + \beta_2 Temp_i^2 + \beta_3 Prec_i + \beta_4 Prec_i^2 + \varepsilon_{ij})
 $$
 
-where the abundance $r$ of species $j$ in location $i$ follows a Poisson distribution with the mean $\theta$, which is function of the climate covariates Temperature $Temp$ and Precipitation $Prec$ and a random i.i.d. error term $\varepsilon$. The relationships between the climate variables and the mean are modelled using the regression coefficients $\beta_1, \beta_2, \beta_3, \beta_4$. For simplicity, we assume here that its abundance only depends on these two climatic variables, and these climatic variables do not interact with one another.
+where the abundance $r$ of species $j$ in location $i$ follows a Poisson distribution with the mean $\theta$, which is function of the climate covariates Temperature $Temp$ and Precipitation $Prec$ and a random i.i.d. error term $\varepsilon$. The relationships between the climate variables and the mean are modelled using the regression coefficients $\beta_1, \beta_2, \beta_3, \beta_4$. For simplicity, we assume here that its abundance only depends on these two climatic variables.
 
 We simulate the abundance data for two species as follows:
 
@@ -282,8 +285,8 @@ plot_solution_eval <- function(soln) {
   representation_rs1 <- values(abundance_rast * soln) %>%
     apply(2, sum, na.rm = T)
   data.frame(value = representation_rs1) %>%
-    mutate(name = names(representation_s1)) %>%
-    mutate(name = factor(name, names(representation_s1), names(representation_s1))) %>%
+    mutate(name = names(representation_rs1)) %>%
+    mutate(name = factor(name, names(representation_rs1), names(representation_rs1))) %>%
     mutate(target_met = if_else(value >= target, 'Target met', 'Target not met')) %>%
     ggplot(aes(x = value, y = name, fill = target_met)) +
     geom_bar(stat = 'identity') +
@@ -543,7 +546,7 @@ eval_soln_uncertain(rs2b, return_df = TRUE) %>%
 Users can also evaluate the relative trade-offs between robustness and the costs of the solutions identified by examining the trade-off curve across different confidence level specifications.
 
 ```{r}
-conf_level_vect <- seq(0.5, 1, 0.05)
+conf_level_vect <- seq(0.5, 1, 0.1)
 solve_chance_cons <- function(c) {
                  p <- problem(costs_rast, abundance_uncertainty) %>%
                   add_constant_robust_constraints(groups = groups_uncertainty, conf_level = c) %>%
