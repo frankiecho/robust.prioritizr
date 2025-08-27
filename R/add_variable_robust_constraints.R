@@ -12,13 +12,7 @@ NULL
 #' species, and only moderately robust to uncertainty in the spatial
 #' distribution of widespread species.
 #'
-#' The robust/ chance constraints ensures that the proportion of constraints that are held
-#' is greater than a specified `confidence_level`. If `confidence_level = 1`,
-#' all constraints within the feature group must be held, meaning that the solution is fully
-#' robust to uncertainty. Lowering the `confidence_level` to less than
-#' 1 allows a certain percentage of the constraints for each feature group to be
-#' violated, enabling the algorithm to search of solutions with better objective values, while
-#' keeping the percentage of constraints violated less than `1 - confidence_level`.
+#' @inherits add_constant_robust_constraints details
 #'
 #' @param x [prioritizr::problem()] object.
 #'
@@ -38,7 +32,7 @@ NULL
 #' In particular, if a particular set of features should belong to the same
 #' group, then they should be stored in the same element of this column.
 #' }
-#' \item{confidence_level}{
+#' \item{conf_level}{
 #' A `numeric` column with values that describe the confidence level
 #' associated with each feature group (ranging between 0 and 1).
 #'  For example, a value of zero corresponds
@@ -76,10 +70,10 @@ add_variable_robust_constraints <- function(x, data) {
     is_conservation_problem(x),
     is.data.frame(data),
     assertthat::has_name(data, "features"),
-    assertthat::has_name(data, "confidence_level"),
+    assertthat::has_name(data, "conf_level"),
     is.list(data$features),
-    is.numeric(data$confidence_level),
-    assertthat::noNA(data$confidence_level)
+    is.numeric(data$conf_level),
+    assertthat::noNA(data$conf_level)
   )
   # additional validation for feature groupings
   assert(
@@ -124,7 +118,7 @@ add_variable_robust_constraints <- function(x, data) {
       inherit = prioritizr::Constraint,
       public = list(
         name = ifelse(
-          identical(length(unique(data$confidence_level)), 1L),
+          identical(length(unique(data$conf_level)), 1L),
           "constant robust constraints",
           "variable robust constraints"
         ),

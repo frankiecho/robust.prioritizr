@@ -21,32 +21,60 @@ NULL
 #' (\eqn{I}{I} indexed by \eqn{i}{i}), a set of features (\eqn{J}{J} indexed
 #' by \eqn{j}{j}), and a set of realizations (\eqn{K}{K} indexed by \eqn{k}{k}) as:
 #'
-#' \deqn{\mathit{Minimize} \space  \sum_{j = 1}^{J} w_j \frac{y_j}{t_j} \\
+#' \deqn{\mathit{Minimize} \space  \sum_{j = 1}^{J} w_j y_j \\
 #' \mathit{subject \space to} \\
-#' \sum_{i = 1}^{I} x_i r_{ijk} + v_{jk} \geq t_j \forall j \in J, k \in K \\
+#' \Pr_k\{\sum_{i = 1}^{I} x_i r_{ijk} + T_{j} y_j \geq T_j\} > \alpha \qquad \forall j \in J  \\
 #' \sum_{i = 1}^{I} x_i c_i \leq B \\
-#' y_j \geq v_{jk} \forall k \in K}{
-#' Minimize sum_j^J wj * (yj / tj) subject to
-#' sum_i^I (xi * rij) + yj >= tj for all j in J &
+#' y_j \geq v_{jk} \qquad \forall k \in K}{
+#' Minimize sum_j^J wj * yj subject to
+#' sum_i^I (xi * rij) + tj * yj >= tj for all j in J &
 #' sum_i^I (xi * ci) <= B
 #' }
 #'
 #' Here, \eqn{x_i}{xi} is the [decisions] variable (e.g.,
 #' specifying whether planning unit \eqn{i}{i} has been selected (1) or not
 #' (0)), \eqn{r_{ijk}}{rijk} is the amount of feature \eqn{j}{j} in planning
-#' unit \eqn{i}{i} in realization \eqn{k}{k}, \eqn{t_j}{tj} is the representation target for feature
-#' \eqn{j}{j}, \eqn{y_j}{yj} denotes the robust representation shortfall for
+#' unit \eqn{i}{i} in realization \eqn{k}{k}, \eqn{t_j}{tj} is the maximum representation target for feature
+#' \eqn{j}{j} across all realizations \eqn{k}{k}, i.e., \eqn{T_j = \max_k(t_{jk})},
+#' \eqn{y_j}{yj} denotes the robust representation shortfall for
 #' the target \eqn{t_j}{tj} for feature \eqn{j}{j} across all realizations \eqn{k}{k},
 #' \eqn{v_{jk}}{vjk} is the shortfall for feature \eqn{j}{j} under realization \eqn{k}{k}, and \eqn{w_j}{wj} is the
 #' weight for feature \eqn{j}{j} (defaults to 1 for all features; see
-#' [add_feature_weights()] to specify weights). Additionally,
+#' [add_feature_weights()] to specify weights). \eqn{\alpha}{\alpha} is the
+#' specified `conf_level` confidence level for the uncertain constraint
+#' (as specified in `add_*_robust_constraints`), and ensures that the proportion of
+#' constraints for each feature group \eqn{k}{k} that are held is higher than the
+#' specified confidence level. Additionally,
 #' \eqn{B}{B} is the budget allocated for the solution, \eqn{c_i}{ci} is the
 #' cost of planning unit \eqn{i}{i}. Note that \eqn{y_j}{yj} is a continuous
-#' variable bounded between zero and infinity, and denotes the shortfall
-#' for target \eqn{j}{j}.
+#' variable bounded between zero and one, and denotes the shortfall
+#' for target \eqn{j}{j} as a proportion of the total target.
+#'
+#' If `conf_level = 1` (default), then the probabilistic constraint is simply represented
+#' as:
+#' \deqn{
+#' \sum_{i = 1}^{I} x_i r_{ijk} + T_{j} y_j \geq T_j  \quad \forall \space j \in J, \space k \in K
+#' }
+#'
+#' If `conf_level < 1`, the probabilistic constraint is parameterised using a Chance Constraint Programming
+#' approach by reformulating the constraint into the following series of constraints:
+#' \deqn{
+#' \sum_{i = 1}^{I} x_i r_{ijk} + T_j y_j + T_j m_{jk} \geq T_{j} \quad \forall \space j \in J, \space k \in K \\
+#' \sum_{k = 1}^{K_j} m_{jk} / K_j \leq 1 - \alpha \quad \forall \space j \in J\\
+#' m \in \{0, 1\}
+#' }
+#'
+#' where \eqn{m}{m} is a binary discrete variable indicating whether the constraint has been held or not, and
+#' \eqn{K_j}{K_j} is the number of realizations for the feature \eqn{j}{j}. The auxiliary variable
+#' \eqn{m}{m} is essentially a count of the number of times the probabilistic constraint
+#' has been violated (if \eqn{m_{jk}=1}{m_{jk}=1}), and the problem ensures that the
+#' total amount of times these are violated don't exceed \eqn{1-\alpha}{1-\alpha}.
+#'
+#' The "Conditional Value-at-Risk" method found in `add_robust_min_set_objective` has not yet
+#' been implemented in this objective function.
 #'
 #' @references
-#' TODO.
+#' Charnes, A., & Cooper, W. W. (1959). Chance-Constrained Programming. Management Science, 6(1), 73-79.
 #'
 #' @seealso
 #' See [robust_objectives] for an overview of all functions for adding
@@ -112,7 +140,7 @@ add_robust_min_shortfall_objective <- function(x, budget) {
           # get feature groupings
           d <- get_feature_group_data(y)
           # determine if probability constraints are needed
-          is_prob_needed <- any(d$confidence_level != 1)
+          is_prob_needed <- any(d$conf_level != 1)
           # TODO: additional checks to see whether or not probability constraints are really needed
           # apply the objective
 
@@ -130,8 +158,8 @@ add_robust_min_shortfall_objective <- function(x, budget) {
               rcpp_apply_robust_probability_constraints(
                 x$ptr,
                 y$feature_targets(),
-                feature_groupings$ids,
-                d$confidence_level
+                d$ids,
+                d$conf_level
               )
             )
           }

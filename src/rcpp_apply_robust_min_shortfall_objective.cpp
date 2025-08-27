@@ -96,7 +96,7 @@ bool rcpp_apply_robust_min_shortfall_objective(
     ptr->_A_j.push_back((ptr->_number_of_zones *
       ptr->_number_of_planning_units) + A_extra_ncol + i);
   for (std::size_t i = 0; i < n_targets; ++i)
-    ptr->_A_x.push_back(1.0);
+    ptr->_A_x.push_back(robust_target_value[i]);
 
   // add in budget constraints
   if (budget.size() == 1) {
@@ -148,11 +148,11 @@ bool rcpp_apply_robust_min_shortfall_objective(
     ptr->_sense.push_back(feature_group_sense);
 
   for (std::size_t i = 0; i < static_cast<std::size_t>(n_feature_groups); ++i)
-    ptr->_obj.push_back(feature_group_target[i] > 1.0e-5 ? 1.0 / ( feature_group_target[i] ) : 0);
+    ptr->_obj.push_back(1.0);
   for (std::size_t i = 0; i < static_cast<std::size_t>(n_feature_groups); ++i)
-    ptr->_ub.push_back( std::numeric_limits<double>::infinity());
+    ptr->_ub.push_back(1.0);
   for (std::size_t i = 0; i < static_cast<std::size_t>(n_feature_groups); ++i)
-    ptr->_lb.push_back(-std::numeric_limits<double>::infinity());
+    ptr->_lb.push_back(0.0);
   for (std::size_t i = 0; i < static_cast<std::size_t>(n_feature_groups); ++i)
     ptr->_vtype.push_back("C");
 

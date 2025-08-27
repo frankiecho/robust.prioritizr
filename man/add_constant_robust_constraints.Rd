@@ -4,7 +4,7 @@
 \alias{add_constant_robust_constraints}
 \title{Add constant robust constraints}
 \usage{
-add_constant_robust_constraints(x, groups, confidence_level = 1)
+add_constant_robust_constraints(x, groups, conf_level = 1)
 }
 \arguments{
 \item{x}{\code{\link[prioritizr:problem]{prioritizr::problem()}} object.}
@@ -17,7 +17,7 @@ For example, if some of the features correspond to alternative predictions
 for the same species under different scenarios, then these features should
 have the same grouping name.}
 
-\item{confidence_level}{\code{numeric} value describing the level of robustness
+\item{conf_level}{\code{numeric} value describing the level of robustness
 required for the prioritization (ranging between 0 and 1). For instance, a value
 of 0.95 guarantees that at least 95\% of the constraints will met for each
 feature group. A value of 1 ensures full robustness, i.e., all constraints
@@ -36,12 +36,12 @@ is constant across all features.
 }
 \details{
 The robust/ chance constraints ensures that the proportion of constraints that are held
-is greater than a specified \code{confidence_level}. If \code{confidence_level = 1},
+is greater than a specified \code{conf_level}. If \code{conf_level = 1},
 all constraints within the feature group must be held, meaning that the solution is fully
-robust to uncertainty. Lowering the \code{confidence_level} to less than
+robust to uncertainty. Lowering the \code{conf_level} to less than
 1 allows a certain percentage of the constraints for each feature group to be
 violated, enabling the algorithm to search of solutions with better objective values, while
-keeping the percentage of constraints violated less than \code{1 - confidence_level}.
+keeping the percentage of constraints violated less than \code{1 - conf_level}.
 }
 \section{Data requirements}{
 

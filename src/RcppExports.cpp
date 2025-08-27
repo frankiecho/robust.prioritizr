@@ -256,6 +256,20 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// rcpp_apply_robust_cvar_constraints
+bool rcpp_apply_robust_cvar_constraints(SEXP x, const Rcpp::List targets_list, const Rcpp::IntegerVector feature_group_ids, const Rcpp::NumericVector conf_levels);
+RcppExport SEXP _robust_prioritizr_rcpp_apply_robust_cvar_constraints(SEXP xSEXP, SEXP targets_listSEXP, SEXP feature_group_idsSEXP, SEXP conf_levelsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::List >::type targets_list(targets_listSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::IntegerVector >::type feature_group_ids(feature_group_idsSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::NumericVector >::type conf_levels(conf_levelsSEXP);
+    rcpp_result_gen = Rcpp::wrap(rcpp_apply_robust_cvar_constraints(x, targets_list, feature_group_ids, conf_levels));
+    return rcpp_result_gen;
+END_RCPP
+}
 // rcpp_apply_robust_min_set_objective
 bool rcpp_apply_robust_min_set_objective(SEXP x, const Rcpp::List targets_list, const Rcpp::NumericMatrix costs, const Rcpp::IntegerVector feature_group_ids);
 RcppExport SEXP _robust_prioritizr_rcpp_apply_robust_min_set_objective(SEXP xSEXP, SEXP targets_listSEXP, SEXP costsSEXP, SEXP feature_group_idsSEXP) {
@@ -286,16 +300,16 @@ BEGIN_RCPP
 END_RCPP
 }
 // rcpp_apply_robust_probability_constraints
-bool rcpp_apply_robust_probability_constraints(SEXP x, const Rcpp::List targets_list, const Rcpp::IntegerVector feature_group_ids, const Rcpp::NumericVector prob_violation);
-RcppExport SEXP _robust_prioritizr_rcpp_apply_robust_probability_constraints(SEXP xSEXP, SEXP targets_listSEXP, SEXP feature_group_idsSEXP, SEXP prob_violationSEXP) {
+bool rcpp_apply_robust_probability_constraints(SEXP x, const Rcpp::List targets_list, const Rcpp::IntegerVector feature_group_ids, const Rcpp::NumericVector conf_levels);
+RcppExport SEXP _robust_prioritizr_rcpp_apply_robust_probability_constraints(SEXP xSEXP, SEXP targets_listSEXP, SEXP feature_group_idsSEXP, SEXP conf_levelsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< SEXP >::type x(xSEXP);
     Rcpp::traits::input_parameter< const Rcpp::List >::type targets_list(targets_listSEXP);
     Rcpp::traits::input_parameter< const Rcpp::IntegerVector >::type feature_group_ids(feature_group_idsSEXP);
-    Rcpp::traits::input_parameter< const Rcpp::NumericVector >::type prob_violation(prob_violationSEXP);
-    rcpp_result_gen = Rcpp::wrap(rcpp_apply_robust_probability_constraints(x, targets_list, feature_group_ids, prob_violation));
+    Rcpp::traits::input_parameter< const Rcpp::NumericVector >::type conf_levels(conf_levelsSEXP);
+    rcpp_result_gen = Rcpp::wrap(rcpp_apply_robust_probability_constraints(x, targets_list, feature_group_ids, conf_levels));
     return rcpp_result_gen;
 END_RCPP
 }

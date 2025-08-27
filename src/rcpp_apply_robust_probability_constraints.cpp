@@ -6,7 +6,7 @@ bool rcpp_apply_robust_probability_constraints(
     SEXP x,
     const Rcpp::List targets_list,
     const Rcpp::IntegerVector feature_group_ids,
-    const Rcpp::NumericVector prob_violation
+    const Rcpp::NumericVector conf_levels
 ) {
   Rcpp::XPtr<OPTIMIZATIONPROBLEM> ptr = Rcpp::as<Rcpp::XPtr<OPTIMIZATIONPROBLEM>>(x);
   Rcpp::NumericVector targets_value = targets_list["value"];
@@ -44,14 +44,14 @@ bool rcpp_apply_robust_probability_constraints(
   }
 
   // Find the maximum probability violation within each group (supposed to be the equal)
-  Rcpp::NumericVector prob_violation_group(
-      n_groups, std::numeric_limits<double>::lowest()
-  );
-  for (std::size_t i = 0; i < n_targets; ++i) {
-    prob_violation_group[feature_group_ids[i]] = std::max(
-      prob_violation_group[feature_group_ids[i]], prob_violation[i]
-    );
-  }
+  // Rcpp::NumericVector conf_levels(
+  //     n_groups, std::numeric_limits<double>::lowest()
+  // );
+  // for (std::size_t i = 0; i < n_targets; ++i) {
+  //   conf_levels_group[feature_group_ids[i]] = std::max(
+  //     conf_levels_group[feature_group_ids[i]], conf_levels[i]
+  //   );
+  // }
 
   // Initialise new variables to allow for violations to the robust constraints
   // Checks for the sense of the targets list and assigns the sign accordingly
@@ -69,17 +69,17 @@ bool rcpp_apply_robust_probability_constraints(
   // If the rhs is smaller than 1 (due to a low number of realizations in
   // the feature group), as the sum of the lhs is integer, the lhs will all be
   // zero, meaning no constraint can be violated. This can improve efficiency.
-  Rcpp::NumericVector prob_violation_rhs(n_groups, 0.0);
+  Rcpp::NumericVector conf_levels_rhs(n_groups, 0.0);
   Rcpp::LogicalVector apply_prob_constraint(n_groups, FALSE);
 
   for (std::size_t i = 0; i < n_groups; ++i) {
     // RHS of the constraint
-    prob_violation_rhs[i] = (1.0 - prob_violation_group[i]) * feature_group_cardinality[i];
+    conf_levels_rhs[i] = (1.0 - conf_levels[i]) * feature_group_cardinality[i];
 
     // If the RHS is smaller than 1, there is no other solution on the LHS other
     // than have everything 0. This means the constraint/ variable is redundant
     // and can be safely omitted
-    apply_prob_constraint[i] = prob_violation_rhs[i] >= 1.0;
+    apply_prob_constraint[i] = conf_levels_rhs[i] >= 1.0;
   }
 
   // Add to the constraint matrix and create new objective values
@@ -110,9 +110,9 @@ bool rcpp_apply_robust_probability_constraints(
     if (apply_prob_constraint[feature_group_ids[i]]) ptr->_A_x.push_back(1.0);
 
   for (std::size_t i = 0; i < n_groups; ++i)
-    ptr->_rhs.push_back(prob_violation_rhs[i]);
+    ptr->_rhs.push_back(conf_levels_rhs[i]);
   for (std::size_t i = 0; i < n_groups; ++i)
-    ptr->_row_ids.push_back("prob_violation");
+    ptr->_row_ids.push_back("conf_levels");
   for (std::size_t i = 0; i < n_groups; ++i)
     ptr->_sense.push_back("<=");
 
