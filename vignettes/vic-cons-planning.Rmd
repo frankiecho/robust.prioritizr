@@ -1,0 +1,48 @@
+---
+title: "Example: Robust Systematic Conservation Planning in Australia under future climate change"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{vic-cons-planning}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(robust.prioritizr)
+library(terra)
+library(dplyr)
+library(stringr)
+```
+
+In this example we demonstrate an application of `robust.prioritizr` using real data for systematic conservation planning in Australia, using predicted future species presence/ absence data, proxy of conservation cost, and protected area data in the state of Victoria.
+
+We begin by loading the data from the package. The dataset contains multiple `terra` SpatRaster objects that can be unwrapped in this process to get `SpatRaster` objects after loading.
+
+```{r}
+data("vic_hab_suitability")
+species <- unwrap(vic_hab_suitability$species)
+cost <- unwrap(vic_hab_suitability$cost)
+pa <- unwrap(vic_hab_suitability$pa)
+species_details <- vic_hab_suitability$species_details
+rm(vic_hab_suitability)
+```
+
+This species presence/ absence dataset is derived from Archibald et al. (2024) "Habitat suitability maps for Australian flora and fauna under CMIP6 climate scenarios" and contains predictions of species presence/ absence of 1021 species under four future climate scenarios (SSP1-RCP2.6, SSP2-RCP4.5, SSP3-RCP7.0 and SSP5-RCP8.5), and 5 time-periods (1990, 2030, 2050, 2070, 2090).
+
+For example, we can visualise the predicted species presence/ absence of the brush-tailed rock-wallaby (Petrogale penicillata), a threatened species in the state of Victoria. The figure below illustrates that the range of the wallaby is noticeably smaller under a high-emissions climate scenario.
+
+```{r}
+wallaby_ids <- which(str_detect(names(species), "Petrogale_penicillata"))
+wallaby_maps <- species[[koala_ids]]
+ssp_year <- str_extract(names(wallaby_maps), "ssp[0-9]{3,4}_[0-9]{4}|historic_baseline_[0-9]{4}")
+names(wallaby_maps) <- ssp_year
+
+plot(wallaby_maps, axes = F, maxcell = 1e4, legend = F)
+```

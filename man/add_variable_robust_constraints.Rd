@@ -27,15 +27,6 @@ highly robust to uncertainty in the spatial distribution of threatened
 species, and only moderately robust to uncertainty in the spatial
 distribution of widespread species.
 }
-\details{
-The robust/ chance constraints ensures that the proportion of constraints that are held
-is greater than a specified \code{conf_level}. If \code{conf_level = 1},
-all constraints within the feature group must be held, meaning that the solution is fully
-robust to uncertainty. Lowering the \code{conf_level} to less than
-1 allows a certain percentage of the constraints for each feature group to be
-violated, enabling the algorithm to search of solutions with better objective values, while
-keeping the percentage of constraints violated less than \code{1 - conf_level}.
-}
 \section{Data format}{
 
 The \code{data} argument must be a \code{\link[tibble:tibble]{tibble::tibble()}} data frame that has
@@ -60,6 +51,17 @@ and so the optimization process will be highly constrained to be
 robust against uncertainty for that particular group.
 }
 }
+}
+
+\section{Details}{
+
+The robust/ chance constraints ensures that the proportion of constraints that are held
+is greater than a specified \code{conf_level}. If \code{conf_level = 1},
+all constraints within the feature group must be held, meaning that the solution is fully
+robust to uncertainty. Lowering the \code{conf_level} to less thanuys
+1 allows a certain percentage of the constraints for each feature group to be
+violated, enabling the algorithm to search of solutions with better objective values, while
+keeping the percentage of constraints violated less than \code{1 - conf_level}.
 }
 
 \section{Data requirements}{

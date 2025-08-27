@@ -45,6 +45,7 @@ Collate:
     'add_robust_min_shortfall_objective.R'
     'add_variable_robust_constraints.R'
     'assertions_robust.R'
+    'data.R'
     'get_feature_group_data.R'
     'package.R'
     'prioritizr_all_finite.R'

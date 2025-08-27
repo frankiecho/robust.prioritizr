@@ -34,15 +34,17 @@ the priority areas are robust to uncertainty up to a certain confidence level. I
 function is useful when the confidence level that the constraint is held
 is constant across all features.
 }
-\details{
+\section{Details}{
+
 The robust/ chance constraints ensures that the proportion of constraints that are held
 is greater than a specified \code{conf_level}. If \code{conf_level = 1},
 all constraints within the feature group must be held, meaning that the solution is fully
-robust to uncertainty. Lowering the \code{conf_level} to less than
+robust to uncertainty. Lowering the \code{conf_level} to less thanuys
 1 allows a certain percentage of the constraints for each feature group to be
 violated, enabling the algorithm to search of solutions with better objective values, while
 keeping the percentage of constraints violated less than \code{1 - conf_level}.
 }
+
 \section{Data requirements}{
 
 The robust constraints require that you have multiple alternative

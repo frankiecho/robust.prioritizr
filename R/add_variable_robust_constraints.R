@@ -12,7 +12,7 @@ NULL
 #' species, and only moderately robust to uncertainty in the spatial
 #' distribution of widespread species.
 #'
-#' @inherits add_constant_robust_constraints details
+#' @inheritSection add_constant_robust_constraints Details
 #'
 #' @param x [prioritizr::problem()] object.
 #'
