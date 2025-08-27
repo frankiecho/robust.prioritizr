@@ -107,13 +107,13 @@ add_robust_min_set_objective <- function(x, method = "CondValueAtRisk") {
   # assert argument is valid
   assert_required(x)
   assert(is_conservation_problem(x))
+  assert(assertthat::noNA(method))
   assert(assertthat::is.string(method))
   allowed_methods <- c("CondValueAtRisk", "Chance")
-  assert(assertthat::assert_that(method %in% allowed_methods),
-         msg = paste0(
-           "Invalid value for 'method' argument: '", method, "'. ",
-           "Please choose from: '", paste(allowed_methods, collapse = "', '"), "'."
-         ))
+  assert(
+    isTRUE(method %in% c("CondValueAtRisk", "Chance")),
+    msg = "`method` must be either \"CondValueAtRisk\" or \"Chance\"."
+  )
   # add objective to problem
   x$add_objective(
     R6::R6Class(
@@ -139,7 +139,7 @@ add_robust_min_set_objective <- function(x, method = "CondValueAtRisk") {
           # get feature grouping data
           d <- get_feature_group_data(y)
           # determine if probability constraints are needed
-          is_prob_needed <- any(d$conf_level != 1)
+          is_prob_needed <- any(d$conf_level < 1)
           # TODO: additional checks to see whether or not probability constraints are really needed
           # apply objective
           invisible(
@@ -151,7 +151,7 @@ add_robust_min_set_objective <- function(x, method = "CondValueAtRisk") {
             )
           )
           if (isTRUE(is_prob_needed)) {
-            if (method == "CondValueAtRisk") {
+            if (identical(method, "CondValueAtRisk")) {
               invisible(
                 rcpp_apply_robust_cvar_constraints(
                   x$ptr,

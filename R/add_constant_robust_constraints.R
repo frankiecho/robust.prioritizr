@@ -8,7 +8,7 @@ NULL
 #' function is useful when the confidence level that the constraint is held
 #' is constant across all features.
 #'
-#' The robust/ chance constraints ensures that the proportion of constraints that are held
+#' @details The robust/ chance constraints ensures that the proportion of constraints that are held
 #' is greater than a specified `conf_level`. If `conf_level = 1`,
 #' all constraints within the feature group must be held, meaning that the solution is fully
 #' robust to uncertainty. Lowering the `conf_level` to less than

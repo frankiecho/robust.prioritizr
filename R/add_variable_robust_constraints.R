@@ -12,13 +12,7 @@ NULL
 #' species, and only moderately robust to uncertainty in the spatial
 #' distribution of widespread species.
 #'
-#' The robust/ chance constraints ensures that the proportion of constraints that are held
-#' is greater than a specified `conf_level`. If `conf_level = 1`,
-#' all constraints within the feature group must be held, meaning that the solution is fully
-#' robust to uncertainty. Lowering the `conf_level` to less than
-#' 1 allows a certain percentage of the constraints for each feature group to be
-#' violated, enabling the algorithm to search of solutions with better objective values, while
-#' keeping the percentage of constraints violated less than `1 - conf_level`.
+#' @inherits add_constant_robust_constraints details
 #'
 #' @param x [prioritizr::problem()] object.
 #'
