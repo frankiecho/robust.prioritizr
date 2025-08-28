@@ -15,34 +15,183 @@ knitr::opts_chunk$set(
 ```
 
 ```{r setup}
+library(prioritizr)
 library(robust.prioritizr)
 library(terra)
 library(dplyr)
+library(tibble)
 library(stringr)
+library(knitr)
+library(ggplot2)
 ```
 
-In this example we demonstrate an application of `robust.prioritizr` using real data for systematic conservation planning in Australia, using predicted future species presence/ absence data, proxy of conservation cost, and protected area data in the state of Victoria.
+# Victoria threatened species data
+
+In this example we demonstrate an application of `robust.prioritizr` using predicted future species occurrence projections, proxy of conservation cost, and protected area data in the state of Victoria in Australia to conduct systematic conservation planning.
 
 We begin by loading the data from the package. The dataset contains multiple `terra` SpatRaster objects that can be unwrapped in this process to get `SpatRaster` objects after loading.
 
 ```{r}
-data("vic_hab_suitability")
-species <- unwrap(vic_hab_suitability$species)
-cost <- unwrap(vic_hab_suitability$cost)
-pa <- unwrap(vic_hab_suitability$pa)
-species_details <- vic_hab_suitability$species_details
-rm(vic_hab_suitability)
+data("vic_cmip6")
+species <- unwrap(vic_cmip6$species)
+cost <- unwrap(vic_cmip6$cost)
+pa <- unwrap(vic_cmip6$pa)
+species_details <- vic_cmip6$species_details
+study_area <- unwrap(vic_cmip6$study_area)
+rm(vic_cmip6)
 ```
 
-This species presence/ absence dataset is derived from Archibald et al. (2024) "Habitat suitability maps for Australian flora and fauna under CMIP6 climate scenarios" and contains predictions of species presence/ absence of 1021 species under four future climate scenarios (SSP1-RCP2.6, SSP2-RCP4.5, SSP3-RCP7.0 and SSP5-RCP8.5), and 5 time-periods (1990, 2030, 2050, 2070, 2090).
+This data package contains the following datasets needed for solving a robust systematic conservation planning problem:
 
-For example, we can visualise the predicted species presence/ absence of the brush-tailed rock-wallaby (Petrogale penicillata), a threatened species in the state of Victoria. The figure below illustrates that the range of the wallaby is noticeably smaller under a high-emissions climate scenario.
+-   Species occurrence of 18 threatened species (`species`): derived from Archibald et al. (2024) "Habitat suitability maps for Australian flora and fauna under CMIP6 climate scenarios" and contains predictions of species occurrence of 1021 species under four future climate scenarios (SSP1-RCP2.6, SSP2-RCP4.5, SSP3-RCP7.0 and SSP5-RCP8.5), and 5 time-periods (1990, 2030, 2050, 2070, 2090).
+
+-   Species details: a table showing the species occurrence layer names, its corresponding species names, climate projections/ timesteps, and statistics from fitting the model in Archibald et al. (2024)
+
+-   Conservation cost (`cost`): a proxy of conservation cost based on the Human Footprint Index 2013
+
+-   Protected area (`pa`): the coverage of current protected areas
+
+-   Study area (`study_area`): a GADM4.1 boundary of the state of Victoria
+
+We can visualise the predicted species occurrence of the brush-tailed rock-wallaby (Petrogale penicillata), a critically endangered species in the state of Victoria. The figure below illustrates that the range of the wallaby is noticeably smaller under a high-emissions climate scenario.
 
 ```{r}
-wallaby_ids <- which(str_detect(names(species), "Petrogale_penicillata"))
-wallaby_maps <- species[[koala_ids]]
-ssp_year <- str_extract(names(wallaby_maps), "ssp[0-9]{3,4}_[0-9]{4}|historic_baseline_[0-9]{4}")
-names(wallaby_maps) <- ssp_year
+wallaby <- species_details %>%
+  filter(species == 'Petrogale_penicillata' & timestep <= 2050)
+wallaby_ids <- pull(wallaby, id)
+wallaby_maps <- species[[wallaby_ids]]
+names(wallaby_maps) <- paste0(pull(wallaby, scenario), ": ", pull(wallaby, timestep))
 
-plot(wallaby_maps, axes = F, maxcell = 1e4, legend = F)
+plot(wallaby_maps, axes = F, maxcell = 1e4, , fun= \() lines(study_area))
+```
+
+This dataset shows that the projected spatial distribution of brush-tailed rock-wallabies changes over time and differ depending on which future climate scenario is used for conservation planning. `robust.prioritizr` gives users the ability to integrate data across multiple time-steps and multiple climate scenarios to ensure that the protected area design that is identified in the end meets targets across all the available time-steps and climate scenarios.
+
+# Robust Conservation Planning
+
+## Feature groupings
+
+Formulating problems using `robust.prioritizr` requires users to specify a "groups" argument. This is because in conventional `prioritizr`, each feature is separately represented as its own individual layer. However, in `robust.prioritizr`, data for a single feature or species is represented in multiple raster layers, each layer representing predictions under different climate projections/ timesteps/ model replicates of the same species. The "groups" argument gives the prioritization problem information about which layers correspond to the same feature, and which ones correspond to a different feature. This allows `robust.prioritizr` to treat layers for the same feature as different realizations (time-steps/ climate projections) of the same feature, sharing the same targets and counting towards the same shortfall metric (in the robust minimum shortfall objective).
+
+The "groups" argument takes a character vector of the same length as the number of layers in the "features" dataset, identifying the group which the layer belongs in. For this example, the `groups` argument is simply the name of the species in the `species` multilayer raster.
+
+```{r}
+groups <- species_details$species
+head(groups)
+```
+
+## Setting a reasonable target
+
+Before we begin, we need to determine what are reasonable targets to choose, particularly if one is interested in solving the problem with a robust minimum set objective. In `prioritizr`,if a species is predicted to be extinct across all planning units, the systematic conservation planning problem will not be able to find a feasible solution. The same applies to `robust.prioritizr`, except that if a user wants to have a robust target for all species without relaxing the robustness, they must ensure that the target is achievable across all species, and also ensure that the target they specify is feasible across all timesteps and climate projections.
+
+One can quickly check whether their desired targets would be feasible by summing all the features in each layer, which reveals how much would a feature be represented if all the planning units were selected. For data stored in the `terra` multilayer SpatRaster format, one can check the total number of grid cells with predicted occurrence using the `terra` `global` function.
+
+```{r}
+global_sum_species <- global(species, fun = 'sum', na.rm = TRUE) %>%
+  as.data.frame() %>%
+  rownames_to_column("name")
+worst_case_occurrence <- species_details %>%
+  select(-any_of("sum")) %>%
+  left_join(global_sum_species, by = "name") %>%
+  group_by(species) %>%
+  summarise(worst_case = min(sum)) %>%
+  arrange(worst_case) 
+worst_case_occurrence %>%
+  head() %>%
+  kable()
+```
+
+Therefore, it would be reasonable to first adopt a low target of 1 in the problem formulation, which ensures that each species will at least have 1 5km grid cell with occurrence within the new/ existing protected area. We will subsequently explore how we can increase the target while relaxing the robustness of the conservation planning problem to ensure that feasible solutions continue to be found.
+
+## Solving the robust problem
+
+The call to solving the robust version of the problem is similar to conventional `prioritizr`. To break it down:
+
+-   `problem`: call to `prioritizr`, gives the problem the conservation cost layer and the feature layers
+
+-   `add_absolute_targets`: call to `prioritizr`, sets that the target is at least 1 5km grid cell protected within protected areas
+
+-   `add_constant_robust_constraints`: this is a call specific to `robust.prioritizr`, specifying the groups of the feature layer
+
+-   `add_robust_min_set_objective`: this is an objective function specific to `robust.prioritizr` that is developed based on the non-robust equivalent objective function in `prioritizr`, the `add_min_set_objective()`
+
+-   `add_locked_in_constraints`: call to `prioritizr`, ensures that current protected areas are selected in the planning solution
+
+-   `add_default_solver`: call to `prioritizr`, selects the default solver in the system
+
+```{r}
+species_subset <- species
+
+rpv1 <- problem(cost, species) %>%
+  add_absolute_targets(1) %>%
+  robust.prioritizr::add_constant_robust_constraints(groups = groups) %>%
+  robust.prioritizr::add_robust_min_set_objective() %>%
+  add_locked_in_constraints(pa) %>%
+  add_default_solver(verbose = F)
+
+rsv1 <- solve(rpv1, force = TRUE)
+plot(rsv1, axes = F)
+plot(study_area, add = TRUE)
+title("Robust Solution (Target = 1)")
+
+```
+
+The problem solves as expected.
+
+> Note: the robust formulation in its current version is a modified mixed-integer linear programming problem that uses auxiliary variables that are different to the standard formulations in `prioritizr`. Therefore, a warning from the `solve` call saying that it does not pass standard "presolve" checks in `prioritizr` is expected in this current version. For now, we can let the problem solve by specifying `force = TRUE` in the solve call, but we are working on updates to `prioritizr` such that it does not throw warnings when it sees the non-standard formulations in `robust.prioritizr`.
+
+One can check whether or not the target is met across all climate scenarios and timesteps:
+
+```{r}
+feature_rep_r <- global(species * rsv1, fun = 'sum', na.rm = T) %>%
+  as.data.frame() %>%
+  rownames_to_column('name')
+species_details %>%
+  select(-any_of(contains('sum'))) %>%
+  arrange(species, scenario, timestep) %>%
+  left_join(feature_rep_r, by = "name") %>%
+  filter(timestep > 1990) %>%
+  mutate(species_scenario = paste(species, scenario)) %>%
+  ggplot(aes(x = timestep, y = sum, color = scenario, group = species_scenario)) +
+  facet_wrap(vars(species), scales = "free_y") +
+  geom_line() +
+  theme_bw() +
+  labs(x = "Time-step", y = "Representation (number of cells)") +
+  theme(panel.grid = element_blank(),
+        legend.position = 'bottom')
+```
+
+The target is met across all climate scenarios and all time-steps. However, as the target is very small, we see that there is room to improve the representation of many species further than its current target. This motivates the need to relax the robust solution, such that we can identify protected areas with a larger target, while doing our best to handle cases where
+
+## Comparisons with standard prioritizr
+
+We can compare the solution obtained from `robust.prioritizr` with a solution from `prioritizr` solved only using historical baseline occurrence data.
+
+```{r}
+is_historic_baseline <- species_details %>%
+  filter(scenario == 'historic_baseline') %>%
+  pull(id)
+
+species_hb <- species[[is_historic_baseline]]
+
+pv1 <- problem(cost, species_hb) %>%
+  add_absolute_targets(10) %>%
+  add_min_set_objective() %>%
+  add_locked_in_constraints(pa) %>%
+  add_default_solver(verbose = F)
+
+sv1 <- solve(pv1)
+soln_v1 <- c(sv1, rsv1)
+names(soln_v1) <- c("Non-robust", "Robust")
+plot(soln_v1, axes = F, fun = \() lines(study_area))
+```
+
+One can evaluate the difference in species occurrence across different climate scenarios and timesteps. Take for instance, the Snowy Mountains skink (Liopholis guthega).
+
+```{r}
+selected_species <- species_details %>%
+  filter(species == 'Liopholis_guthega') %>%
+  arrange(scenario, timestep)
+feature_rep_nr <- global(species[[selected_species$id]] * sv1, fun = 'sum', na.rm = T)
+
 ```

@@ -38,4 +38,4 @@
 #' DCCEEW (2024), Collaborative Australian Protected Areas Database (CAPAD).
 #' <https://www.dcceew.gov.au/environment/land/nrs/science/capad>
 #'
-"vic_hab_suitability"
+"vic_cmip6"
