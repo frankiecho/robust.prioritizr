@@ -1,4 +1,4 @@
-#' @include internal.R
+'@include internal.R
 NULL
 
 #' Add robust minimum shortfall objective
@@ -19,13 +19,14 @@ NULL
 #' @section Mathematical formulation:
 #' This objective can be expressed mathematically for a set of planning units
 #' (\eqn{I}{I} indexed by \eqn{i}{i}), a set of features (\eqn{J}{J} indexed
-#' by \eqn{j}{j}), and a set of realizations (\eqn{K}{K} indexed by \eqn{k}{k}) as:
+#' by \eqn{j}{j}), and a set of realizations (\eqn{K}{K} indexed
+#' by \eqn{k}{k}) as:
 #'
 #' \deqn{\mathit{Minimize} \space  \sum_{j = 1}^{J} w_j y_j \\
 #' \mathit{subject \space to} \\
 #' \Pr_k\{\sum_{i = 1}^{I} x_i r_{ijk} + T_{j} y_j \geq T_j\} > \alpha \qquad \forall j \in J  \\
 #' \sum_{i = 1}^{I} x_i c_i \leq B \\
-#' y_j \geq v_{jk} \qquad \forall k \in K}{
+#' y_j \geq v_{jk} \qquad \forall k \in K}{'
 #' Minimize sum_j^J wj * yj subject to
 #' sum_i^I (xi * rij) + tj * yj >= tj for all j in J &
 #' sum_i^I (xi * ci) <= B
@@ -87,7 +88,37 @@ NULL
 #'
 #' @examples
 #' \dontrun{
-#' TODO.
+#' # load packages
+#' library(prioritizr)
+#' library(terra)
+#'
+#' # create dummy data
+#' # planning units
+#' pu <- rast(matrix(1, 10, 10))
+#'
+#' # 2 features with 3 scenarios each
+#' features <- c(
+#'   rast(matrix(rnorm(100, 1, 1), 10, 10)),
+#'   rast(matrix(rnorm(100, 2, 1), 10, 10)),
+#'   rast(matrix(rnorm(100, 3, 1), 10, 10)),
+#'   rast(matrix(rnorm(100, 4, 1), 10, 10)),
+#'   rast(matrix(rnorm(100, 5, 1), 10, 10)),
+#'   rast(matrix(rnorm(100, 6, 1), 10, 10))
+#' )
+#' names(features) <- paste0("feature_", rep(1:2, each = 3), "_scenario_", 1:3)
+#'
+#' # define groups for robust constraints
+#' # each feature has 3 scenarios
+#' groups <- rep(paste0("feature_", 1:2), each = 3)
+#'
+#' # create problem with robust minimum shortfall objective
+#' p <- problem(pu, features) %>%
+#'   add_robust_min_shortfall_objective(budget = 5) %>%
+#'   add_absolute_targets(2) %>%
+#'   add_constant_robust_constraints(groups = groups)
+#' 
+#' # print problem
+#' print(p)
 #' }
 #'
 #' @name add_robust_min_shortfall_objective

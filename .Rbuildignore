@@ -28,3 +28,4 @@ pkgdown
 .covrignore
 ^\.github$
 codecov.yml
+^pkgdown$

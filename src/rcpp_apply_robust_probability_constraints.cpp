@@ -29,6 +29,8 @@ bool rcpp_apply_robust_probability_constraints(
     ++feature_group_cardinality[feature_group_ids[i]];
   }
 
+
+
   // Determine the current A matrix size and work out the index to start from
   A_extra_nrow = static_cast<std::size_t>(*std::max_element(ptr->_A_i.begin(), ptr->_A_i.end())) + 1;
   A_extra_ncol = static_cast<std::size_t>(*std::max_element(ptr->_A_j.begin(), ptr->_A_j.end())) + 1;
@@ -43,25 +45,15 @@ bool rcpp_apply_robust_probability_constraints(
     );
   }
 
-  // Find the maximum probability violation within each group (supposed to be the equal)
-  // Rcpp::NumericVector conf_levels(
-  //     n_groups, std::numeric_limits<double>::lowest()
-  // );
-  // for (std::size_t i = 0; i < n_targets; ++i) {
-  //   conf_levels_group[feature_group_ids[i]] = std::max(
-  //     conf_levels_group[feature_group_ids[i]], conf_levels[i]
-  //   );
-  // }
-
   // Initialise new variables to allow for violations to the robust constraints
   // Checks for the sense of the targets list and assigns the sign accordingly
   Rcpp::NumericVector big_m(n_targets, 0.0);
 
   for (std::size_t i = 0; i < n_targets; ++i) {
     if ((targets_sense[i] == "<=") | (targets_sense[i] == "<")) {
-      big_m[i] = -targets_value[feature_group_target[feature_group_ids[i]]];
+      big_m[i] = -feature_group_target[feature_group_ids[i]];
     } else {
-      big_m[i] = targets_value[feature_group_target[feature_group_ids[i]]];
+      big_m[i] = feature_group_target[feature_group_ids[i]];
     }
   }
 
@@ -74,7 +66,7 @@ bool rcpp_apply_robust_probability_constraints(
 
   for (std::size_t i = 0; i < n_groups; ++i) {
     // RHS of the constraint
-    conf_levels_rhs[i] = (1.0 - conf_levels[i]) * feature_group_cardinality[i];
+    conf_levels_rhs[i] = (1.0 - conf_levels[feature_group_ids[i]]) * feature_group_cardinality[i];
 
     // If the RHS is smaller than 1, there is no other solution on the LHS other
     // than have everything 0. This means the constraint/ variable is redundant

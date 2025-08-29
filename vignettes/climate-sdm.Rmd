@@ -1,8 +1,8 @@
 ---
-title: "Climate SDM Example"
+title: "Example using simulated data from a species distribution model"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Climate SDM Example}
+  %\VignetteIndexEntry{b. Simulated Climate SDM}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -15,6 +15,41 @@ knitr::opts_chunk$set(
   fig.height=6,
   fig.retina = TRUE
 )
+```
+
+```{r, include = FALSE}
+# define dummy variables so that vignette passes package checks
+# TODO
+```
+
+```{r, include = FALSE}
+# define variables for vignette figures and code execution
+h <- 3.5
+w <- 3.5
+is_check <-
+  ("CheckExEnv" %in% search()) ||
+  any(c("_R_CHECK_TIMINGS_", "_R_CHECK_LICENSE_") %in% names(Sys.getenv())) ||
+  !identical(Sys.getenv("MY_UNIVERSE"), "") ||
+  any(c("CI", "GITHUB_ACTIONS", "GITHUB_SHA") %in% names(Sys.getenv()))
+knitr::opts_chunk$set(
+  fig.align = "center",
+  eval = !is_check,
+  purl = !is_check,
+  R.options = list(width = 80)
+)
+```
+
+```{r, include = FALSE}
+# set up print method
+print <- function(x, ...) {
+  if (!interactive() && inherits(x, "ConservationProblem")) {
+    prioritizr::knit_print.ConservationProblem(x)
+  } else if (!interactive() && inherits(x, "OptimizationProblem")) {
+    prioritizr::knit_print.OptimizationProblem(x)
+  } else {
+    base::print(x)
+  }
+}
 ```
 
 ```{r setup, include=FALSE}

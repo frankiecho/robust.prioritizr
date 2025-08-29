@@ -1,4 +1,4 @@
-#' @include internal.R
+'@include internal.R
 NULL
 
 #' Add robust minimum set objective
@@ -18,8 +18,7 @@ NULL
 #'
 #' \deqn{\mathit{Minimize} \space \sum_{i = 1}^{I} x_i c_i \\
 #' \mathit{subject \space to} \\
-#' \Pr_k \{ \sum_{i = 1}^{I} x_i r_{ijk} \geq T_{j} \} \geq \alpha \space \forall \space j \in J}{
-#' Minimize sum_i^I (xi * ci) subject to sum_i^I (xi * rij) >= Tj for all
+#' \Pr_k \{ \sum_{i = 1}^{I} x_i r_{ijk} \geq T_{j} \} \geq \alpha \space \forall \space j \in J}{Minimize sum_i^I (xi * ci) subject to sum_i^I (xi * rij) >= Tj for all
 #' j in J}
 #'
 #' Here, \eqn{x_i}{xi} is the [decisions] variable (e.g.,
@@ -95,7 +94,37 @@ NULL
 #'
 #' @examples
 #' \dontrun{
-#' TODO.
+#' # load packages
+#' library(prioritizr)
+#' library(terra)
+#'
+#' # create dummy data
+#' # planning units
+#' pu <- rast(matrix(1, 10, 10))
+#'
+#' # 2 features with 3 scenarios each
+#' features <- c(
+#'   rast(matrix(rnorm(100, 1, 1), 10, 10)),
+#'   rast(matrix(rnorm(100, 2, 1), 10, 10)),
+#'   rast(matrix(rnorm(100, 3, 1), 10, 10)),
+#'   rast(matrix(rnorm(100, 4, 1), 10, 10)),
+#'   rast(matrix(rnorm(100, 5, 1), 10, 10)),
+#'   rast(matrix(rnorm(100, 6, 1), 10, 10))
+#' )
+#' names(features) <- paste0("feature_", rep(1:2, each = 3), "_scenario_", 1:3)
+#'
+#' # define groups for robust constraints
+#' # each feature has 3 scenarios
+#' groups <- rep(paste0("feature_", 1:2), each = 3)
+#'
+#' # create problem with robust minimum set objective
+#' p <- problem(pu, features) %>%
+#'   add_robust_min_set_objective() %>%
+#'   add_absolute_targets(2) %>%
+#'   add_constant_robust_constraints(groups = groups)
+#' 
+#' # print problem
+#' print(p)
 #' }
 #'
 #' @name add_robust_min_set_objective
@@ -103,7 +132,7 @@ NULL
 
 #' @rdname add_robust_min_set_objective
 #' @export
-add_robust_min_set_objective <- function(x, method = "CondValueAtRisk") {
+add_robust_min_set_objective <- function(x, method = "Chance") {
   # assert argument is valid
   assert_required(x)
   assert(is_conservation_problem(x))
