@@ -4,7 +4,7 @@
 \alias{add_robust_min_set_objective}
 \title{Add robust minimum set objective}
 \usage{
-add_robust_min_set_objective(x, method = "CondValueAtRisk")
+add_robust_min_set_objective(x, method = "Chance")
 }
 \arguments{
 \item{x}{\code{\link[prioritizr:problem]{prioritizr::problem()}} object.}
@@ -14,10 +14,10 @@ An updated \code{\link[prioritizr:problem]{prioritizr::problem()}} object with t
 to it.
 }
 \description{
-TODO.
+Set the objective of a conservation planning problem to minimize the cost of the solution while ensuring that all targets are met robustly across all realizations of data.
 }
 \details{
-TODO.
+The robust minimum set objective seeks to find the set of planning units at a minimum cost such that the targets are met across all realizations of data.
 }
 \section{Mathematical formulation}{
 
@@ -28,8 +28,7 @@ a set of realizations (\eqn{K} indexed by \eqn{k}) as:
 
 \deqn{\mathit{Minimize} \space \sum_{i = 1}^{I} x_i c_i \\
 \mathit{subject \space to} \\
-\Pr_k \{ \sum_{i = 1}^{I} x_i r_{ijk} \geq T_{j} \} \geq \alpha \space \forall \space j \in J}{
-Minimize sum_i^I (xi * ci) subject to sum_i^I (xi * rij) >= Tj for all
+\Pr_k \{ \sum_{i = 1}^{I} x_i r_{ijk} \geq T_{j} \} \geq \alpha \space \forall \space j \in J}{Minimize sum_i^I (xi * ci) subject to sum_i^I (xi * rij) >= Tj for all
 j in J}
 
 Here, \eqn{x_i}{xi} is the \link{decisions} variable (e.g.,
@@ -92,7 +91,37 @@ the \code{conf_level} parameter. See Rockafellar and Uryasev (2000) for more det
 
 \examples{
 \dontrun{
-TODO.
+# load packages
+library(prioritizr)
+library(terra)
+
+# create dummy data
+# planning units
+pu <- rast(matrix(1, 10, 10))
+
+# 2 features with 3 scenarios each
+features <- c(
+  rast(matrix(rnorm(100, 1, 1), 10, 10)),
+  rast(matrix(rnorm(100, 2, 1), 10, 10)),
+  rast(matrix(rnorm(100, 3, 1), 10, 10)),
+  rast(matrix(rnorm(100, 4, 1), 10, 10)),
+  rast(matrix(rnorm(100, 5, 1), 10, 10)),
+  rast(matrix(rnorm(100, 6, 1), 10, 10))
+)
+names(features) <- paste0("feature_", rep(1:2, each = 3), "_scenario_", 1:3)
+
+# define groups for robust constraints
+# each feature has 3 scenarios
+groups <- rep(paste0("feature_", 1:2), each = 3)
+
+# create problem with robust minimum set objective
+p <- problem(pu, features) \%>\%
+  add_robust_min_set_objective() \%>\%
+  add_absolute_targets(2) \%>\%
+  add_constant_robust_constraints(groups = groups)
+
+# print problem
+print(p)
 }
 
 }

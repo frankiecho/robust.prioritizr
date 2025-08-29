@@ -1,6 +1,3 @@
-'@include internal.R
-NULL
-
 #' Add robust minimum shortfall objective
 #'
 #' TODO.
@@ -116,7 +113,7 @@ NULL
 #'   add_robust_min_shortfall_objective(budget = 5) %>%
 #'   add_absolute_targets(2) %>%
 #'   add_constant_robust_constraints(groups = groups)
-#' 
+#'
 #' # print problem
 #' print(p)
 #' }

@@ -1,14 +1,11 @@
-'@include internal.R
-NULL
-
 #' Add robust minimum set objective
 #'
-#' TODO.
+#' Set the objective of a conservation planning problem to minimize the cost of the solution while ensuring that all targets are met robustly across all realizations of data.
 #'
 #' @param x [prioritizr::problem()] object.
 #'
 #' @details
-#' TODO.
+#' The robust minimum set objective seeks to find the set of planning units at a minimum cost such that the targets are met across all realizations of data.
 #'
 #' @section Mathematical formulation:
 #' This objective can be expressed
@@ -122,7 +119,7 @@ NULL
 #'   add_robust_min_set_objective() %>%
 #'   add_absolute_targets(2) %>%
 #'   add_constant_robust_constraints(groups = groups)
-#' 
+#'
 #' # print problem
 #' print(p)
 #' }

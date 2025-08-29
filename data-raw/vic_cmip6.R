@@ -1,4 +1,4 @@
-## code to prepare `vic_hab_suitability` dataset goes here
+## code to prepare `vic_cmip6` dataset goes here
 
 library(terra)
 library(readr)

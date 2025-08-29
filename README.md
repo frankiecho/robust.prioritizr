@@ -4,7 +4,7 @@
 [![R-CMD-check](https://github.com/frankiecho/robust.prioritizr/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/frankiecho/robust.prioritizr/actions/workflows/R-CMD-check.yaml)
 [![Coverage-Status](https://img.shields.io/codecov/c/github/frankiecho/roubust.prioritizr?label=Coverage)](https://app.codecov.io/gh/frankiecho/roubust.prioritizr/branch/main)
 
-`robust.prioritizr` is an R package that extends the powerful `prioritizr` ecosystem to enable users to conduct planning for an uncertain future. It allows users to generate conservation plans that are robust to uncertainties in input data, such as those arising from climate change projections, species distribution models, or measurement errors.
+`robust.prioritizr` is an R package for robust systematic conservation planning that uses the powerful `prioritizr` ecosystem. It allows users to generate conservation plans that are robust to uncertainties in input data, such as those arising from climate change projections, species distribution models, or measurement errors.
 
 Systematic conservation planning relies on optimization algorithms to identify the best areas to protect. However, the data used in this process—such as species habitat suitability-is often uncertain. `robust.prioritizr` provides the tools to overcome this challenge. It helps you create a portfolio of conservation sites that are most likely to achieve their targets across a range of possible future scenarios or data realizations.
 

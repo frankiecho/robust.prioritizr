@@ -18,7 +18,7 @@
 #'
 #' Details of can be found in [robust.prioritizr.data](https://github.com/jeffreyhanson/robust.prioritizr.data)
 #'
-#' @format ## `vic_hab_suitability`
+#' @format ## `vic_cmip6`
 #' An R object with
 #' \describe{
 #'   \item{species}{Wrapped 5km terra SpatRaster object of species presence/ absence under different CIMP6 climate projections}
