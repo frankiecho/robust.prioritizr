@@ -58,5 +58,10 @@ Collate:
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
 Config/testthat/edition: 3
+Config/Needs/website:
+    tibble,
+    stringr,
+    ggplot2,
+    tidyr
 Remotes:
   prioritizr/prioritizr@speedup-blm

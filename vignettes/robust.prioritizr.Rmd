@@ -9,7 +9,7 @@ documentclass: article
 bibliography: references.bib
 csl: reference-style.csl
 vignette: >
-  %\VignetteIndexEntry{a. Getting started}
+  %\VignetteIndexEntry{Getting started with robust systematic conservation planning}
   %\VignetteEngine{knitr::rmarkdown_notangle}
 ---
 

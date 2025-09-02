@@ -2,7 +2,7 @@
 title: "Example using simulated data from a species distribution model"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{b. Simulated Climate SDM}
+  %\VignetteIndexEntry{Example using simulated data from a species distribution model}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

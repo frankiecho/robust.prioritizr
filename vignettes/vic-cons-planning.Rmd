@@ -2,7 +2,7 @@
 title: "Example: Robust Conservation Planning in Victoria, Australia"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{c. vic-cons-planning}
+  %\VignetteIndexEntry{Example: Robust Conservation Planning in Victoria, Australia}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -59,7 +59,6 @@ library(terra)
 library(dplyr)
 library(tibble)
 library(stringr)
-library(knitr)
 library(ggplot2)
 library(tidyr)
 ```

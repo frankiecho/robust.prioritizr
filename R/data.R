@@ -2,23 +2,24 @@
 #'
 #' Contains a table showing information of layers retrieved from `get_vic_species()` function of the CMIP6 projections of flora and fauna occurrence in Victoria derived from MaxEnt modelling by Archibald et al. (2024).
 #'
-#'
-#' Cost data is based on the Human Footprint Index 2013.
-#'
-#' Protected area data are from the Collaborative Australian Protected Areas Database (2024),
-#' DCCEEW, Australian Government.
+#' See the `vic-cons-planning.Rmd` vignette for a demonstration of its usage.
 #'
 #' Details of can be found in [robust.prioritizr.data](https://github.com/jeffreyhanson/robust.prioritizr.data)
 #'
 #' @format ## `vic_cmip6`
-#' An R object with
+#' An tibble with
 #' \describe{
-#'   \item{species}{Wrapped 5km terra SpatRaster object of species presence/ absence under different CIMP6 climate projections}
-#'   \item{cost}{Wrapped 5km terra SpatRaster object of conservation cost proxied by the Human Footprint Index}
-#'   \item{pa}{Wrapped 5km terra SpatRaster object of protected areas (1 = Protected Area, 0 = Not Protected Area)}
-#'   \item{species_details}{Tibble object of the details of the species presence/ absence data, including (a) name: name
-#'   of the species layer, (b) species: species name, (c) class: species class, proj: climate projection, auc: Training AUC metric for model fit,
-#'   boyce: Spearman correlation (the Boyce index value), threshold: MaxEnt threshold.}
+#'   \item{id}{ID of the layer}
+#'   \item{name}{Full name of the layer}
+#'   \item{species}{Name of the species}
+#'   \item{class}{Class of the species}
+#'   \item{proj}{Climate projection and timestep}
+#'   \item{auc}{AUC metric from the model fitting process}
+#'   \item{boyce}{Boyce metric from the model fitting process}
+#'   \item{threshold}{Threshold}
+#'   \item{scenario}{Climate scenario, can be: "historic_baseline" (historic baseline), ssp126 (SSP1-RCP2.6), ssp245 (SSP2-RCP4.5), ssp370 (SSP3-RCP7.0), or ssp585 (SSP5-RCP8.5)}
+#'   \item{timestep}{Timestep (year)}
+#'   \sum{sum}{Sum of the total number of cells in Victoria with historic/ projected presence under the climate scenario in that timestep}
 #' }
 #'
 #'
