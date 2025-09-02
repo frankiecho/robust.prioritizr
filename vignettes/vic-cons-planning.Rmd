@@ -188,8 +188,6 @@ title("Robust Solution (Target = 1%)")
 
 The problem solves as expected.
 
-> **Note on Presolve Warnings:** You may see a warning from the solver about failing "presolve" checks. This is expected. The robust formulation uses a structure that is different from standard `prioritizr` problems. Using `force = TRUE` allows the solver to proceed. We are working on updates to make this integration seamless.
-
 We can now verify that the target was met for all species across all scenarios and time-steps.
 
 ```{r}
@@ -222,16 +220,17 @@ As the previous example shows, enforcing targets to be held robustly across all 
 Users can control the robustness of the solution through the `conf_level` parameter in `add_*_robust_constraints`, which specifies the proportion of the constraints that must be met in each group for the solution to be considered feasible. In this case, specifying 80% means that out of the 17 historic and future climate projections, the solution needs to meet the target in at least 13 (17 \times 0.8) climate projections/ time-steps. In other words, the target can only be breached for 3 climate projections/ time-steps. By relaxing this target, we can pursue much more ambitious relative targets (0.07 protection), while ensuring that the solution is feasible and reasonably robust under most climate projections and time-steps.
 
 ```{r}
-rt2 <- 0.07
+rt2 <- 0.01
 rpv2 <- problem(cost, species) %>%
   add_relative_targets(rt2) %>%
   robust.prioritizr::add_constant_robust_constraints(groups = groups,
                                                      conf_level = 0.8) %>%
   add_locked_in_constraints(pa) %>%
-  robust.prioritizr::add_robust_min_set_objective(method = "Chance") %>%
+  robust.prioritizr::add_robust_min_set_objective(method = "CondValueAtRisk") %>%
   add_default_solver(verbose = F)
 
-rsv2 <- solve(rpv2, force = TRUE)
+csv2 <- compile(rpv2)
+rsv2 <- solve(rpv2)
 
 rs <- c(rsv1, rsv2, rsv1-pa, rsv2-pa)
 names(rs) <- c("Robust (1% target)", "Partially Robust (7% target)", "New PA (Robust 1%)", "New PA (Partially Robust 7%)")

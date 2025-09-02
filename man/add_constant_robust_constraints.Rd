@@ -35,7 +35,6 @@ function is useful when the confidence level that the constraint is held
 is constant across all features.
 }
 \details{
-:
 The robust/ chance constraints ensures that the proportion of constraints that are held
 is greater than a specified \code{conf_level}. If \code{conf_level = 1},
 all constraints within the feature group must be held, meaning that the solution is fully
