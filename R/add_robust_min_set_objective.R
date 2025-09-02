@@ -1,14 +1,11 @@
-#' @include internal.R
-NULL
-
 #' Add robust minimum set objective
 #'
-#' TODO.
+#' Set the objective of a conservation planning problem to minimize the cost of the solution while ensuring that all targets are met robustly across all realizations of data.
 #'
 #' @param x [prioritizr::problem()] object.
 #'
 #' @details
-#' TODO.
+#' The robust minimum set objective seeks to find the set of planning units at a minimum cost such that the targets are met across all realizations of data.
 #'
 #' @section Mathematical formulation:
 #' This objective can be expressed
@@ -18,8 +15,7 @@ NULL
 #'
 #' \deqn{\mathit{Minimize} \space \sum_{i = 1}^{I} x_i c_i \\
 #' \mathit{subject \space to} \\
-#' \Pr_k \{ \sum_{i = 1}^{I} x_i r_{ijk} \geq T_{j} \} \geq \alpha \space \forall \space j \in J}{
-#' Minimize sum_i^I (xi * ci) subject to sum_i^I (xi * rij) >= Tj for all
+#' \Pr_k \{ \sum_{i = 1}^{I} x_i r_{ijk} \geq T_{j} \} \geq \alpha \space \forall \space j \in J}{Minimize sum_i^I (xi * ci) subject to sum_i^I (xi * rij) >= Tj for all
 #' j in J}
 #'
 #' Here, \eqn{x_i}{xi} is the [decisions] variable (e.g.,
@@ -95,7 +91,34 @@ NULL
 #'
 #' @examples
 #' \dontrun{
-#' TODO.
+#' # load packages
+#' library(prioritizr)
+#' library(terra)
+#'
+#' # Get planning unit data
+#' pu <- get_sim_pu_raster()
+#'
+#' # Get feature data
+#' features <- replicate(2, get_sim_features())
+#' features <- rast(features)
+#' names(features) <- paste0("feature_", rep(1:5, 2),
+#' "_scenario_", rep(1:2, each = 5))
+#'
+#' # 5 features, 2 scenarios
+#' groups <- rep(paste0("feature_", 1:5), 2)
+#'
+#' # Set up problem
+#' p <- problem(pu, features) %>%
+#'   add_constant_robust_constraints(groups = groups) %>%
+#'   add_robust_min_set_objective() %>%
+#'   add_binary_decisions() %>%
+#'   add_relative_targets(0.1) %>%
+#'   add_default_solver()
+#'
+#' # Solve problem
+#' soln <- solve(p)
+#' plot(soln)
+#'
 #' }
 #'
 #' @name add_robust_min_set_objective
@@ -103,7 +126,7 @@ NULL
 
 #' @rdname add_robust_min_set_objective
 #' @export
-add_robust_min_set_objective <- function(x, method = "CondValueAtRisk") {
+add_robust_min_set_objective <- function(x, method = "Chance") {
   # assert argument is valid
   assert_required(x)
   assert(is_conservation_problem(x))

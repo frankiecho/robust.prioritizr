@@ -1,11 +1,5 @@
 
-<!--- README.md is generated from README.Rmd. Please edit that file -->
-
-# robust.prioritizr
-
-## Spatial conservation planning under uncertainty
-
-<!-- badges: start -->
+# robust.prioritizr: Robust Systematic Conservation Prioritization in R
 
 [![lifecycle](https://img.shields.io/badge/Lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html)
 [![R-CMD-check-Ubuntu](https://img.shields.io/github/actions/workflow/status/frankiecho/roubust.prioritizr/R-CMD-check-ubuntu.yaml?branch=main&label=Ubuntu)](https://github.com/frankiecho/roubust.prioritizr/actions)
@@ -15,41 +9,84 @@
 [![Coverage-Status](https://img.shields.io/codecov/c/github/frankiecho/roubust.prioritizr?label=Coverage)](https://app.codecov.io/gh/frankiecho/roubust.prioritizr/branch/main)
 [![CRAN-Status-Badge](https://www.r-pkg.org/badges/version/robust.prioritizr)](https://CRAN.R-project.org/package=robust.prioritizr)
 
-<!-- badges: end -->
+`robust.prioritizr` is a R package for robust systematic conservation
+prioritization based on the `prioritizr` ecosystem. It allows users to
+generate conservation plans that are robust to uncertainties in input
+data, such as those arising from climate change projections, species
+distribution models, or measurement errors.
 
-TODO
+Conventional conservation prioritization problems typically identify the
+optimal solution by using targets and constraints from a “best guess” of
+the input data. This means that even minor changes to the input data can
+dramatically affect whether the planning solution still meets its
+targets. `robust.prioritizr` helps users identify solutions to
+conservation planning problems that meets their targets across a range
+of possible future scenarios or data realizations.
+
+For example, you can include species occurrence projections from several
+different climate models and time periods to planning objectives and
+targets. The package then finds a solution that meets your targets
+across all (or a specified proportion) of these scenarios, resulting in
+a more resilient conservation plan.
 
 ## Installation
 
-#### Developmental version
-
-The latest development version can be installed to gain access to new
-functionality that is not yet present in the latest official version.
-Please note that the developmental version is more likely to contain
-coding errors than the official version. To install the developmental
-version, you can install it directly from the [GitHub online code
-repository](https://github.com/frankiecho/roubust.prioritizr) with the
-following *R* code.
+You can install the development version of `robust.prioritizr` from
+GitHub:
 
 ``` r
 if (!require(remotes)) install.packages("remotes")
-remotes::install_github("frankiecho/roubust.prioritizr")
+remotes::install_github("frankiecho/robust.prioritizr")
 ```
 
-## Citation
+## Usage Example
 
-TODO.
+Here is a minimal example demonstrating how to build a robust
+conservation plan.
 
-## Usage
+The key difference from a standard `prioritizr` workflow is the use of
+**groups**. Because a single feature (e.g., a species) is now
+represented by multiple data layers (each being a different scenario or
+“realization”), the `groups` argument tells the function which layers
+belong to the same feature.
 
-TODO.
+``` r
+library(prioritizr)
+library(terra)
 
-## Learning resources
+# Get planning unit data
+pu <- get_sim_pu_raster()
 
-TODO.
+# Get feature data
+features <- replicate(2, get_sim_features())
+features <- rast(features)
+names(features) <- paste0("feature_", rep(1:5, 2), "_scenario_", rep(1:2, each = 5))
+relative_budget <- as.numeric(global(pu, 'sum', na.rm = T)) * 0.1
 
-## Getting help
+# Get the groups
+groups <- rep(paste0("feature_", 1:5), 2)
 
-If you have any questions about the *robust.prioritizr R* package or
-suggestions for improving it, please [post an issue on the code
-repository](https://github.com/frankiecho/roubust.prioritizr/issues/new).
+# Set up prioritizr problem
+p <- problem(pu, features) %>%
+  add_constant_robust_constraints(groups = groups) %>%
+  add_robust_min_set_objective() %>%
+  add_relative_targets(0.1) %>%
+  add_binary_decisions() %>%
+  add_default_solver()
+
+# Solve the problem
+soln <- solve(p)
+
+# Plot the solution
+plot(soln)
+
+# Observe that the targets are met across all realizations of data
+feature_rep <- eval_feature_representation_summary(p, soln)
+all(feature_rep$relative_held > 0.1)
+```
+
+## Getting Help
+
+If you have questions or suggestions, please post an issue on the
+[GitHub
+repository](https://github.com/frankiecho/robust.prioritizr/issues).

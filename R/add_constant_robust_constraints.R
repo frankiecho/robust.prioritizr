@@ -8,10 +8,11 @@ NULL
 #' function is useful when the confidence level that the constraint is held
 #' is constant across all features.
 #'
-#' @details The robust/ chance constraints ensures that the proportion of constraints that are held
+#' @details
+#' The robust/ chance constraints ensures that the proportion of constraints that are held
 #' is greater than a specified `conf_level`. If `conf_level = 1`,
 #' all constraints within the feature group must be held, meaning that the solution is fully
-#' robust to uncertainty. Lowering the `conf_level` to less than
+#' robust to uncertainty. Lowering the `conf_level` to less thanuys
 #' 1 allows a certain percentage of the constraints for each feature group to be
 #' violated, enabling the algorithm to search of solutions with better objective values, while
 #' keeping the percentage of constraints violated less than `1 - conf_level`.
@@ -59,7 +60,34 @@ NULL
 #'
 #' @examples
 #' \dontrun{
-#' TODO.
+#' library(prioritizr)
+#' library(terra)
+#'
+#' # Get planning unit data
+#' pu <- get_sim_pu_raster()
+#'
+#' # Get feature data
+#' features <- replicate(2, get_sim_features())
+#' features <- rast(features)
+#' names(features) <- paste0("feature_", rep(1:5, 2), "_scenario_", rep(1:2, each = 5))
+#' relative_budget <- as.numeric(global(pu, 'sum', na.rm = T)) * 0.1
+#'
+#' # Get the groups
+#' groups <- rep(paste0("feature_", 1:5), 2)
+#'
+#' # Set up prioritizr problem
+#' p <- problem(pu, features) %>%
+#'   add_constant_robust_constraints(groups = groups) %>%
+#'   add_robust_min_set_objective() %>%
+#'   add_relative_targets(0.1) %>%
+#'   add_binary_decisions() %>%
+#'   add_default_solver()
+#'
+#' # Solve the problem
+#' soln <- solve(p)
+#'
+#' # Plot the solution
+#' plot(soln)
 #' }
 #'
 #' @name add_constant_robust_constraints
@@ -103,7 +131,7 @@ add_constant_robust_constraints <- function(x, groups, conf_level = 1) {
   add_variable_robust_constraints(
     x,
     data = tibble::tibble(
-      features = split(prioritizr::feature_names(x), groups),
+      features = split(prioritizr::feature_names(x), groups)[unique(groups)],
       conf_level = conf_level
     )
   )

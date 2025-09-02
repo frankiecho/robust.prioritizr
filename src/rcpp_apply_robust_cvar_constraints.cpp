@@ -106,7 +106,7 @@ bool rcpp_apply_robust_cvar_constraints(
   for (std::size_t k_idx = 0; k_idx < n_realizations; ++k_idx)
     ptr->_sense[k_idx] = ">=";
   for (std::size_t k_idx = 0; k_idx < n_realizations; ++k_idx)
-    ptr->_row_ids[k_idx] = "cvar_link_k" + std::to_string(k_idx); // Rename for clarity
+    ptr->_row_ids[k_idx] = "spp_target"; // Rename for clarity
 
   // 2. Add coefficients for the new variables (eta_j and s_jk) to THIS EXISTING row.
   //    We append new entries to _A_i, _A_j, _A_x, associating them with the current row_index (k_idx).

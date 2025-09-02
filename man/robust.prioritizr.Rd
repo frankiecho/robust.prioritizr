@@ -4,7 +4,7 @@
 \name{robust.prioritizr}
 \alias{robust.prioritizr}
 \alias{robust.prioritizr-package}
-\title{robust.prioritizr: Spatial conservation planning under uncertainty}
+\title{robust.prioritizr: Robust Systematic Conservation Prioritization}
 \description{
 TODO.
 }

@@ -36,3 +36,5 @@ Meta/*
 .RData
 .Ruserdata
 inst/doc
+docs
+.vscode/

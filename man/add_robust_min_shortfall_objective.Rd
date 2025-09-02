@@ -20,22 +20,39 @@ An updated \code{\link[prioritizr:problem]{prioritizr::problem()}} object with t
 to it.
 }
 \description{
-TODO.
+Solves a minimum shortfall objective that minimises a robust shortfall objective across all features. For each feature, the shortfall objective is quantified based on the distribution of shortfall across all realizations of data. For a fully robust solution, the shortfall metric used for optimization is the maximum shortfall across all realizations of the data. For a partially robust solution (\code{conf_level} < 1), the solution guarantees that the probability that the shortfall is greater than the shortfall metric used for optimisation is less than or equals to 1 - \code{conf_level}.
 }
 \details{
-TODO.
+Minimises an objective based on the total amount of shortfall (difference between the target and the feature representation) weighted across all features, subject to a budget.
+
+For a feature with more than one number of realizations in
+the group, it computes the shortfall metric for that feature
+based on the following approach:
+\itemize{
+\item If \code{conf_level = 1}, the shortfall metric is the maximum
+of the shortfall across all data realizations in the group
+\item If \code{conf_level < 1}, then the shortfall metric is:
+\itemize{
+\item \code{Method = 'CondValueAtRisk'}: the average of the shortfall
+in the set of data realizations that exceed the \code{1-conf_level}
+quantile
+\item \code{Method = 'Chance'}: the \code{1-conf_level} quantile of the
+distribution of shortfall
+}
+}
 }
 \section{Mathematical formulation}{
 
 This objective can be expressed mathematically for a set of planning units
 (\eqn{I}{I} indexed by \eqn{i}{i}), a set of features (\eqn{J}{J} indexed
-by \eqn{j}{j}), and a set of realizations (\eqn{K}{K} indexed by \eqn{k}{k}) as:
+by \eqn{j}{j}), and a set of realizations (\eqn{K}{K} indexed
+by \eqn{k}{k}) as:
 
 \deqn{\mathit{Minimize} \space  \sum_{j = 1}^{J} w_j y_j \\
 \mathit{subject \space to} \\
 \Pr_k\{\sum_{i = 1}^{I} x_i r_{ijk} + T_{j} y_j \geq T_j\} > \alpha \qquad \forall j \in J  \\
 \sum_{i = 1}^{I} x_i c_i \leq B \\
-y_j \geq v_{jk} \qquad \forall k \in K}{
+y_j \geq v_{jk} \qquad \forall k \in K}{'
 Minimize sum_j^J wj * yj subject to
 sum_i^I (xi * rij) + tj * yj >= tj for all j in J &
 sum_i^I (xi * ci) <= B
@@ -86,7 +103,31 @@ been implemented in this objective function.
 
 \examples{
 \dontrun{
-TODO.
+pu <- get_sim_pu_raster()
+
+# Get feature data
+features <- replicate(2, get_sim_features())
+features <- rast(features)
+names(features) <- paste0("feature_", rep(1:5, 2),
+"_scenario_", rep(1:2, each = 5))
+relative_budget <- as.numeric(global(pu, 'sum', na.rm = T)) * 0.1
+
+# Get the groups
+groups <- rep(paste0("feature_", 1:5), 2)
+
+# Set up prioritizr problem
+p <- problem(pu, features) \%>\%
+  add_constant_robust_constraints(groups = groups) \%>\%
+  add_robust_min_shortfall_objective(budget = relative_budget) \%>\%
+  add_relative_targets(0.1) \%>\%
+  add_binary_decisions() \%>\%
+  add_default_solver()
+
+# Solve the problem
+soln <- solve(p)
+
+# Plot the solution
+plot(soln)
 }
 
 }

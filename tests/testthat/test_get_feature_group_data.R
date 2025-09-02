@@ -62,6 +62,38 @@ test_that("add_variable_robust_constraints()", {
   )
 })
 
+test_that("add_constaint_robust_constraints()", {
+  skip_if_not_installed("terra")
+  # import data
+  sim_pu_raster <- prioritizr::get_sim_pu_raster()
+  sim_features <- prioritizr::get_sim_features()[[rep(1, 7)]]
+  names(sim_features) <- paste0("l", seq_len(terra::nlyr(sim_features)))
+  # define feature groupings
+  # c: 0 (appears first)
+  # b: 1 (appears second)
+  # a: 2 (appears third)
+  x <- c('c','b','c','a','b','a', 'c')
+  # build problem
+  p <-
+    prioritizr::problem(sim_pu_raster, sim_features) |>
+    add_robust_min_set_objective() |>
+    prioritizr::add_relative_targets(0.1)  |>
+    add_constant_robust_constraints(x, conf_level = 0.9) |>
+    prioritizr::add_binary_decisions()
+  # extract groupings
+  y <- get_feature_group_data(p)
+  # tests
+  expect_true(is.list(y))
+  expect_equal(
+    y$ids,
+    c(0,1,0,2,1,2,0)
+  )
+  expect_equal(
+    y$conf_level,
+    rep(0.9, 3)
+  )
+})
+
 test_that("invalid inputs", {
   skip_if_not_installed("terra")
   # import data

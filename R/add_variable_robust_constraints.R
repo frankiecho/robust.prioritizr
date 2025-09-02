@@ -12,7 +12,7 @@ NULL
 #' species, and only moderately robust to uncertainty in the spatial
 #' distribution of widespread species.
 #'
-#' @inherits add_constant_robust_constraints details
+#' @inherit add_constant_robust_constraints details
 #'
 #' @param x [prioritizr::problem()] object.
 #'
@@ -54,7 +54,41 @@ NULL
 #'
 #' @examples
 #' \dontrun{
-#' TODO.
+#' library(prioritizr)
+#' library(terra)
+#' library(tibble)
+#'
+#' # Get planning unit data
+#' pu <- get_sim_pu_raster()
+#'
+#' # Get feature data
+#' features <- replicate(2, get_sim_features())
+#' features <- rast(features)
+#' names(features) <- paste0("feature_", rep(1:5, 2), "_scenario_", rep(1:2, each = 5))
+#' relative_budget <- as.numeric(global(pu, 'sum', na.rm = T)) * 0.1
+#'
+#' # Get the groups
+#' groups <- rep(paste0("feature_", 1:5), 2)
+#'
+#' # Add variable robust constraints, specifying different confidence levels for each feature
+#' variable_constraints <- tibble(
+#'   features = split(names(features), groups),
+#'   conf_level = c(1, 0.8, 0.6, 0.6, 0.5)
+#' )
+#'
+#' # Set up prioritizr problem
+#' p <- problem(pu, features) %>%
+#'   add_variable_robust_constraints(data = variable_constraints) %>%
+#'   add_robust_min_set_objective() %>%
+#'   add_relative_targets(0.1) %>%
+#'   add_binary_decisions() %>%
+#'   add_default_solver()
+#'
+#' # Solve the problem
+#' soln <- solve(p)
+#'
+#' # Plot the solution
+#' plot(soln)
 #' }
 #'
 #' @name add_variable_robust_constraints

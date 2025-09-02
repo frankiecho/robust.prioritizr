@@ -42,7 +42,7 @@ bool rcpp_apply_robust_min_set_objective(
   );
   for (std::size_t i = 0; i < n_targets; ++i) {
     feature_group_target[feature_group_ids[i]] = std::max(
-      targets_value[feature_group_ids[i]], targets_value[i]
+      feature_group_target[feature_group_ids[i]], targets_value[i]
     );
   }
 
