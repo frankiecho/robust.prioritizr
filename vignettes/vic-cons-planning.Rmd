@@ -54,7 +54,7 @@ print <- function(x, ...) {
 }
 ```
 
-```{r setup, echo = FALSE}
+```{r setup, message=FALSE}
 library(prioritizr)
 library(robust.prioritizr)
 library(terra)
@@ -109,28 +109,30 @@ As the figure illustrates, the projected distribution of species can change dram
 
 ## Feature Groupings
 
-A key concept in `robust.prioritizr` is the `groups` argument. In a standard `prioritizr` problem, each feature is a single data layer. In contrast, `robust.prioritizr` uses **multiple** layers to represent a single feature, where each layer corresponds to a different scenario (e.g., a climate projection or time-step).
+A key concept in `robust.prioritizr` is the `groups` argument. In a standard `prioritizr` problem, each feature is a single data layer. However, `robust.prioritizr` uses **multiple** layers to represent a single feature, where each layer corresponds to a different realization of the data (e.g., a climate projection or time-step), which the analyst is uncertain about. For the purposes of this analysis, we consider each climate projection-timestep pair a "realization" of the data. These data realizations jointly determine the range of uncertainty the analyst has over their input data.
 
-The `groups` argument is a character vector that tells the solver which layers belong to the same feature. This allows the problem to apply a single, shared target to all scenarios for that feature. For this example, the group for each layer is simply the species name.
+The `groups` argument is a character vector that tells the solver which layers belong to the same feature. This allows the problem to apply a single, shared target to all scenarios for that feature. For this example, the group for each layer is simply the species name. Each group contains the indices of all of the data realizations of a particular species.
+
+For example, we see that each group (each species) contains 17 data realizations, comprising of all the climate scenarios and time-steps available for this analysis.
 
 ```{r}
 groups <- species_details$species
-head(groups)
+table(groups)
 ```
 
 ## Setting a Feasible Target
 
 When using a robust minimum set objective, it is crucial to set a target that is achievable across all scenarios. If a target for a species is higher than its total predicted occurrence in even one scenario, the problem will be infeasible.
 
-`robust.prioritizr` enforces that features have the same target within each group, ensuring that the same target is met across all realizations of the data. This means that if targets are not consistent within the same group, it will override targets specified by the user. The package has the following internal behaviour for absolute, relative and manual targets:
+`robust.prioritizr` enforces that features have the same target within each group, ensuring that the same target is met across all data realizations. This means that if targets are not consistent within the same group, it will override targets specified by the user. The package has the following internal behavior for absolute, relative and manual targets:
 
 -   Absolute targets: ensures that the target in absolute terms is met across all climates and time-steps
 
--   Relative targets: first, it calculates the "best-case" feature values in each group, by finding the realization in the groiup that has the highest summed feature value. Then, it calculates the relative target in absolute terms by multiplying the user-supplied target (e.g., 20%) in `add_relative_targets` with the "best-case" feature value. This ensures that the feature representation of the solution meets the relative target even in a "good" realization where the feature is abundant in the study area
+-   Relative targets: first, it calculates the "best-case" feature values in each group, by finding the realization in the group that has the highest summed feature value. Then, it calculates the relative target in absolute terms by multiplying the user-supplied target (e.g., 20%) in `add_relative_targets` with the "best-case" feature value. This ensures that the feature representation of the solution meets the relative target even in a "good" realization where the feature is abundant in the study area
 
 -   Manual targets: manual targets must be specified for each realization of each feature. If different targets are specified for features in the same group, `robust.prioritizr` will take the maximum of the target. This means that manual targets should be consistent within the same group, otherwise it would yield unexpected behavior (particularly if the "sense" is altered to "\<=").
 
-To figure out what useful relative targets to use, we can calculate the worst-case and best-case feature representations for each species by using the `global` function in `terra`, and then summarise the best and worst-case values using `dplyr`. We can also find out what is the maximum relative target we can use in the problem to ensure that our problem is still feasible.
+To figure out what useful relative targets to use, we can calculate the worst-case and best-case feature representations for each species by using the `global` function in `terra`, and then summarizes the best and worst-case values using `dplyr`. We can also find out what is the maximum relative target we can use in the problem to ensure that our problem is still feasible.
 
 ```{r}
 global_sum_species <- global(species, fun = 'sum', na.rm = TRUE) %>%

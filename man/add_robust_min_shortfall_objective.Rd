@@ -23,7 +23,23 @@ to it.
 Solves a minimum shortfall objective that minimises a robust shortfall objective across all features. For each feature, the shortfall objective is quantified based on the distribution of shortfall across all realizations of data. For a fully robust solution, the shortfall metric used for optimization is the maximum shortfall across all realizations of the data. For a partially robust solution (\code{conf_level} < 1), the solution guarantees that the probability that the shortfall is greater than the shortfall metric used for optimisation is less than or equals to 1 - \code{conf_level}.
 }
 \details{
-TODO.
+Minimises an objective based on the total amount of shortfall (difference between the target and the feature representation) weighted across all features, subject to a budget.
+
+For a feature with more than one number of realizations in
+the group, it computes the shortfall metric for that feature
+based on the following approach:
+\itemize{
+\item If \code{conf_level = 1}, the shortfall metric is the maximum
+of the shortfall across all data realizations in the group
+\item If \code{conf_level < 1}, then the shortfall metric is:
+\itemize{
+\item \code{Method = 'CondValueAtRisk'}: the average of the shortfall
+in the set of data realizations that exceed the \code{1-conf_level}
+quantile
+\item \code{Method = 'Chance'}: the \code{1-conf_level} quantile of the
+distribution of shortfall
+}
+}
 }
 \section{Mathematical formulation}{
 

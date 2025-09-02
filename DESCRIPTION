@@ -1,6 +1,6 @@
 Package: robust.prioritizr
 Type: Package
-Title: Spatial conservation planning under uncertainty
+Title: Robust Systematic Conservation Prioritization
 Version: 0.0.0.1
 Authors@R:
     c(person(c('Frankie'), 'Cho',
@@ -9,7 +9,7 @@ Authors@R:
       person(c('Jeffrey', 'O'), 'Hanson',
         email='jeffrey.hanson@uqconnect.edu.au', role = c('aut'),
         comment = c(ORCID = '0000-0002-4716-6134')))
-Description: TODO
+Description: Robust systematic conservation prioritization tools in R
 Encoding: UTF-8
 License: GPL-3
 Language: en-US

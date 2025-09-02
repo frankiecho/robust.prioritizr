@@ -1,4 +1,4 @@
-#' robust.prioritizr: Spatial conservation planning under uncertainty
+#' robust.prioritizr: Robust Systematic Conservation Prioritization
 #'
 #' TODO.
 #'

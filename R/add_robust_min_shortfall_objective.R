@@ -11,7 +11,22 @@
 #'   a separate budget for each management zone.
 #'
 #' @details
-#' TODO.
+#' Minimises an objective based on the total amount of shortfall (difference between the target and the feature representation) weighted across all features, subject to a budget.
+#'
+#' For a feature with more than one number of realizations in
+#' the group, it computes the shortfall metric for that feature
+#' based on the following approach:
+#'
+#' * If `conf_level = 1`, the shortfall metric is the maximum
+#' of the shortfall across all data realizations in the group
+#'
+#' * If `conf_level < 1`, then the shortfall metric is:
+#'    * `Method = 'CondValueAtRisk'`: the average of the shortfall
+#'    in the set of data realizations that exceed the `1-conf_level`
+#'    quantile
+#'    * `Method = 'Chance'`: the `1-conf_level` quantile of the
+#'    distribution of shortfall
+#'
 #'
 #' @section Mathematical formulation:
 #' This objective can be expressed mathematically for a set of planning units

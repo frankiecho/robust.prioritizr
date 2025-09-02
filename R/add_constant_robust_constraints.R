@@ -60,7 +60,34 @@ NULL
 #'
 #' @examples
 #' \dontrun{
-#' TODO.
+#' library(prioritizr)
+#' library(terra)
+#'
+#' # Get planning unit data
+#' pu <- get_sim_pu_raster()
+#'
+#' # Get feature data
+#' features <- replicate(2, get_sim_features())
+#' features <- rast(features)
+#' names(features) <- paste0("feature_", rep(1:5, 2), "_scenario_", rep(1:2, each = 5))
+#' relative_budget <- as.numeric(global(pu, 'sum', na.rm = T)) * 0.1
+#'
+#' # Get the groups
+#' groups <- rep(paste0("feature_", 1:5), 2)
+#'
+#' # Set up prioritizr problem
+#' p <- problem(pu, features) %>%
+#'   add_constant_robust_constraints(groups = groups) %>%
+#'   add_robust_min_set_objective() %>%
+#'   add_relative_targets(0.1) %>%
+#'   add_binary_decisions() %>%
+#'   add_default_solver()
+#'
+#' # Solve the problem
+#' soln <- solve(p)
+#'
+#' # Plot the solution
+#' plot(soln)
 #' }
 #'
 #' @name add_constant_robust_constraints
