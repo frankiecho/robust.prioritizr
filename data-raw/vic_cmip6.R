@@ -84,7 +84,7 @@ species_details_subset$id <- 1:nrow(species_details_subset)
 
 # Find the total area with species presence
 global_sums = global(species_subset, 'sum', na.rm = T)
-species_details_subset$sum = global_sums
+species_details_subset$sum = unname(unlist(global_sums))
 
 
 # Write outputs to extdata -----

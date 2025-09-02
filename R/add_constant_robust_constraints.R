@@ -104,7 +104,7 @@ add_constant_robust_constraints <- function(x, groups, conf_level = 1) {
   add_variable_robust_constraints(
     x,
     data = tibble::tibble(
-      features = split(prioritizr::feature_names(x), groups),
+      features = split(prioritizr::feature_names(x), groups)[unique(groups)],
       conf_level = conf_level
     )
   )

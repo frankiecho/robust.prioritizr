@@ -46,7 +46,9 @@ print <- function(x, ...) {
     prioritizr::knit_print.ConservationProblem(x)
   } else if (!interactive() && inherits(x, "OptimizationProblem")) {
     prioritizr::knit_print.OptimizationProblem(x)
-  } else {
+  } else if (!interactive() && inherits(x, "data.frame")) {
+    knitr::kable(x)
+   } else {
     base::print(x)
   }
 }
@@ -63,7 +65,7 @@ library(ggplot2)
 library(tidyr)
 ```
 
-This example demonstrates how to use `robust.prioritizr` for systematic conservation planning in Victoria, Australia. We will use data for future species occurrence projections, conservation costs, and existing protected areas.
+This example demonstrates how to use `robust.prioritizr` for systematic conservation planning in Victoria, Australia. We will use data for historic and future species occurrence projections, conservation costs, and existing protected areas.
 
 ## Dataset
 
@@ -147,8 +149,7 @@ worst_case_occurrence <- species_details %>%
             worst_case_scenario = proj[which.min(sum)]) %>%
   arrange(max_relative_target) 
 worst_case_occurrence %>%
-  head()# %>%
-  #kable()
+  head()
 ```
 
 This shows that if we are interested in a fully robust solution, the maximum relative target that is achievable for this problem would be 0.0022, as in the worst-case scenario, the Snowy Mountains skink (*Liopholis guthega*) is only represented in 1 5km grid cell, out of 452 grid cells in its best-case scenario. This means that even if all the planning units are selected for conservation, in the worst-case high-emissions climate scenario the Snowy Mountains skink will only be represented in a very small area.
@@ -172,8 +173,8 @@ The workflow for a robust problem is similar to `prioritizr`, but with the addit
 rt <- 0.0022
 rpv1 <- problem(cost, species) %>%
   add_relative_targets(rt) %>%
-  robust.prioritizr::add_constant_robust_constraints(groups = groups) %>%
-  robust.prioritizr::add_robust_min_set_objective() %>%
+  add_constant_robust_constraints(groups = groups) %>%
+  add_robust_min_set_objective() %>%
   add_locked_in_constraints(pa) %>%
   add_default_solver(verbose = F)
 
@@ -219,11 +220,11 @@ As the previous example shows, enforcing targets to be held robustly across all 
 Users can control the robustness of the solution through the `conf_level` parameter in `add_*_robust_constraints`, which specifies the proportion of the constraints that must be met in each group for the solution to be considered feasible. In this case, specifying 80% means that out of the 17 historic and future climate projections, the solution needs to meet the target in at least 13 (17 \times 0.8) climate projections/ time-steps. In other words, the target can only be breached for 3 climate projections/ time-steps. By relaxing this target, we can pursue much more ambitious relative targets (0.07 protection), while ensuring that the solution is feasible and reasonably robust under most climate projections and time-steps.
 
 ```{r}
-rt2 <- 0.06
+rt2 <- 0.07
 rpv2 <- problem(cost, species) %>%
   add_relative_targets(rt2) %>%
   robust.prioritizr::add_constant_robust_constraints(groups = groups,
-                                                     conf_level = 0.8) %>%
+                                                     conf_level = 0.5) %>%
   add_locked_in_constraints(pa) %>%
   add_binary_decisions() %>%
   robust.prioritizr::add_robust_min_set_objective(method = "Chance") %>%
@@ -237,14 +238,12 @@ plot(rs, axes = F, fun = \() lines(study_area), type = 'continuous', range = c(0
 ```
 
 ```{r}
-feature_rep_r2 <- global(species * rsv2, fun = 'sum', na.rm = T) %>%
-  as.data.frame() %>%
-  rownames_to_column('name')
+feature_rep_r2 <- eval_feature_representation_summary(rpv2, rsv2)
 worst_case_occurrence$rt2 <- rt2*worst_case_occurrence$best_case
 rsv2_representation <- species_details %>%
-  select(-any_of(contains('sum'))) %>%
+  rename(feature = name) %>%
   arrange(species, scenario, timestep) %>%
-  left_join(feature_rep_r2, by = "name") %>%
+  left_join(feature_rep_r2, by = "feature") %>%
   mutate(species_scenario = paste(species, scenario)) 
 rsv2_representation %>%
   ggplot(aes(x = timestep, y = sum, color = scenario, group = species_scenario)) +
@@ -301,16 +300,19 @@ While the non-robust solution may appear effective from the historical baseline,
 selected_species <- species_details %>%
   filter(species == 'Sarcophilus_harrisii') %>%
   arrange(scenario, timestep)
-feature_rep_nr <- global(species[[selected_species$id]] * sv1, fun = 'sum', na.rm = T) %>%
+feature_rep_nr <- eval_feature_representation_summary(rpv2, sv1) %>%
+  filter(row_number() %in% selected_species$id) %>%
   rownames_to_column("name") %>%
-  rename(non_robust = sum)
-feature_rep_r <- global(species[[selected_species$id]] * rsv2, fun = 'sum', na.rm = T) %>%
+  rename(non_robust = total_amount )
+feature_rep_r <- eval_feature_representation_summary(rpv2, rsv2) %>%
+  filter(row_number() %in% selected_species$id) %>%
   rownames_to_column("name") %>%
-  rename(robust = sum)
+  rename(robust = total_amount )
 
 species_details %>%
-  right_join(feature_rep_nr, by = 'name') %>%
-  right_join(feature_rep_r, by = 'name') %>%
+  rename(feature = name) %>%
+  right_join(feature_rep_nr, by = 'feature') %>%
+  right_join(feature_rep_r, by = 'feature') %>%
   pivot_longer(c('non_robust', 'robust'), names_to = 'solution') %>%
   mutate(solution = factor(solution, c('non_robust', 'robust'), c("Non-robust", "Partially Robust"))) %>%
   left_join(worst_case_occurrence, by = 'species') %>%
