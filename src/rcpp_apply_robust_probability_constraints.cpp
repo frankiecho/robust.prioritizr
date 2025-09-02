@@ -76,33 +76,35 @@ bool rcpp_apply_robust_probability_constraints(
 
   // Add to the constraint matrix and create new objective values
   for (std::size_t i = 0; i < n_targets; ++i)
-    if (apply_prob_constraint[feature_group_ids[i]]) ptr->_A_i.push_back(i);
+    ptr->_A_i.push_back(i);
   for (std::size_t i = 0; i < n_targets; ++i)
-    if (apply_prob_constraint[feature_group_ids[i]]) ptr->_A_j.push_back(A_extra_ncol + i);
+    ptr->_A_j.push_back(A_extra_ncol + i);
   for (std::size_t i = 0; i < n_targets; ++i)
-    if (apply_prob_constraint[feature_group_ids[i]]) ptr->_A_x.push_back(big_m[i]);
+    ptr->_A_x.push_back(big_m[i]);
   for (std::size_t i = 0; i < n_targets; ++i)
-    if (apply_prob_constraint[feature_group_ids[i]]) ptr->_obj.push_back(0.0);
+    ptr->_obj.push_back(0.0);
   for (std::size_t i = 0; i < n_targets; ++i)
-    if (apply_prob_constraint[feature_group_ids[i]]) ptr->_col_ids.push_back("big_m");
+    ptr->_col_ids.push_back("big_m");
   for (std::size_t i = 0; i < n_targets; ++i)
-    if (apply_prob_constraint[feature_group_ids[i]]) ptr->_vtype.push_back("B");
+    ptr->_vtype.push_back("B");
+
+  // If we don't apply probability constraint set this to 0 to reduce solve times
   for (std::size_t i = 0; i < n_targets; ++i)
-    if (apply_prob_constraint[feature_group_ids[i]]) ptr->_ub.push_back(1);
+    ptr->_ub.push_back(apply_prob_constraint[feature_group_ids[i]] ? 1 : 0);
   for (std::size_t i = 0; i < n_targets; ++i)
-    if (apply_prob_constraint[feature_group_ids[i]]) ptr->_lb.push_back(0);
+    ptr->_lb.push_back(0);
 
   // Add in the constraint to ensure that the sum of the violations do not
   // exceed the probability
   for (std::size_t i = 0; i < n_targets; ++i)
-    if (apply_prob_constraint[feature_group_ids[i]]) ptr->_A_i.push_back(A_extra_nrow + feature_group_ids[i]);
+    ptr->_A_i.push_back(A_extra_nrow + feature_group_ids[i]);
   for (std::size_t i = 0; i < n_targets; ++i)
-    if (apply_prob_constraint[feature_group_ids[i]]) ptr->_A_j.push_back(A_extra_ncol + i);
+    ptr->_A_j.push_back(A_extra_ncol + i);
   for (std::size_t i = 0; i < n_targets; ++i)
-    if (apply_prob_constraint[feature_group_ids[i]]) ptr->_A_x.push_back(1.0);
+    ptr->_A_x.push_back(1.0);
 
   for (std::size_t i = 0; i < n_groups; ++i)
-    ptr->_rhs.push_back(conf_levels_rhs[i]);
+    ptr->_rhs.push_back(apply_prob_constraint[i] ? conf_levels_rhs[i] : 0);
   for (std::size_t i = 0; i < n_groups; ++i)
     ptr->_row_ids.push_back("conf_levels");
   for (std::size_t i = 0; i < n_groups; ++i)
