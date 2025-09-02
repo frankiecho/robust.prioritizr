@@ -19,7 +19,7 @@
 #'   \item{threshold}{Threshold}
 #'   \item{scenario}{Climate scenario, can be: "historic_baseline" (historic baseline), ssp126 (SSP1-RCP2.6), ssp245 (SSP2-RCP4.5), ssp370 (SSP3-RCP7.0), or ssp585 (SSP5-RCP8.5)}
 #'   \item{timestep}{Timestep (year)}
-#'   \sum{sum}{Sum of the total number of cells in Victoria with historic/ projected presence under the climate scenario in that timestep}
+#'   \item{sum}{Sum of the total number of cells in Victoria with historic/ projected presence under the climate scenario in that timestep}
 #' }
 #'
 #'
@@ -28,7 +28,6 @@
 #' for Australian flora and fauna under CMIP6 climate scenarios. GigaScience, Volume
 #' 13, 2024, giae002. <https://doi.org/10.1093/gigascience/giae002>
 #'
-
 #'
 "vic_cmip6"
 
