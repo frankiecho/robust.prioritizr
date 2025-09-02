@@ -178,7 +178,7 @@ rpv1 <- problem(cost, species) %>%
   add_locked_in_constraints(pa) %>%
   add_default_solver(verbose = F)
 
-rsv1 <- solve(rpv1, force = TRUE)
+rsv1 <- solve(rpv1)
 
 plot(rsv1, axes = F)
 plot(study_area, add = TRUE)
@@ -229,7 +229,6 @@ rpv2 <- problem(cost, species) %>%
   robust.prioritizr::add_robust_min_set_objective(method = "CondValueAtRisk") %>%
   add_default_solver(verbose = F)
 
-csv2 <- compile(rpv2)
 rsv2 <- solve(rpv2)
 
 rs <- c(rsv1, rsv2, rsv1-pa, rsv2-pa)
