@@ -43,8 +43,8 @@ get_feature_group_data <- function(x) {
     msg = "Failed to match feature groupings.",
     .internal = TRUE
   )
-  # feature_groupings <- group_ids[idx]
+  feature_groupings <- group_ids[idx]
 
   # return result
-  list(ids = group_ids, conf_level = data$conf_level)
+  list(ids = feature_groupings, conf_level = data$conf_level)
 }

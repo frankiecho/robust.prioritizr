@@ -20,7 +20,7 @@ An updated \code{\link[prioritizr:problem]{prioritizr::problem()}} object with t
 to it.
 }
 \description{
-TODO.
+Solves a minimum shortfall objective that minimises a robust shortfall objective across all features. For each feature, the shortfall objective is quantified based on the distribution of shortfall across all realizations of data. For a fully robust solution, the shortfall metric used for optimization is the maximum shortfall across all realizations of the data. For a partially robust solution (\code{conf_level} < 1), the solution guarantees that the probability that the shortfall is greater than the shortfall metric used for optimisation is less than or equals to 1 - \code{conf_level}.
 }
 \details{
 TODO.

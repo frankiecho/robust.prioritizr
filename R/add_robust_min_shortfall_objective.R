@@ -1,6 +1,6 @@
 #' Add robust minimum shortfall objective
 #'
-#' TODO.
+#' Solves a minimum shortfall objective that minimises a robust shortfall objective across all features. For each feature, the shortfall objective is quantified based on the distribution of shortfall across all realizations of data. For a fully robust solution, the shortfall metric used for optimization is the maximum shortfall across all realizations of the data. For a partially robust solution (`conf_level` < 1), the solution guarantees that the probability that the shortfall is greater than the shortfall metric used for optimisation is less than or equals to 1 - `conf_level`.
 #'
 #' @param x [prioritizr::problem()] object.
 #'
@@ -85,37 +85,32 @@
 #'
 #' @examples
 #' \dontrun{
-#' # load packages
-#' library(prioritizr)
-#' library(terra)
+# Get planning unit data
+#' pu <- get_sim_pu_raster()
 #'
-#' # create dummy data
-#' # planning units
-#' pu <- rast(matrix(1, 10, 10))
+#' # Get feature data
+#' features <- replicate(2, get_sim_features())
+#' features <- rast(features)
+#' names(features) <- paste0("feature_", rep(1:5, 2),
+#' "_scenario_", rep(1:2, each = 5))
+#' relative_budget <- as.numeric(global(pu, 'sum', na.rm = T)) * 0.1
 #'
-#' # 2 features with 3 scenarios each
-#' features <- c(
-#'   rast(matrix(rnorm(100, 1, 1), 10, 10)),
-#'   rast(matrix(rnorm(100, 2, 1), 10, 10)),
-#'   rast(matrix(rnorm(100, 3, 1), 10, 10)),
-#'   rast(matrix(rnorm(100, 4, 1), 10, 10)),
-#'   rast(matrix(rnorm(100, 5, 1), 10, 10)),
-#'   rast(matrix(rnorm(100, 6, 1), 10, 10))
-#' )
-#' names(features) <- paste0("feature_", rep(1:2, each = 3), "_scenario_", 1:3)
+#' # Get the groups
+#' groups <- rep(paste0("feature_", 1:5), 2)
 #'
-#' # define groups for robust constraints
-#' # each feature has 3 scenarios
-#' groups <- rep(paste0("feature_", 1:2), each = 3)
-#'
-#' # create problem with robust minimum shortfall objective
+#' # Set up prioritizr problem
 #' p <- problem(pu, features) %>%
-#'   add_robust_min_shortfall_objective(budget = 5) %>%
-#'   add_absolute_targets(2) %>%
-#'   add_constant_robust_constraints(groups = groups)
+#'   add_constant_robust_constraints(groups = groups) %>%
+#'   add_robust_min_shortfall_objective(budget = relative_budget) %>%
+#'   add_relative_targets(0.1) %>%
+#'   add_binary_decisions() %>%
+#'   add_default_solver()
 #'
-#' # print problem
-#' print(p)
+#' # Solve the problem
+#' soln <- solve(p)
+#'
+#' # Plot the solution
+#' plot(soln)
 #' }
 #'
 #' @name add_robust_min_shortfall_objective
