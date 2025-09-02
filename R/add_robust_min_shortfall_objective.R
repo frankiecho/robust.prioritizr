@@ -10,6 +10,8 @@
 #'   for the entire solution or (ii) a `numeric` vector to specify
 #'   a separate budget for each management zone.
 #'
+#' @param method the probabilistic constraint formulation method, either `Chance` (default) or `CondValueAtRisk`. See details.
+#'
 #' @details
 #' Minimises an objective based on the total amount of shortfall (difference between the target and the feature representation) weighted across all features, subject to a budget.
 #'

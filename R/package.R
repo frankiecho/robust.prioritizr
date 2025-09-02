@@ -1,21 +1,22 @@
-#' robust.prioritizr: Robust Systematic Conservation Prioritization
+#' @title robust.prioritizr: Robust Systematic Conservation Prioritization in R
 #'
-#' TODO.
+#' @description
+#' The `robust.prioritizr` R package provides tools for building and solving
+#' robust systematic conservation prioritization problems. It extends the
+#' `prioritizr` package to account for uncertainty in the input data.
+#' This is particularly useful when working with data that is subject to
+#' change, such as species distribution models under climate change scenarios.
 #'
 #' @details
-#' TODO.
+#' The main functions provided by this package are:
 #'
-#' @section Citation:
-#' TODO.
+#' - [add_robust_min_set_objective()]
+#' - [add_robust_min_shortfall_objective()]
+#' - [add_constant_robust_constraints()]
+#' - [add_variable_robust_constraints()]
 #'
-#' @seealso
-#' TODO.
-#'
-#' @author
-#' TODO.
-#'
-#' @references
-#' TODO.
+#' For more information on using this package, see the vignettes:
+#' `vignette("robust.prioritizr", package = "robust.prioritizr")`
 #'
 #' @name robust.prioritizr
 #' @docType package

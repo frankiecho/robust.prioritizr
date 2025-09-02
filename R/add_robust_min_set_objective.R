@@ -4,6 +4,9 @@
 #'
 #' @param x [prioritizr::problem()] object.
 #'
+#' @param method the probabilistic constraint formulation method, either `Chance` (default) or `CondValueAtRisk`. See details.
+#'
+#'
 #' @details
 #' The robust minimum set objective seeks to find the set of planning units at a minimum cost such that the targets are met across all realizations of data.
 #'

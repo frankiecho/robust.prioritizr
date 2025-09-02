@@ -14,6 +14,8 @@ the prioritization. For problems with multiple zones, the argument
 to \code{budget} can be (i) a single \code{numeric} value to specify a single budget
 for the entire solution or (ii) a \code{numeric} vector to specify
 a separate budget for each management zone.}
+
+\item{method}{the probabilistic constraint formulation method, either \code{Chance} (default) or \code{CondValueAtRisk}. See details.}
 }
 \value{
 An updated \code{\link[prioritizr:problem]{prioritizr::problem()}} object with the objective added

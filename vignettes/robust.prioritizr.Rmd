@@ -248,7 +248,7 @@ data.frame(feature_1 = unname(feature_1_targets)) %>%
   theme(panel.grid = element_blank())
 ```
 
-Observe that while `prioritizr` sees `feature_1` as being achieved at `r expected_target`, indicated in the green line, the actual representation as simulated from the distribution is nowhere near the expected level. This implies that the shortfall metric used in the standard `prioritizr` is an under-representation of the shortfall target.
+Observe that while `prioritizr` sees `feature_1` as being achieved at the expected target, indicated in the green line, the actual representation as simulated from the distribution is nowhere near the expected level. This implies that the shortfall metric used in the standard `prioritizr` is an under-representation of the shortfall target.
 
 Now, let's observe how the solution will differ if we instead used robust approaches. In this robust approach, the shortfall is instead quantified as the minimum value in the distribution of representation for `feature_1`.
 

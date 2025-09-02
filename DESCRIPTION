@@ -9,9 +9,24 @@ Authors@R:
       person(c('Jeffrey', 'O'), 'Hanson',
         email='jeffrey.hanson@uqconnect.edu.au', role = c('aut'),
         comment = c(ORCID = '0000-0002-4716-6134')))
-Description: Robust systematic conservation prioritization tools in R
+Description: 
+    Robust systematic conservation prioritization based on chance constrained 
+    programming and robust optimization. It enables conservation prioritization users
+    to account of uncertainty in input data from climate change scenario projections, species
+    distribution models or measurement errors. It extends the flexible interface of `prioritizr`, 
+    a systematic conservation prioritization framework, creating robust versions 
+    of systematic conservation planning problems that can be solved using exact 
+    algorithm solvers. Problems can be specified to be fully robust to all data 
+    realizations provided, or partially robust, which guarantees that the probability
+    that the constraints are met is higher than the specified confidence level. 
+    Fully robust optimization problems are formulated as a "Minimax" 
+    linear programming problem, while partially robust optimization problems can be 
+    formulated as a "Chance Constrained Programming" problem (Charnes & Cooper, 1959), 
+    or a Conditional Value-at-Risk optimization problem (Rockafellar & 
+    Uryasev, 2000), both guaranteeing that the probability that targets are met
+    are at least a certain user-specified confidence level.
 Encoding: UTF-8
-License: GPL-3
+License: GPL (>= 3)
 Language: en-US
 URL: https://github.com/frankiecho/robust.prioritizr
 BugReports: https://github.com/frankiecho/robust.prioritizr/issues

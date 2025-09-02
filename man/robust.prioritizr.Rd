@@ -4,24 +4,40 @@
 \name{robust.prioritizr}
 \alias{robust.prioritizr}
 \alias{robust.prioritizr-package}
-\title{robust.prioritizr: Robust Systematic Conservation Prioritization}
+\title{robust.prioritizr: Robust Systematic Conservation Prioritization in R}
 \description{
-TODO.
+The \code{robust.prioritizr} R package provides tools for building and solving
+robust systematic conservation prioritization problems. It extends the
+\code{prioritizr} package to account for uncertainty in the input data.
+This is particularly useful when working with data that is subject to
+change, such as species distribution models under climate change scenarios.
 }
 \details{
-TODO.
+The main functions provided by this package are:
+\itemize{
+\item \code{\link[=add_robust_min_set_objective]{add_robust_min_set_objective()}}
+\item \code{\link[=add_robust_min_shortfall_objective]{add_robust_min_shortfall_objective()}}
+\item \code{\link[=add_constant_robust_constraints]{add_constant_robust_constraints()}}
+\item \code{\link[=add_variable_robust_constraints]{add_variable_robust_constraints()}}
 }
-\section{Citation}{
 
-TODO.
-}
-
-\references{
-TODO.
+For more information on using this package, see the vignettes:
+\code{vignette("robust.prioritizr", package = "robust.prioritizr")}
 }
 \seealso{
-TODO.
+Useful links:
+\itemize{
+  \item \url{https://github.com/frankiecho/robust.prioritizr}
+  \item Report bugs at \url{https://github.com/frankiecho/robust.prioritizr/issues}
+}
+
 }
 \author{
-TODO.
+\strong{Maintainer}: Frankie Cho \email{frankie.cho@qut.edu.au} (\href{https://orcid.org/0000-0003-1369-4980}{ORCID})
+
+Authors:
+\itemize{
+  \item Jeffrey O Hanson \email{jeffrey.hanson@uqconnect.edu.au} (\href{https://orcid.org/0000-0002-4716-6134}{ORCID})
+}
+
 }

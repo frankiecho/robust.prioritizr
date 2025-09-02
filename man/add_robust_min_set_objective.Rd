@@ -8,6 +8,8 @@ add_robust_min_set_objective(x, method = "Chance")
 }
 \arguments{
 \item{x}{\code{\link[prioritizr:problem]{prioritizr::problem()}} object.}
+
+\item{method}{the probabilistic constraint formulation method, either \code{Chance} (default) or \code{CondValueAtRisk}. See details.}
 }
 \value{
 An updated \code{\link[prioritizr:problem]{prioritizr::problem()}} object with the objective added
