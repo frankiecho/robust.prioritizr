@@ -72,11 +72,11 @@ First, we load the `vic_cmip6` dataset, which is bundled with the package. The p
 
 ```{r}
 data("vic_cmip6")
-species <- unwrap(vic_cmip6$species)
-cost <- unwrap(vic_cmip6$cost)
-pa <- unwrap(vic_cmip6$pa)
-species_details <- vic_cmip6$species_details
-study_area <- unwrap(vic_cmip6$study_area)
+species <- get_vic_species()
+cost <- get_vic_cost()
+pa <- get_vic_pa()
+species_details <- vic_cmip6
+study_area <- get_vic_study_area()
 rm(vic_cmip6)
 ```
 
@@ -181,7 +181,7 @@ rpv1 <- problem(cost, species) %>%
 rsv1 <- solve(rpv1)
 
 plot(rsv1, axes = F)
-plot(study_area, add = TRUE)
+lines(study_area)
 title("Robust Solution (Target = 1%)")
 
 ```
@@ -220,19 +220,20 @@ As the previous example shows, enforcing targets to be held robustly across all 
 Users can control the robustness of the solution through the `conf_level` parameter in `add_*_robust_constraints`, which specifies the proportion of the constraints that must be met in each group for the solution to be considered feasible. In this case, specifying 80% means that out of the 17 historic and future climate projections, the solution needs to meet the target in at least 13 (17 \times 0.8) climate projections/ time-steps. In other words, the target can only be breached for 3 climate projections/ time-steps. By relaxing this target, we can pursue much more ambitious relative targets (0.07 protection), while ensuring that the solution is feasible and reasonably robust under most climate projections and time-steps.
 
 ```{r}
-rt2 <- 0.01
+rt2 <- 0.06
 rpv2 <- problem(cost, species) %>%
   add_relative_targets(rt2) %>%
   robust.prioritizr::add_constant_robust_constraints(groups = groups,
                                                      conf_level = 0.8) %>%
   add_locked_in_constraints(pa) %>%
-  robust.prioritizr::add_robust_min_set_objective(method = "CondValueAtRisk") %>%
+  add_binary_decisions() %>%
+  robust.prioritizr::add_robust_min_set_objective(method = "Chance") %>%
   add_default_solver(verbose = F)
 
 rsv2 <- solve(rpv2)
 
 rs <- c(rsv1, rsv2, rsv1-pa, rsv2-pa)
-names(rs) <- c("Robust (1% target)", "Partially Robust (7% target)", "New PA (Robust 1%)", "New PA (Partially Robust 7%)")
+names(rs) <- c("Robust (1% target)", "Partially Robust (6% target)", "New PA (Robust 1%)", "New PA (Partially Robust 6%)")
 plot(rs, axes = F, fun = \() lines(study_area), type = 'continuous', range = c(0,1))
 ```
 

@@ -3,7 +3,7 @@
 \docType{data}
 \name{vic_cmip6}
 \alias{vic_cmip6}
-\title{Species Presence/ Absence, Cost and Protected Area data in Victoria, Australia}
+\title{Species Presence/ Absence data in Victoria, Australia}
 \format{
 \subsection{\code{vic_cmip6}}{
 
@@ -22,18 +22,9 @@ boyce: Spearman correlation (the Boyce index value), threshold: MaxEnt threshold
 vic_cmip6
 }
 \description{
-Contains terra raster objects for solving a systematic conservation planning
-problem in Victoria, Australia accounting for uncertainty in species
-presence/ absence predictions across future climate change projections.
+Contains a table showing information of layers retrieved from \code{get_vic_species()} function of the CMIP6 projections of flora and fauna occurrence in Victoria derived from MaxEnt modelling by Archibald et al. (2024).
 }
 \details{
-Projections of species presence/ absence are derived from MaxEnt habitat suitability
-maps for Australian flora and fauna under CMIP6 climate scenarios produced by
-Archibald et al. (2024). It was cropped to the state of Victoria, converted to
-a presence/ absence metric based on a threshold, and subsetted to only contain
-species predictions with adequate model fit (i.e., AUC threshold > 0.7, Boyce threshold > 0.5
-and Minimum Area Threshold > 1.0).
-
 Cost data is based on the Human Footprint Index 2013.
 
 Protected area data are from the Collaborative Australian Protected Areas Database (2024),
@@ -45,8 +36,5 @@ Details of can be found in \href{https://github.com/jeffreyhanson/robust.priorit
 Archibald, C., Summers, D., Graham, E. and Bryan, B. (2024). Habitat suitability maps
 for Australian flora and fauna under CMIP6 climate scenarios. GigaScience, Volume
 13, 2024, giae002. \url{https://doi.org/10.1093/gigascience/giae002}
-
-DCCEEW (2024), Collaborative Australian Protected Areas Database (CAPAD).
-\url{https://www.dcceew.gov.au/environment/land/nrs/science/capad}
 }
 \keyword{datasets}

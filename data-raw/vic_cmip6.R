@@ -6,17 +6,36 @@ library(dplyr)
 library(stringr)
 library(sf)
 
-data_path <- "C:/Github/robust.prioritizr.data/data/final"
+# download data
+piggyback::pb_download(
+  "cost.tif", dest = tempdir(),
+  repo="jeffreyhanson/robust.prioritizr.data", tag="v1.0.0"
+)
+# import data
+cost  <- rast(file.path(tempdir(), "cost.tif"))
 
-study_area <- vect(file.path(data_path, "../raw/gadm/gadm41_AUS_shp/gadm41_AUS_1.shp"))
-study_area <- study_area[study_area$GID_1=="AUS.10_1",]
+piggyback::pb_download(
+  "pa.tif", dest = tempdir(),
+  repo="jeffreyhanson/robust.prioritizr.data", tag="v1.0.0"
+)
+pa <- rast(file.path(tempdir(), "pa.tif"))
 
-species = rast(file.path(data_path, "species.tif"))
+piggyback::pb_download(
+  "species.tif", dest = tempdir(),
+  repo="jeffreyhanson/robust.prioritizr.data", tag="v1.0.0"
+)
+species <- rast(file.path(tempdir(), "species.tif"))
 
-study_area <- study_area %>%
-  project("EPSG:3577")
+study_area <- cost
+values(study_area)[!is.na(values(study_area))] <- 1
+names(study_area) <- "study_area"
+study_area <- as.polygons(study_area, na.rm = TRUE)
 
-species_details = read_csv(file.path(data_path, "species.csv"))
+piggyback::pb_download(
+  "species.csv", dest = tempdir(),
+  repo="jeffreyhanson/robust.prioritizr.data", tag="v1.0.0"
+)
+species_details = read_csv(file.path(tempdir(), "species.csv"))
 
 species_details <- species_details %>%
   mutate(scenario = str_extract(proj, "ssp[0-9]{3,4}|historic_baseline")) %>%
@@ -67,16 +86,24 @@ species_details_subset$id <- 1:nrow(species_details_subset)
 global_sums = global(species_subset, 'sum', na.rm = T)
 species_details_subset$sum = global_sums
 
-cost = wrap(rast(file.path(data_path, "cost.tif")))
 
-pa = wrap(rast(file.path(data_path, "pa.tif")))
+# Write outputs to extdata -----
+write_raster_w_params <- function(raster, path) {
+  writeRaster(raster, path,
+              NAflag = 2, overwrite = TRUE, datatype = "INT1U",
+              gdal = c("COMPRESS=ZSTD", "NBITS=2", "TILED=YES", "ZSTD_LEVEL=9"))
+}
 
-vic_cmip6 <- list(
-  species = wrap(species_subset),
-  cost = cost,
-  pa = pa,
-  species_details = species_details_subset,
-  study_area = wrap(study_area)
-)
+data_path <- "inst/extdata"
+
+write_raster_w_params(cost, file.path(data_path, "vic_cost.tif"))
+
+write_raster_w_params(pa, file.path(data_path, "vic_pa.tif"))
+
+write_raster_w_params(species_subset, file.path(data_path, "vic_species.tif"))
+
+writeVector(study_area, file.path(data_path, "vic_study_area.shp"), overwrite=TRUE)
+
+vic_cmip6 <- species_details_subset
 
 usethis::use_data(vic_cmip6, overwrite = TRUE)
