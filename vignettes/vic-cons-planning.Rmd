@@ -222,7 +222,7 @@ As the previous example shows, enforcing targets to be held robustly across all 
 Users can control the robustness of the solution through the `conf_level` parameter in `add_*_robust_constraints`, which specifies the proportion of the constraints that must be met in each group for the solution to be considered feasible. In this case, specifying 80% means that out of the 17 historic and future climate projections, the solution needs to meet the target in at least 13 (17 \times 0.8) climate projections/ time-steps. In other words, the target can only be breached for 3 climate projections/ time-steps. By relaxing this target, we can pursue much more ambitious relative targets (0.07 protection), while ensuring that the solution is feasible and reasonably robust under most climate projections and time-steps.
 
 ```{r}
-rt2 <- 0.075
+rt2 <- 0.073
 rpv2 <- problem(cost, species) %>%
   add_relative_targets(rt2) %>%
   robust.prioritizr::add_constant_robust_constraints(groups = groups,
@@ -249,13 +249,13 @@ rsv2_representation <- species_details %>%
   left_join(feature_rep_r2, by = "feature") %>%
   mutate(species_scenario = paste(species, scenario)) 
 rsv2_representation %>%
-  ggplot(aes(x = timestep, y = sum, color = scenario, group = species_scenario)) +
+  ggplot(aes(x = timestep, y = absolute_held, color = scenario, group = species_scenario)) +
   facet_wrap(vars(species), scales = "free_y") +
   geom_hline(data = worst_case_occurrence, aes(yintercept = rt2), linetype = 2) +
   geom_line() +
   theme_bw() +
   labs(x = "Time-step", y = "Representation (number of cells)") +
-  coord_cartesian(xlim = c(2030, 2090)) +
+  coord_cartesian(xlim = c(2030, 2090), ylim = c(0, NA)) +
   theme(panel.grid = element_blank(),
         legend.position = 'bottom')
 ```
@@ -267,7 +267,7 @@ rsv2_representation %>%
   left_join(worst_case_occurrence, by = 'species') %>%
   group_by(species) %>%
   summarise(
-    violation_pct = round(mean(sum < rt2), 3)
+    violation_pct = round(mean(absolute_held < rt2), 3)
   ) %>%
   arrange(-violation_pct) %>%
   head()
