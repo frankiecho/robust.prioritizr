@@ -74,8 +74,10 @@ Robust Prioritizr is agnostic to the data generating process - users who only wi
 Suppose the analyst fitted the following statistical model of the species abundance based on data:
 
 $$
+
 r_{ij} \sim \text{Poisson}(\theta_{ij}) \\
 \theta_{ij} = \log(\beta_0 + \beta_1 Temp_i + \beta_2 Temp_i^2 + \beta_3 Prec_i + \beta_4 Prec_i^2 + \varepsilon_{ij})
+
 $$
 
 where the abundance $r$ of species $j$ in location $i$ follows a Poisson distribution with the mean $\theta$, which is function of the climate covariates Temperature $Temp$ and Precipitation $Prec$ and a random i.i.d. error term $\varepsilon$. The relationships between the climate variables and the mean are modelled using the regression coefficients $\beta_1, \beta_2, \beta_3, \beta_4$. For simplicity, we assume here that its abundance only depends on these two climatic variables.
@@ -461,7 +463,7 @@ In some cases, such an analysis may not even yield feasible solutions. For examp
 abundance_min_1 <- c(abundance_rast[[1]] > 0,
                    abundance_rast[[4]] > 0,
                    min(abundance_rast[[1:4]] > 0))
-abundance_min_1 %>% plot()
+abundance_min_1 %>% plot(type = 'continuous', range = c(0,1))
 ```
 
 # Tuning the level of robustness
@@ -565,7 +567,7 @@ rp2b <- problem(costs_rast, abundance_uncertainty) %>%
   add_binary_decisions() %>%
   add_default_solver(verbose = F)
 
-rs2b <- solve(rp2b, force = TRUE)
+rs2b <- solve(rp2b)
 
 eval_soln_uncertain(rs2b)
 ```

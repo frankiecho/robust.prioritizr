@@ -87,7 +87,7 @@ The data package contains the following datasets:
 
 -   **Species details (`species_details`):** A table linking the raster layer names to their corresponding species, climate scenarios, and timesteps.
 
--   **Conservation cost (`cost`):** A proxy for conservation cost based on the 2013 Human Footprint Index.
+-   **Conservation cost (`cost`):** A proxy for conservation cost based on the 2013 Human Footprint Index by Williams et al. (2020).
 
 -   **Protected areas (`pa`):** The location of current protected areas.
 
@@ -97,7 +97,7 @@ We can visualize the projected occurrence of the brush-tailed rock-wallaby (*Pet
 
 ```{r}
 wallaby <- species_details %>%
-  filter(species == 'Petrogale_penicillata' & timestep >= 2050)
+  filter(species == 'Petrogale_penicillata' & timestep %in% c(1990, 2030, 2090))
 wallaby_ids <- pull(wallaby, id)
 wallaby_maps <- species[[wallaby_ids]]
 names(wallaby_maps) <- paste0(pull(wallaby, scenario), ": ", pull(wallaby, timestep))
@@ -236,7 +236,7 @@ csv2 <- compile(rpv2)
 rsv2 <- solve(rpv2)
 
 rs <- c(rsv1, rsv2, rsv1-pa, rsv2-pa)
-names(rs) <- c("Robust (1% target)", "Partially Robust (6% target)", "New PA (Robust 1%)", "New PA (Partially Robust 6%)")
+names(rs) <- c("Robust (1% target)", "Partially Robust (7% target)", "New PA (Robust 1%)", "New PA (Partially Robust 7%)")
 plot(rs, axes = F, fun = \() lines(study_area), type = 'continuous', range = c(0,1))
 ```
 
@@ -297,7 +297,7 @@ names(soln_v1) <- c("Non-robust", "Robust", "New PA (Non-robust)", "New PA (Robu
 plot(soln_v1, axes = F, fun = \() lines(study_area), type = "continuous", range = c(0,1))
 ```
 
-While the non-robust solution may appear effective from the historical baseline, it may potentially miss targets under future climate projections. We can check the representation of the Tasmanian devil (*Sarcophilus harrisii*) and compare it against the partially robust solution. The partially robust solution limits the total number of climate projections/ time-steps where the Tasmanian devil representation falls below the desired target.
+While the non-robust solution may appear effective when evaluated against the historical baseline, it may potentially miss targets under future climate projections. We can check the representation of the Tasmanian devil (*Sarcophilus harrisii*) and compare it against the partially robust solution. The partially robust solution limits the total number of climate projections/ time-steps where the Tasmanian devil representation falls below the desired target.
 
 ```{r}
 selected_species <- species_details %>%

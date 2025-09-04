@@ -16,7 +16,7 @@ Description:
     distribution models or measurement errors. It extends the flexible interface of `prioritizr`, 
     a systematic conservation prioritization framework, creating robust versions 
     of systematic conservation planning problems that can be solved using exact 
-    algorithm solvers. Problems can be specified to be fully robust to all data 
+    solvers. Problems can be specified to be fully robust to all data 
     realizations provided, or partially robust, which guarantees that the probability
     that the constraints are met is higher than the specified confidence level. 
     Fully robust optimization problems are formulated as a "Minimax" 
