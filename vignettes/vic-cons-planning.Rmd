@@ -143,7 +143,7 @@ worst_case_occurrence <- species_details %>%
   left_join(global_sum_species, by = "name") %>%
   group_by(species) %>%
   summarise(worst_case = min(sum),
-            pct_20 = quantile(sum, 0.2),
+            pct_20 = max(sum[sum < quantile(sum, 0.2)]),
             cvar = mean(sum[sum < quantile(sum, 0.1)]),
             best_case = max(sum),
             max_relative_target = round(worst_case/ best_case, 4),
@@ -156,7 +156,7 @@ worst_case_occurrence %>%
 
 This shows that if we are interested in a fully robust solution, the maximum relative target that is achievable for this problem would be 0.0022, as in the worst-case scenario, the Snowy Mountains skink (*Liopholis guthega*) is only represented in 1 5km grid cell, out of 452 grid cells in its best-case scenario. This means that even if all the planning units are selected for conservation, in the worst-case high-emissions climate scenario the Snowy Mountains skink will only be represented in a very small area.
 
-In this piece of code here we also lay the groundwork for alternative relative targets we can use by computing the 20th percentile of maximum species representation achievable. If we let the solution fall below the target for up to 20% of the outcomes, the maximum relative target that is achievable for the Snown Mountains skink would be near 0.075.
+In this piece of code here we also lay the groundwork for alternative relative targets we can use by computing the 20th percentile of maximum species representation achievable. If we let the solution fall below the target for up to 20% of the outcomes, the maximum relative target that is achievable for the Snown Mountains skink would be near 0.073.
 
 After solving the initial problem, we will progress to explore how to increase the relative targets we use by relaxing the robustness of the problem, such that the representation of other species in the data can be increased.
 
@@ -222,7 +222,7 @@ As the previous example shows, enforcing targets to be held robustly across all 
 Users can control the robustness of the solution through the `conf_level` parameter in `add_*_robust_constraints`, which specifies the proportion of the constraints that must be met in each group for the solution to be considered feasible. In this case, specifying 80% means that out of the 17 historic and future climate projections, the solution needs to meet the target in at least 13 (17 \times 0.8) climate projections/ time-steps. In other words, the target can only be breached for 3 climate projections/ time-steps. By relaxing this target, we can pursue much more ambitious relative targets (0.07 protection), while ensuring that the solution is feasible and reasonably robust under most climate projections and time-steps.
 
 ```{r}
-rt2 <- 0.07
+rt2 <- 0.075
 rpv2 <- problem(cost, species) %>%
   add_relative_targets(rt2) %>%
   robust.prioritizr::add_constant_robust_constraints(groups = groups,
@@ -304,13 +304,13 @@ selected_species <- species_details %>%
   filter(species == 'Sarcophilus_harrisii') %>%
   arrange(scenario, timestep)
 feature_rep_nr <- eval_feature_representation_summary(rpv2, sv1) %>%
-  filter(row_number() %in% selected_species$id) %>%
+  filter(feature %in% selected_species$name) %>%
   rownames_to_column("name") %>%
-  rename(non_robust = total_amount )
+  rename(non_robust = absolute_held )
 feature_rep_r <- eval_feature_representation_summary(rpv2, rsv2) %>%
-  filter(row_number() %in% selected_species$id) %>%
+  filter(feature %in% selected_species$name) %>%
   rownames_to_column("name") %>%
-  rename(robust = total_amount )
+  rename(robust = absolute_held )
 
 species_details %>%
   rename(feature = name) %>%
