@@ -60,7 +60,7 @@ sum_i^I (xi * rij) + tj * yj >= tj for all j in J &
 sum_i^I (xi * ci) <= B
 }
 
-Here, \eqn{x_i}{xi} is the \link{decisions} variable (e.g.,
+Here, \eqn{x_i}{xi} is the decisions variable (e.g.,
 specifying whether planning unit \eqn{i}{i} has been selected (1) or not
 (0)), \eqn{r_{ijk}}{rijk} is the amount of feature \eqn{j}{j} in planning
 unit \eqn{i}{i} in realization \eqn{k}{k}, \eqn{t_j}{tj} is the maximum representation target for feature
@@ -69,7 +69,7 @@ unit \eqn{i}{i} in realization \eqn{k}{k}, \eqn{t_j}{tj} is the maximum represen
 the target \eqn{t_j}{tj} for feature \eqn{j}{j} across all realizations \eqn{k}{k},
 \eqn{v_{jk}}{vjk} is the shortfall for feature \eqn{j}{j} under realization \eqn{k}{k}, and \eqn{w_j}{wj} is the
 weight for feature \eqn{j}{j} (defaults to 1 for all features; see
-\code{\link[=add_feature_weights]{add_feature_weights()}} to specify weights). \eqn{\alpha}{\alpha} is the
+\code{\link[prioritizr:add_feature_weights]{prioritizr::add_feature_weights()}} to specify weights). \eqn{\alpha}{\alpha} is the
 specified \code{conf_level} confidence level for the uncertain constraint
 (as specified in \verb{add_*_robust_constraints}), and ensures that the proportion of
 constraints for each feature group \eqn{k}{k} that are held is higher than the
@@ -120,7 +120,7 @@ groups <- rep(paste0("feature_", 1:5), 2)
 # Set up prioritizr problem
 p <- problem(pu, features) \%>\%
   add_constant_robust_constraints(groups = groups) \%>\%
-  add_robust_min_shortfall_objective(budget = relative_budget) \%>\%
+  add_robust_min_shortfall_objective(budget = relative_budget, method = "Chance") \%>\%
   add_relative_targets(0.1) \%>\%
   add_binary_decisions() \%>\%
   add_default_solver()

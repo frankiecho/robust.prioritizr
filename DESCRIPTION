@@ -28,7 +28,7 @@ Description:
 Encoding: UTF-8
 License: GPL (>= 3)
 Language: en-US
-URL: https://github.com/frankiecho/robust.prioritizr
+URL: https://github.com/frankiecho/robust.prioritizr, https://frankiecho.github.io/robust.prioritizr/
 BugReports: https://github.com/frankiecho/robust.prioritizr/issues
 VignetteBuilder: knitr
 LazyData: true
