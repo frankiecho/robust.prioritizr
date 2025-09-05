@@ -33,7 +33,7 @@ bool rcpp_apply_robust_probability_constraints(
 
   // Determine the current A matrix size and work out the index to start from
   A_extra_nrow = static_cast<std::size_t>(*std::max_element(ptr->_A_i.begin(), ptr->_A_i.end())) + 1;
-  A_extra_ncol = static_cast<std::size_t>(*std::max_element(ptr->_A_j.begin(), ptr->_A_j.end())) + 1;
+  A_extra_ncol = ptr->_number_of_zones * ptr->_number_of_planning_units;
 
   // Find maximum target for each group
   Rcpp::NumericVector feature_group_target(
@@ -90,7 +90,7 @@ bool rcpp_apply_robust_probability_constraints(
 
   // If we don't apply probability constraint set this to 0 to reduce solve times
   for (std::size_t i = 0; i < n_targets; ++i)
-    ptr->_ub.push_back(apply_prob_constraint[feature_group_ids[i]] ? 1 : 0);
+    ptr->_ub.push_back(1);
   for (std::size_t i = 0; i < n_targets; ++i)
     ptr->_lb.push_back(0);
 

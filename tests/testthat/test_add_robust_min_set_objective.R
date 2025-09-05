@@ -57,6 +57,45 @@ test_that("solve (single zone)", {
       prioritizr::eval_feature_representation_summary(p, s)$relative_held >= 0.1
     )
   )
+
+  conf_level <- 0.5
+
+  # Test for chance constraints
+  sim_features <- rep(prioritizr::get_sim_features(), 5)
+  names(sim_features) <- paste0("feature_", 1:terra::nlyr(sim_features))
+  x <- rep_len(c("a", "b"), terra::nlyr(sim_features))
+
+  p <-
+    prioritizr::problem(sim_pu_raster, sim_features) |>
+    add_robust_min_set_objective(method = 'CondValueAtRisk') |>
+    prioritizr::add_absolute_targets(5) |>
+    add_constant_robust_constraints(groups = x, conf_level = conf_level) |>
+    prioritizr::add_binary_decisions() |>
+    prioritizr::add_default_solver(verbose = FALSE)
+
+  s <- solve(p)
+  summary_eval <- prioritizr::eval_feature_representation_summary(p, s)
+  expect_lte(mean(summary_eval$absolute_held[x=='a'] < 5), conf_level)
+  expect_lte(mean(summary_eval$absolute_held[x=='b'] < 5), conf_level)
+
+  # Test for conditional value-at-risk
+  sim_features <- rep(prioritizr::get_sim_features(), 5)
+  names(sim_features) <- paste0("feature_", 1:terra::nlyr(sim_features))
+  x <- rep_len(c("a", "b"), terra::nlyr(sim_features))
+
+  p <-
+    prioritizr::problem(sim_pu_raster, sim_features) |>
+    add_robust_min_set_objective(method = 'CondValueAtRisk') |>
+    prioritizr::add_absolute_targets(5) |>
+    add_constant_robust_constraints(groups = x, conf_level = conf_level) |>
+    prioritizr::add_binary_decisions() |>
+    prioritizr::add_default_solver(verbose = FALSE)
+
+  s <- solve(p)
+  summary_eval <- prioritizr::eval_feature_representation_summary(p, s)
+  expect_lte(mean(summary_eval$absolute_held[x=='a'] < 5), conf_level)
+  expect_lte(mean(summary_eval$absolute_held[x=='b'] < 5), conf_level)
+
 })
 
 test_that("compile (multiple zones)", {
