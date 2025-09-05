@@ -21,7 +21,7 @@
 #' \Pr_k \{ \sum_{i = 1}^{I} x_i r_{ijk} \geq T_{j} \} \geq \alpha \space \forall \space j \in J}{Minimize sum_i^I (xi * ci) subject to sum_i^I (xi * rij) >= Tj for all
 #' j in J}
 #'
-#' Here, \eqn{x_i}{xi} is the [decisions] variable (e.g.,
+#' Here, \eqn{x_i}{xi} is the decision variable (e.g.,
 #' specifying whether planning unit \eqn{i}{i} has been selected (1) or not
 #' (0)), \eqn{c_i}{ci} is the cost of planning unit \eqn{i}{i},
 #' \eqn{r_{ijk}}{rijk} is the amount of feature \eqn{j}{j} in planning unit
@@ -113,7 +113,7 @@
 #' # Set up problem
 #' p <- problem(pu, features) %>%
 #'   add_constant_robust_constraints(groups = groups) %>%
-#'   add_robust_min_set_objective() %>%
+#'   add_robust_min_set_objective(method = "CondValueAtRisk") %>%
 #'   add_binary_decisions() %>%
 #'   add_relative_targets(0.1) %>%
 #'   add_default_solver()
