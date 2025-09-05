@@ -1,0 +1,3 @@
+"0","eval_soln_uncertain(rs2b, return_df = TRUE) %>%"
+"0","  group_by(groups) %>%"
+"0","  summarise(prop_target_met = mean(target_met == 'Target met') )"

@@ -1,0 +1,7 @@
+"0","wallaby <- species_details %>%"
+"0","  filter(species == 'Petrogale_penicillata' & timestep >= 2050)"
+"0","wallaby_ids <- pull(wallaby, id)"
+"0","wallaby_maps <- species[[wallaby_ids]]"
+"0","names(wallaby_maps) <- paste0(pull(wallaby, scenario), "": "", pull(wallaby, timestep))"
+"0",""
+"0","plot(wallaby_maps, axes = F, maxcell = 1e4, , fun= \() lines(study_area))"

@@ -1,0 +1,112 @@
+library(terra)
+library(prioritizr)
+library(robust.prioritizr)
+library(ggplot2)
+library(dplyr)
+
+set.seed(500)
+
+mu <- 1
+sigma <- 0.2
+N <- 5
+
+target <- 10
+
+feature_1 <- matrix(rnorm(N^2, mean = mu, sd = sigma), nrow = N, ncol = N)
+feature_2 <- matrix(1.5, nrow = 5, ncol = 5)
+sim_features_not_robust_raster <- c(rast(feature_1),
+                                    rast(feature_2))
+names(sim_features_not_robust_raster) <- c("feature_1", "feature_2")
+
+pu <- matrix(1, nrow = 5, ncol = 5)
+sim_pu_raster <- rast(pu)
+names(sim_pu_raster) <- c("Cost")
+
+p1 <- problem(sim_pu_raster, sim_features_not_robust_raster) %>%
+  add_min_set_objective() %>%
+  add_absolute_targets(target) %>%
+  add_binary_decisions() %>%
+  add_default_solver(verbose = FALSE)
+
+s1 <- solve(p1)
+names(s1) <- c('solution')
+
+plot(c(sim_features_not_robust_raster, sim_pu_raster, s1))
+
+df <- data.frame(
+  feature_1 = values(sim_features_not_robust_raster[[1]]),
+  solution = values(s1)
+)
+
+df %>%
+  arrange(feature_1) %>%
+  mutate(selected = if_else(solution == 1, "Yes", "No")) %>%
+  mutate(rank = nrow(.)-row_number()+1) %>%
+  ggplot(aes(x = rank, y = feature_1, fill = selected)) +
+  geom_bar(stat = 'identity') +
+  labs(x = "Rank of Feature 1", y = "Feature 1 value", fill = "Selected") +
+  theme_bw() +
+  theme(panel.grid = element_blank())
+
+# Number of simulations
+n_sims <- 40
+sim_feature_1 <- replicate(n_sims, matrix(rnorm(N^2, mean = mu, sd = sigma), nrow = 5, ncol = 5)) %>%
+  rast
+feature_1_outcomes <- sim_feature_1 * s1
+feature_1_targets <- values(feature_1_outcomes) %>%
+  apply(2, sum) %>%
+  unname
+
+expected_target <- sum(df$feature_1 * df$solution)
+
+data.frame(feature_1 = unname(feature_1_targets)) %>%
+  mutate(violated = if_else(feature_1 < target, "Below target", "Above target")) %>%
+  mutate(violated = factor(violated, c("Below target", "Above target"))) %>%
+  ggplot(aes(x = feature_1, fill = violated)) +
+  geom_histogram(color = 'white', bins = 30) +
+  theme_bw() +
+  geom_vline(xintercept = target, linetype = 2) +
+  geom_vline(xintercept = expected_target, color = '#009e73') +
+  scale_fill_manual('', values = c('#d55e00', '#0072b2'), drop = FALSE) +
+  theme(panel.grid = element_blank())
+
+sim_features_robust_raster <- c(sim_feature_1, rast(feature_2))
+names(sim_features_robust_raster) <- c(paste0(rep('f1', nlyr(sim_feature_1)),1:nlyr(sim_feature_1)), 'sim_feature_2')
+feature_groupings <- c(rep('f1', nlyr(sim_feature_1)), 'f2')
+
+p2 <- problem(sim_pu_raster, sim_features_robust_raster) %>%
+  add_constant_robust_constraints(groups = feature_groupings, confidence_level = .9) %>%
+  add_absolute_targets(target) %>%
+  add_robust_min_set_objective() %>%
+  add_binary_decisions() %>%
+  add_default_solver(verbose = TRUE)
+
+c2 <- compile(p2)
+
+s2 <- solve(p2)
+plot(s2)
+
+feature_1_targets_robust <- values(sim_feature_1 * s2) %>%
+  apply(2, sum) %>%
+  unname
+
+data.frame(`not_robust` = unname(feature_1_targets),
+           `robust` = unname(feature_1_targets_robust)) %>%
+  tidyr::pivot_longer(c('not_robust', 'robust'), names_to = 'name', values_to = 'values') %>%
+  mutate(name = factor(name, c('not_robust', 'robust'), c('Not Robust', 'Robust'))) %>%
+  mutate(violated = if_else(values < target, "Below target", "Above target")) %>%
+  mutate(violated = factor(violated, c("Below target", "Above target"))) %>%
+  ggplot(aes(x = values, fill = violated)) +
+  geom_histogram(color = 'white', bins = 30) +
+  theme_bw() +
+  geom_vline(xintercept = target, linetype = 2) +
+  geom_vline(xintercept = expected_target, color = '#009e73') +
+  scale_fill_manual('', values = c('#d55e00', '#0072b2'), drop = FALSE) +
+  facet_wrap(vars(name), ncol = 1) +
+  theme(panel.grid = element_blank())
+
+mean(feature_1_targets_robust < target )
+
+
+
+

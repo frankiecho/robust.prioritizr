@@ -1,0 +1,4 @@
+"0","abundance_min_1 <- c(abundance_rast[[1]] > 0,"
+"0","                   abundance_rast[[4]] > 0,"
+"0","                   min(abundance_rast[[1:4]] > 0))"
+"0","abundance_min_1 %>% plot()"

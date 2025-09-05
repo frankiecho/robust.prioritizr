@@ -1,0 +1,14 @@
+"0","budget <- 20"
+"0",""
+"0","p3 <- problem(sim_pu_raster, sim_features_not_robust_raster) %>%"
+"0","  add_absolute_targets(target) %>%"
+"0","  add_min_shortfall_objective(budget = budget) %>%"
+"0","  add_binary_decisions() %>%"
+"0","  add_default_solver(verbose = FALSE)"
+"0",""
+"0","s3 <- solve(p3)"
+"1","No match for"
+"1"," threads - ? for list of commands
+No match for 1 - ? for list of commands
+"
+"0","plot(s3)"

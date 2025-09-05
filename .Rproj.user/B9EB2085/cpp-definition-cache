@@ -1,0 +1,366 @@
+[
+    {
+        "file": "C:/Github/robust.prioritzr/src/init.c",
+        "file_last_write": 1753500094.0,
+        "definitions": [],
+        "hidden": false
+    },
+    {
+        "file": "C:/Github/robust.prioritzr/src/package.h",
+        "file_last_write": 1751501433.0,
+        "definitions": [],
+        "hidden": false
+    },
+    {
+        "file": "C:/Github/robust.prioritzr/src/prioritizr_optimization_problem.cpp",
+        "file_last_write": 1751501433.0,
+        "definitions": [
+            {
+                "usr": "c:@F@rcpp_new_optimization_problem#k#k#k#",
+                "kind": 6,
+                "parent_name": "",
+                "name": "rcpp_new_optimization_problem(std::size_t, std::size_t, std::size_t)",
+                "file": "C:/Github/robust.prioritzr/src/prioritizr_optimization_problem.cpp",
+                "line": 4,
+                "column": 6,
+                "hidden": false
+            },
+            {
+                "usr": "c:@F@rcpp_copy_optimization_problem#*$@S@SEXPREC#",
+                "kind": 6,
+                "parent_name": "",
+                "name": "rcpp_copy_optimization_problem(SEXP)",
+                "file": "C:/Github/robust.prioritzr/src/prioritizr_optimization_problem.cpp",
+                "line": 14,
+                "column": 6,
+                "hidden": false
+            },
+            {
+                "usr": "c:@F@rcpp_predefined_optimization_problem#$@N@Rcpp@S@Vector>#VI19#@N@Rcpp@ST>1#T@PreserveStorage#",
+                "kind": 6,
+                "parent_name": "",
+                "name": "rcpp_predefined_optimization_problem(Rcpp::List)",
+                "file": "C:/Github/robust.prioritzr/src/prioritizr_optimization_problem.cpp",
+                "line": 43,
+                "column": 6,
+                "hidden": false
+            },
+            {
+                "usr": "c:@F@rcpp_optimization_problem_as_list#*$@S@SEXPREC#",
+                "kind": 6,
+                "parent_name": "",
+                "name": "rcpp_optimization_problem_as_list(SEXP)",
+                "file": "C:/Github/robust.prioritzr/src/prioritizr_optimization_problem.cpp",
+                "line": 78,
+                "column": 12,
+                "hidden": false
+            },
+            {
+                "usr": "c:@F@rcpp_get_optimization_problem_ncol#*$@S@SEXPREC#",
+                "kind": 6,
+                "parent_name": "",
+                "name": "rcpp_get_optimization_problem_ncol(SEXP)",
+                "file": "C:/Github/robust.prioritzr/src/prioritizr_optimization_problem.cpp",
+                "line": 105,
+                "column": 13,
+                "hidden": false
+            },
+            {
+                "usr": "c:@F@rcpp_get_optimization_problem_nrow#*$@S@SEXPREC#",
+                "kind": 6,
+                "parent_name": "",
+                "name": "rcpp_get_optimization_problem_nrow(SEXP)",
+                "file": "C:/Github/robust.prioritzr/src/prioritizr_optimization_problem.cpp",
+                "line": 110,
+                "column": 13,
+                "hidden": false
+            },
+            {
+                "usr": "c:@F@rcpp_get_optimization_problem_ncell#*$@S@SEXPREC#",
+                "kind": 6,
+                "parent_name": "",
+                "name": "rcpp_get_optimization_problem_ncell(SEXP)",
+                "file": "C:/Github/robust.prioritzr/src/prioritizr_optimization_problem.cpp",
+                "line": 115,
+                "column": 13,
+                "hidden": false
+            },
+            {
+                "usr": "c:@F@rcpp_get_optimization_problem_A#*$@S@SEXPREC#",
+                "kind": 6,
+                "parent_name": "",
+                "name": "rcpp_get_optimization_problem_A(SEXP)",
+                "file": "C:/Github/robust.prioritzr/src/prioritizr_optimization_problem.cpp",
+                "line": 120,
+                "column": 12,
+                "hidden": false
+            },
+            {
+                "usr": "c:@F@rcpp_get_optimization_problem_modelsense#*$@S@SEXPREC#",
+                "kind": 6,
+                "parent_name": "",
+                "name": "rcpp_get_optimization_problem_modelsense(SEXP)",
+                "file": "C:/Github/robust.prioritzr/src/prioritizr_optimization_problem.cpp",
+                "line": 125,
+                "column": 13,
+                "hidden": false
+            },
+            {
+                "usr": "c:@F@rcpp_get_optimization_problem_number_of_planning_units#*$@S@SEXPREC#",
+                "kind": 6,
+                "parent_name": "",
+                "name": "rcpp_get_optimization_problem_number_of_planning_units(SEXP)",
+                "file": "C:/Github/robust.prioritzr/src/prioritizr_optimization_problem.cpp",
+                "line": 130,
+                "column": 13,
+                "hidden": false
+            },
+            {
+                "usr": "c:@F@rcpp_get_optimization_problem_number_of_features#*$@S@SEXPREC#",
+                "kind": 6,
+                "parent_name": "",
+                "name": "rcpp_get_optimization_problem_number_of_features(SEXP)",
+                "file": "C:/Github/robust.prioritzr/src/prioritizr_optimization_problem.cpp",
+                "line": 135,
+                "column": 13,
+                "hidden": false
+            },
+            {
+                "usr": "c:@F@rcpp_get_optimization_problem_number_of_zones#*$@S@SEXPREC#",
+                "kind": 6,
+                "parent_name": "",
+                "name": "rcpp_get_optimization_problem_number_of_zones(SEXP)",
+                "file": "C:/Github/robust.prioritzr/src/prioritizr_optimization_problem.cpp",
+                "line": 140,
+                "column": 13,
+                "hidden": false
+            },
+            {
+                "usr": "c:@F@rcpp_get_optimization_problem_vtype#*$@S@SEXPREC#",
+                "kind": 6,
+                "parent_name": "",
+                "name": "rcpp_get_optimization_problem_vtype(SEXP)",
+                "file": "C:/Github/robust.prioritzr/src/prioritizr_optimization_problem.cpp",
+                "line": 145,
+                "column": 26,
+                "hidden": false
+            },
+            {
+                "usr": "c:@F@rcpp_get_optimization_problem_obj#*$@S@SEXPREC#",
+                "kind": 6,
+                "parent_name": "",
+                "name": "rcpp_get_optimization_problem_obj(SEXP)",
+                "file": "C:/Github/robust.prioritzr/src/prioritizr_optimization_problem.cpp",
+                "line": 150,
+                "column": 21,
+                "hidden": false
+            },
+            {
+                "usr": "c:@F@rcpp_get_optimization_problem_rhs#*$@S@SEXPREC#",
+                "kind": 6,
+                "parent_name": "",
+                "name": "rcpp_get_optimization_problem_rhs(SEXP)",
+                "file": "C:/Github/robust.prioritzr/src/prioritizr_optimization_problem.cpp",
+                "line": 155,
+                "column": 21,
+                "hidden": false
+            },
+            {
+                "usr": "c:@F@rcpp_get_optimization_problem_sense#*$@S@SEXPREC#",
+                "kind": 6,
+                "parent_name": "",
+                "name": "rcpp_get_optimization_problem_sense(SEXP)",
+                "file": "C:/Github/robust.prioritzr/src/prioritizr_optimization_problem.cpp",
+                "line": 160,
+                "column": 26,
+                "hidden": false
+            },
+            {
+                "usr": "c:@F@rcpp_get_optimization_problem_lb#*$@S@SEXPREC#",
+                "kind": 6,
+                "parent_name": "",
+                "name": "rcpp_get_optimization_problem_lb(SEXP)",
+                "file": "C:/Github/robust.prioritzr/src/prioritizr_optimization_problem.cpp",
+                "line": 165,
+                "column": 21,
+                "hidden": false
+            },
+            {
+                "usr": "c:@F@rcpp_get_optimization_problem_ub#*$@S@SEXPREC#",
+                "kind": 6,
+                "parent_name": "",
+                "name": "rcpp_get_optimization_problem_ub(SEXP)",
+                "file": "C:/Github/robust.prioritzr/src/prioritizr_optimization_problem.cpp",
+                "line": 170,
+                "column": 21,
+                "hidden": false
+            },
+            {
+                "usr": "c:@F@rcpp_get_optimization_problem_col_ids#*$@S@SEXPREC#",
+                "kind": 6,
+                "parent_name": "",
+                "name": "rcpp_get_optimization_problem_col_ids(SEXP)",
+                "file": "C:/Github/robust.prioritzr/src/prioritizr_optimization_problem.cpp",
+                "line": 175,
+                "column": 26,
+                "hidden": false
+            },
+            {
+                "usr": "c:@F@rcpp_get_optimization_problem_row_ids#*$@S@SEXPREC#",
+                "kind": 6,
+                "parent_name": "",
+                "name": "rcpp_get_optimization_problem_row_ids(SEXP)",
+                "file": "C:/Github/robust.prioritzr/src/prioritizr_optimization_problem.cpp",
+                "line": 180,
+                "column": 26,
+                "hidden": false
+            },
+            {
+                "usr": "c:@F@rcpp_get_optimization_problem_compressed_formulation#*$@S@SEXPREC#",
+                "kind": 6,
+                "parent_name": "",
+                "name": "rcpp_get_optimization_problem_compressed_formulation(SEXP)",
+                "file": "C:/Github/robust.prioritzr/src/prioritizr_optimization_problem.cpp",
+                "line": 185,
+                "column": 6,
+                "hidden": false
+            },
+            {
+                "usr": "c:@F@rcpp_set_optimization_problem_shuffled#*$@S@SEXPREC#$@N@std@S@vector>#k#$@N@std@S@allocator>#k#",
+                "kind": 6,
+                "parent_name": "",
+                "name": "rcpp_set_optimization_problem_shuffled(SEXP, std::vector<std::size_t>)",
+                "file": "C:/Github/robust.prioritzr/src/prioritizr_optimization_problem.cpp",
+                "line": 202,
+                "column": 21,
+                "hidden": false
+            }
+        ],
+        "hidden": false
+    },
+    {
+        "file": "C:/Github/robust.prioritzr/src/prioritizr_optimization_problem.h",
+        "file_last_write": 1751501433.0,
+        "definitions": [
+            {
+                "usr": "c:@S@OPTIMIZATIONPROBLEM",
+                "kind": 2,
+                "parent_name": "",
+                "name": "OPTIMIZATIONPROBLEM",
+                "file": "C:/Github/robust.prioritzr/src/prioritizr_optimization_problem.h",
+                "line": 7,
+                "column": 7,
+                "hidden": false
+            },
+            {
+                "usr": "c:@S@OPTIMIZATIONPROBLEM@F@nrow#1",
+                "kind": 7,
+                "parent_name": "OPTIMIZATIONPROBLEM",
+                "name": "nrow",
+                "file": "C:/Github/robust.prioritzr/src/prioritizr_optimization_problem.h",
+                "line": 84,
+                "column": 30,
+                "hidden": false
+            },
+            {
+                "usr": "c:@S@OPTIMIZATIONPROBLEM@F@ncol#1",
+                "kind": 7,
+                "parent_name": "OPTIMIZATIONPROBLEM",
+                "name": "ncol",
+                "file": "C:/Github/robust.prioritzr/src/prioritizr_optimization_problem.h",
+                "line": 88,
+                "column": 30,
+                "hidden": false
+            },
+            {
+                "usr": "c:@S@OPTIMIZATIONPROBLEM@F@ncell#1",
+                "kind": 7,
+                "parent_name": "OPTIMIZATIONPROBLEM",
+                "name": "ncell",
+                "file": "C:/Github/robust.prioritzr/src/prioritizr_optimization_problem.h",
+                "line": 92,
+                "column": 30,
+                "hidden": false
+            },
+            {
+                "usr": "c:@S@OPTIMIZATIONPROBLEM@F@A#1",
+                "kind": 7,
+                "parent_name": "OPTIMIZATIONPROBLEM",
+                "name": "A",
+                "file": "C:/Github/robust.prioritzr/src/prioritizr_optimization_problem.h",
+                "line": 96,
+                "column": 29,
+                "hidden": false
+            }
+        ],
+        "hidden": false
+    },
+    {
+        "file": "C:/Github/robust.prioritzr/src/rcpp_apply_robust_cvar_constraints.cpp",
+        "file_last_write": 1756794386.0,
+        "definitions": [
+            {
+                "usr": "c:@F@rcpp_apply_robust_cvar_constraints#*$@S@SEXPREC#1$@N@Rcpp@S@Vector>#VI19#@N@Rcpp@ST>1#T@PreserveStorage#1$@N@Rcpp@S@Vector>#VI13#@N@Rcpp@ST>1#T@PreserveStorage#1$@N@Rcpp@S@Vector>#VI14#@N@Rcpp@ST>1#T@PreserveStorage#",
+                "kind": 6,
+                "parent_name": "",
+                "name": "rcpp_apply_robust_cvar_constraints(SEXP, const Rcpp::List, const Rcpp::IntegerVector, const Rcpp::NumericVector)",
+                "file": "C:/Github/robust.prioritzr/src/rcpp_apply_robust_cvar_constraints.cpp",
+                "line": 5,
+                "column": 6,
+                "hidden": false
+            }
+        ],
+        "hidden": false
+    },
+    {
+        "file": "C:/Github/robust.prioritzr/src/rcpp_apply_robust_min_set_objective.cpp",
+        "file_last_write": 1756435668.0,
+        "definitions": [
+            {
+                "usr": "c:@F@rcpp_apply_robust_min_set_objective#*$@S@SEXPREC#1$@N@Rcpp@S@Vector>#VI19#@N@Rcpp@ST>1#T@PreserveStorage#1$@N@Rcpp@S@Matrix>#VI14#@N@Rcpp@ST>1#T@PreserveStorage#1$@N@Rcpp@S@Vector>#VI13#@N@Rcpp@ST>1#T@PreserveStorage#",
+                "kind": 6,
+                "parent_name": "",
+                "name": "rcpp_apply_robust_min_set_objective(SEXP, const Rcpp::List, const Rcpp::NumericMatrix, const Rcpp::IntegerVector)",
+                "file": "C:/Github/robust.prioritzr/src/rcpp_apply_robust_min_set_objective.cpp",
+                "line": 5,
+                "column": 6,
+                "hidden": false
+            }
+        ],
+        "hidden": false
+    },
+    {
+        "file": "C:/Github/robust.prioritzr/src/rcpp_apply_robust_min_shortfall_objective.cpp",
+        "file_last_write": 1753429423.0,
+        "definitions": [
+            {
+                "usr": "c:@F@rcpp_apply_robust_min_shortfall_objective#*$@S@SEXPREC#1$@N@Rcpp@S@Vector>#VI19#@N@Rcpp@ST>1#T@PreserveStorage#1$@N@Rcpp@S@Matrix>#VI14#@N@Rcpp@ST>1#T@PreserveStorage#$@N@Rcpp@S@Vector>#VI14#@N@Rcpp@ST>1#T@PreserveStorage#1$@N@Rcpp@S@Vector>#VI13#@N@Rcpp@ST>1#T@PreserveStorage#",
+                "kind": 6,
+                "parent_name": "",
+                "name": "rcpp_apply_robust_min_shortfall_objective(SEXP, const Rcpp::List, const Rcpp::NumericMatrix, Rcpp::NumericVector, const Rcpp::IntegerVector)",
+                "file": "C:/Github/robust.prioritzr/src/rcpp_apply_robust_min_shortfall_objective.cpp",
+                "line": 5,
+                "column": 6,
+                "hidden": false
+            }
+        ],
+        "hidden": false
+    },
+    {
+        "file": "C:/Github/robust.prioritzr/src/rcpp_apply_robust_probability_constraints.cpp",
+        "file_last_write": 1757031050.0,
+        "definitions": [
+            {
+                "usr": "c:@F@rcpp_apply_robust_probability_constraints#*$@S@SEXPREC#1$@N@Rcpp@S@Vector>#VI19#@N@Rcpp@ST>1#T@PreserveStorage#1$@N@Rcpp@S@Vector>#VI13#@N@Rcpp@ST>1#T@PreserveStorage#1$@N@Rcpp@S@Vector>#VI14#@N@Rcpp@ST>1#T@PreserveStorage#",
+                "kind": 6,
+                "parent_name": "",
+                "name": "rcpp_apply_robust_probability_constraints(SEXP, const Rcpp::List, const Rcpp::IntegerVector, const Rcpp::NumericVector)",
+                "file": "C:/Github/robust.prioritzr/src/rcpp_apply_robust_probability_constraints.cpp",
+                "line": 5,
+                "column": 6,
+                "hidden": false
+            }
+        ],
+        "hidden": false
+    }
+]

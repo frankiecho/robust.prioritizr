@@ -1,0 +1,246 @@
+══ Documenting ═════════════════════════════════════════════════════════════════
+ℹ Updating robust.prioritizr documentation
+ℹ Loading robust.prioritizr
+
+══ Building ════════════════════════════════════════════════════════════════════
+Setting env vars:
+• CFLAGS    : -Wall -pedantic
+• CXXFLAGS  : -Wall -pedantic
+• CXX11FLAGS: -Wall -pedantic
+• CXX14FLAGS: -Wall -pedantic
+• CXX17FLAGS: -Wall -pedantic
+• CXX20FLAGS: -Wall -pedantic
+── R CMD build ─────────────────────────────────────────────────────────────────
+* checking for file 'C:\Github\robust.prioritzr/DESCRIPTION' ... OK
+* preparing 'robust.prioritizr':
+* checking DESCRIPTION meta-information ... OK
+* cleaning src
+* installing the package to build vignettes
+* creating vignettes ... OK
+* cleaning src
+* checking for LF line-endings in source and make files and shell scripts
+* checking for empty or unneeded directories
+* building 'robust.prioritizr_0.0.0.1.tar.gz'
+
+══ Checking ════════════════════════════════════════════════════════════════════
+Setting env vars:
+• _R_CHECK_CRAN_INCOMING_REMOTE_               : FALSE
+• _R_CHECK_CRAN_INCOMING_                      : FALSE
+• _R_CHECK_FORCE_SUGGESTS_                     : FALSE
+• _R_CHECK_PACKAGES_USED_IGNORE_UNUSED_IMPORTS_: FALSE
+• NOT_CRAN                                     : true
+── R CMD check ─────────────────────────────────────────────────────────────────
+* using log directory 'C:/Users/uqfcho/AppData/Local/Temp/RtmpMbbHSE/file10606f241c3d/robust.prioritizr.Rcheck'
+* using R version 4.5.1 (2025-06-13 ucrt)
+* using platform: x86_64-w64-mingw32
+* R was compiled by
+    gcc.exe (GCC) 14.2.0
+    GNU Fortran (GCC) 14.2.0
+* running under: Windows 11 x64 (build 22621)
+* using session charset: UTF-8
+* using options '--no-manual --as-cran'
+* checking for file 'robust.prioritizr/DESCRIPTION' ... OK
+* checking extension type ... Package
+* this is package 'robust.prioritizr' version '0.0.0.1'
+* package encoding: UTF-8
+* checking package namespace information ... OK
+* checking package dependencies ... OK
+* checking if this is a source package ... OK
+* checking if there is a namespace ... OK
+* checking for executable files ... OK
+* checking for hidden files and directories ... OK
+* checking for portable file names ... OK
+* checking whether package 'robust.prioritizr' can be installed ... [49s] OK
+* used C compiler: 'gcc.exe (GCC) 14.2.0'
+* used C++ compiler: 'G__~1.EXE (GCC) 14.2.0'
+* checking installed package size ... INFO
+  installed size is 10.5Mb
+  sub-directories of 1Mb or more:
+    libs   9.5Mb
+* checking package directory ... OK
+* checking for future file timestamps ... OK
+* checking 'build' directory ... OK
+* checking DESCRIPTION meta-information ... NOTE
+Malformed Description field: should contain one or more complete sentences.
+* checking top-level files ... OK
+* checking for left-over files ... OK
+* checking index information ... OK
+* checking package subdirectories ... OK
+* checking code files for non-ASCII characters ... OK
+* checking R files for syntax errors ... OK
+* checking whether the package can be loaded ... OK
+* checking whether the package can be loaded with stated dependencies ... OK
+* checking whether the package can be unloaded cleanly ... OK
+* checking whether the namespace can be loaded with stated dependencies ... OK
+* checking whether the namespace can be unloaded cleanly ... OK
+* checking dependencies in R code ... WARNING
+'::' or ':::' imports not declared from:
+  'raster' 'sf' 'tibble'
+Namespaces in Imports field not imported from:
+  'methods' 'utils'
+  All declared Imports should be used.
+* checking S3 generic/method consistency ... OK
+* checking replacement functions ... OK
+* checking foreign function calls ... OK
+* checking R code for possible problems ... NOTE
+add_robust_min_shortfall_objective: no visible binding for global
+  variable 'Objective'
+all_is_valid_total_unit_ids: no visible global function definition for
+  'number_of_total_units'
+is_budget_length: no visible global function definition for
+  'number_of_zones'
+verify: no visible global function definition for 'cli_warning'
+Undefined global functions or variables:
+  Objective cli_warning number_of_total_units number_of_zones
+* checking Rd files ... OK
+* checking Rd metadata ... OK
+* checking Rd line widths ... OK
+* checking Rd cross-references ... NOTE
+Found the following Rd file(s) with Rd \link{} targets missing package
+anchors:
+  add_robust_min_set_objective.Rd: decisions
+  add_robust_min_shortfall_objective.Rd: decisions, add_feature_weights
+Please provide package anchors for all Rd \link{} targets not in the
+package itself and the base packages.
+* checking for missing documentation entries ... OK
+* checking for code/documentation mismatches ... OK
+* checking Rd \usage sections ... WARNING
+Undocumented arguments in Rd file 'add_robust_min_set_objective.Rd'
+  'method'
+Functions with \usage entries need to have the appropriate \alias
+entries, and all their arguments documented.
+The \usage entries must correspond to syntactically valid R code.
+See chapter 'Writing R documentation files' in the 'Writing R
+Extensions' manual.
+* checking Rd contents ... OK
+* checking for unstated dependencies in examples ... OK
+* checking contents of 'data' directory ... OK
+* checking data for non-ASCII characters ... OK
+* checking LazyData ... OK
+* checking data for ASCII and uncompressed saves ... OK
+* checking line endings in C/C++/Fortran sources/headers ... OK
+* checking pragmas in C/C++ headers and code ... OK
+* checking compilation flags used ... OK
+* checking compiled code ... OK
+* checking installed files from 'inst/doc' ... OK
+* checking files in 'vignettes' ... OK
+* checking examples ... OK
+* checking for unstated dependencies in 'tests' ... WARNING
+'::' or ':::' import not declared from: 'tibble'
+* checking tests ...
+  Running 'testthat.R' [19s]
+ [19s] OK
+* checking for unstated dependencies in vignettes ... NOTE
+'library' or 'require' calls not declared from:
+  'dplyr' 'ggplot2' 'patchwork' 'stringr' 'tibble' 'tidyr'
+* checking package vignettes ... OK
+* checking re-building of vignette outputs ... ERROR
+Error(s) in re-building vignettes:
+  ...
+--- re-building 'climate-sdm.Rmd' using rmarkdown
+--- finished re-building 'climate-sdm.Rmd'
+--- re-building 'vic-cons-planning.Rmd' using rmarkdown
+--- finished re-building 'vic-cons-planning.Rmd'
+--- re-building 'robust.prioritizr.Rmd' using rmarkdown_notangle
+Quitting from robust.prioritizr.Rmd:251-251
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<error/rlang_error>
+Error:
+! object 'expected_target' not found
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Error: processing vignette 'robust.prioritizr.Rmd' failed with diagnostics:
+object 'expected_target' not found
+--- failed re-building 'robust.prioritizr.Rmd'
+SUMMARY: processing the following file failed:
+  'robust.prioritizr.Rmd'
+Error: Vignette re-building failed.
+Execution halted
+* checking for non-standard things in the check directory ... OK
+* checking for detritus in the temp directory ... OK
+* DONE
+
+Status: 1 ERROR, 3 WARNINGs, 4 NOTEs
+See
+  'C:/Users/uqfcho/AppData/Local/Temp/RtmpMbbHSE/file10606f241c3d/robust.prioritizr.Rcheck/00check.log'
+for details.
+
+── R CMD check results ────────────────────────── robust.prioritizr 0.0.0.1 ────
+Duration: 3m 0.2s
+
+❯ checking re-building of vignette outputs ... ERROR
+  Error(s) in re-building vignettes:
+    ...
+  --- re-building 'climate-sdm.Rmd' using rmarkdown
+  --- finished re-building 'climate-sdm.Rmd'
+  
+  --- re-building 'vic-cons-planning.Rmd' using rmarkdown
+  --- finished re-building 'vic-cons-planning.Rmd'
+  
+  --- re-building 'robust.prioritizr.Rmd' using rmarkdown_notangle
+  
+  Quitting from robust.prioritizr.Rmd:251-251
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  <error/rlang_error>
+  Error:
+  ! object 'expected_target' not found
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  
+  Error: processing vignette 'robust.prioritizr.Rmd' failed with diagnostics:
+  object 'expected_target' not found
+  --- failed re-building 'robust.prioritizr.Rmd'
+  
+  SUMMARY: processing the following file failed:
+    'robust.prioritizr.Rmd'
+  
+  Error: Vignette re-building failed.
+  Execution halted
+
+❯ checking dependencies in R code ... WARNING
+  '::' or ':::' imports not declared from:
+    'raster' 'sf' 'tibble'
+  Namespaces in Imports field not imported from:
+    'methods' 'utils'
+    All declared Imports should be used.
+
+❯ checking Rd \usage sections ... WARNING
+  Undocumented arguments in Rd file 'add_robust_min_set_objective.Rd'
+    'method'
+  
+  Functions with \usage entries need to have the appropriate \alias
+  entries, and all their arguments documented.
+  The \usage entries must correspond to syntactically valid R code.
+  See chapter 'Writing R documentation files' in the 'Writing R
+  Extensions' manual.
+
+❯ checking for unstated dependencies in 'tests' ... WARNING
+  '::' or ':::' import not declared from: 'tibble'
+
+❯ checking DESCRIPTION meta-information ... NOTE
+  Malformed Description field: should contain one or more complete sentences.
+
+❯ checking R code for possible problems ... NOTE
+  add_robust_min_shortfall_objective: no visible binding for global
+    variable 'Objective'
+  all_is_valid_total_unit_ids: no visible global function definition for
+    'number_of_total_units'
+  is_budget_length: no visible global function definition for
+    'number_of_zones'
+  verify: no visible global function definition for 'cli_warning'
+  Undefined global functions or variables:
+    Objective cli_warning number_of_total_units number_of_zones
+
+❯ checking Rd cross-references ... NOTE
+  Found the following Rd file(s) with Rd \link{} targets missing package
+  anchors:
+    add_robust_min_set_objective.Rd: decisions
+    add_robust_min_shortfall_objective.Rd: decisions, add_feature_weights
+  Please provide package anchors for all Rd \link{} targets not in the
+  package itself and the base packages.
+
+❯ checking for unstated dependencies in vignettes ... NOTE
+  'library' or 'require' calls not declared from:
+    'dplyr' 'ggplot2' 'patchwork' 'stringr' 'tibble' 'tidyr'
+
+1 error ✖ | 3 warnings ✖ | 4 notes ✖
+Error: R CMD check found ERRORs
+Execution halted

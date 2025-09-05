@@ -1,0 +1,3 @@
+## code to prepare `cost` dataset goes here
+
+usethis::use_data(cost, overwrite = TRUE)

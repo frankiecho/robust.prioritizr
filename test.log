@@ -1,0 +1,65 @@
+ℹ Testing robust.prioritizr
+✔ | F W  S  OK | Context
+
+⠏ |          0 | add_robust_constraints                                         terra 1.8.54
+
+Attaching package: 'terra'
+
+The following objects are masked from 'package:testthat':
+
+    compare, describe
+
+
+⠋ |          1 | add_robust_constraints                                         
+⠼ |          5 | add_robust_constraints                                         
+⠦ |          7 | add_robust_constraints                                         
+⠇ |          9 | add_robust_constraints                                         
+⠙ |         12 | add_robust_constraints                                         
+⠸ |         14 | add_robust_constraints                                         
+⠦ |         17 | add_robust_constraints                                         
+⠇ |         19 | add_robust_constraints                                         
+✔ |         20 | add_robust_constraints [3.7s]
+
+⠏ |          0 | add_robust_min_set_objective                                   
+⠋ |          1 | add_robust_min_set_objective                                   
+⠼ |          5 | add_robust_min_set_objective                                   
+⠏ |         10 | add_robust_min_set_objective                                   
+⠙ |         12 | add_robust_min_set_objective                                   
+⠼ |         15 | add_robust_min_set_objective                                   
+✔ |         16 | add_robust_min_set_objective [1.6s]
+
+⠏ |          0 | add_robust_min_shortfall_objective                             
+⠋ |          1 | add_robust_min_shortfall_objective                             
+⠹ | 1        2 | add_robust_min_shortfall_objective                             
+⠼ | 1        4 | add_robust_min_shortfall_objective                             
+⠇ | 1        8 | add_robust_min_shortfall_objective                             
+⠋ | 1       10 | add_robust_min_shortfall_objective                             
+⠹ | 1       12 | add_robust_min_shortfall_objective                             
+✖ | 1       13 | add_robust_min_shortfall_objective [2.1s]
+────────────────────────────────────────────────────────────────────────────────
+Failure ('test_add_robust_min_shortfall_objective.R:26:3'): compile (single zone)
+c$rhs() (`actual`) not equal to c(rep(0.1, 5), 1, rep(0, 5), (1 - 0.9) * 3, (1 - 0.9) * 2) (`expected`).
+
+  `actual[9:13]`: 0.00 0.00 0.00 0.00 0.00
+`expected[9:13]`: 0.00 0.00 0.00 0.30 0.20
+────────────────────────────────────────────────────────────────────────────────
+
+⠏ |          0 | get_feature_group_data                                         
+⠋ |          1 | get_feature_group_data                                         
+⠸ |          4 | get_feature_group_data                                         
+⠦ |          7 | get_feature_group_data                                         
+⠋ |         11 | get_feature_group_data                                         
+⠙ |         12 | get_feature_group_data                                         
+✔ |         12 | get_feature_group_data
+
+══ Results ═════════════════════════════════════════════════════════════════════
+Duration: 8.1 s
+
+── Failed tests ────────────────────────────────────────────────────────────────
+Failure ('test_add_robust_min_shortfall_objective.R:26:3'): compile (single zone)
+c$rhs() (`actual`) not equal to c(rep(0.1, 5), 1, rep(0, 5), (1 - 0.9) * 3, (1 - 0.9) * 2) (`expected`).
+
+  `actual[9:13]`: 0.00 0.00 0.00 0.00 0.00
+`expected[9:13]`: 0.00 0.00 0.00 0.30 0.20
+
+[ FAIL 1 | WARN 0 | SKIP 0 | PASS 61 ]

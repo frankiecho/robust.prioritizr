@@ -1,0 +1,7 @@
+"0","# Baseline occurrences for species 1 and 2"
+"0","baseline_ab_1 <- rpois_matrix(exp_ab_1(temp, prec))"
+"0","baseline_ab_2 <- rpois_matrix(exp_ab_2(temp, prec))"
+"0",""
+"0","baseline_rast <- c(rast(temp), rast(prec), rast(baseline_ab_1), rast(baseline_ab_2))"
+"0","names(baseline_rast) <- c(""Temperature (C)"", ""Precipitation (mm)"", ""Abundance (Species 1)"", ""Abundance (Species 2)"")"
+"0","plot(baseline_rast)"

@@ -1,0 +1,512 @@
+facet_wrap(vars(solution), scales = "free_y") +
+geom_hline(data = worst_case_occurrence, aes(yintercept = rt2), linetype = 2) +
+geom_line() +
+theme_bw() +
+labs(x = "Time-step", y = "Representation (number of cells)") +
+coord_cartesian(xlim = c(2030, 2090)) +
+theme(panel.grid = element_blank(),
+legend.position = 'bottom')
+species_details %>%
+right_join(feature_rep_nr) %>%
+right_join(feature_rep_r) %>%
+pivot_longer(c('non_robust', 'robust'), names_to = 'solution') %>%
+left_join(worst_case_occurrence, by = 'species') %>%
+mutate(species_scenario = paste(species, scenario)) %>%
+ggplot(aes(x = timestep, y = value, color = scenario, group = species_scenario)) +
+facet_wrap(vars(solution), scales = "free_y") +
+# geom_hline(data = worst_case_occurrence, aes(yintercept = rt2), linetype = 2) +
+geom_line() +
+theme_bw() +
+labs(x = "Time-step", y = "Representation (number of cells)") +
+coord_cartesian(xlim = c(2030, 2090)) +
+theme(panel.grid = element_blank(),
+legend.position = 'bottom')
+feature_rep_r
+feature_rep_nr
+species_details %>%
+right_join(feature_rep_nr) %>%
+right_join(feature_rep_r) %>%
+pivot_longer(c('non_robust', 'robust'), names_to = 'solution') %>%
+left_join(worst_case_occurrence, by = 'species') %>%
+mutate(species_scenario = paste(species, scenario)) %>%
+ggplot(aes(x = timestep, y = value, color = scenario, group = species_scenario)) +
+facet_wrap(vars(solution)) +
+# geom_hline(data = worst_case_occurrence, aes(yintercept = rt2), linetype = 2) +
+geom_line() +
+theme_bw() +
+labs(x = "Time-step", y = "Representation (number of cells)") +
+coord_cartesian(xlim = c(2030, 2090)) +
+theme(panel.grid = element_blank(),
+legend.position = 'bottom')
+worst_case_occurrence
+species_details %>%
+right_join(feature_rep_nr) %>%
+right_join(feature_rep_r) %>%
+pivot_longer(c('non_robust', 'robust'), names_to = 'solution') %>%
+left_join(worst_case_occurrence, by = 'species') %>%
+mutate(species_scenario = paste(species, scenario)) %>%
+ggplot(aes(x = timestep, y = value, color = scenario, group = species_scenario)) +
+facet_wrap(vars(solution)) +
+geom_hline(data = worst_case_occurrence %>% filter(species == 'Liopholis_guthega'), aes(yintercept = rt2), linetype = 2) +
+geom_line() +
+theme_bw() +
+labs(x = "Time-step", y = "Representation (number of cells)") +
+coord_cartesian(xlim = c(2030, 2090)) +
+theme(panel.grid = element_blank(),
+legend.position = 'bottom')
+species_details %>%
+right_join(feature_rep_nr) %>%
+right_join(feature_rep_r) %>%
+pivot_longer(c('non_robust', 'robust'), names_to = 'solution') %>%
+left_join(worst_case_occurrence, by = 'species') %>%
+mutate(species_scenario = paste(species, scenario)) %>%
+filter(timestep > 1990) %>%
+ggplot(aes(x = timestep, y = value, color = scenario, group = species_scenario)) +
+facet_wrap(vars(solution)) +
+geom_hline(data = worst_case_occurrence %>% filter(species == 'Liopholis_guthega'), aes(yintercept = rt2), linetype = 2) +
+geom_line() +
+theme_bw() +
+labs(x = "Time-step", y = "Representation (number of cells)") +
+coord_cartesian(xlim = c(2030, 2090)) +
+theme(panel.grid = element_blank(),
+legend.position = 'bottom')
+is_historic_baseline <- species_details %>%
+filter(scenario == 'historic_baseline') %>%
+pull(id)
+species_hb <- species[[is_historic_baseline]]
+pv1 <- problem(cost, species_hb) %>%
+add_relative_targets(0.07) %>%
+add_min_set_objective() %>%
+add_locked_in_constraints(pa) %>%
+add_default_solver(verbose = F)
+cv1 <- compile(pv1)
+sv1 <- solve(pv1)
+soln_v1 <- c(sv1, rsv2, rsv2-sv1)
+names(soln_v1) <- c("Non-robust", "Robust", "Difference")
+plot(soln_v1, axes = F, fun = \() lines(study_area))
+species_hb
+names(species_hb)
+is_historic_baseline <- species_details %>%
+filter(scenario == 'historic_baseline') %>%
+pull(id)
+species_hb <- species[[is_historic_baseline]]
+pv1 <- problem(cost, species_hb) %>%
+add_relative_targets(0.07) %>%
+add_min_set_objective() %>%
+add_locked_in_constraints(pa) %>%
+add_default_solver(verbose = F)
+cv1 <- compile(pv1)
+sv1 <- solve(pv1)
+soln_v1 <- c(sv1, rsv2, sv1-pa, rsv2-pa)
+names(soln_v1) <- c("Non-robust", "Robust", "Difference","Difference")
+plot(soln_v1, axes = F, fun = \() lines(study_area))
+is_historic_baseline <- species_details %>%
+filter(scenario == 'historic_baseline') %>%
+pull(id)
+species_hb <- species[[is_historic_baseline]]
+pv1 <- problem(cost, species_hb) %>%
+add_relative_targets(0.07) %>%
+add_min_set_objective() %>%
+add_locked_in_constraints(pa) %>%
+add_default_solver(verbose = F)
+cv1 <- compile(pv1)
+sv1 <- solve(pv1)
+soln_v1 <- c(sv1, rsv2, sv1-pa, rsv2-pa)
+names(soln_v1) <- c("Non-robust", "Robust", "New PA (Non-robust)", "New PA (Robust)")
+plot(soln_v1, axes = F, fun = \() lines(study_area))
+?plot.SpatRaster
+?plot.terra
+?plot
+plot(soln_v1, axes = F, fun = \() lines(study_area), range = c(0,1))
+is_historic_baseline <- species_details %>%
+filter(scenario == 'historic_baseline') %>%
+pull(id)
+species_hb <- species[[is_historic_baseline]]
+pv1 <- problem(cost, species_hb) %>%
+add_relative_targets(0.07) %>%
+add_min_set_objective() %>%
+add_locked_in_constraints(pa) %>%
+add_default_solver(verbose = F)
+cv1 <- compile(pv1)
+sv1 <- solve(pv1)
+soln_v1 <- c(sv1, rsv2, sv1-pa, rsv2-pa)
+names(soln_v1) <- c("Non-robust", "Robust", "New PA (Non-robust)", "New PA (Robust)")
+plot(soln_v1, axes = F, fun = \() lines(study_area), range = c(NA,1))
+plot(soln_v1, axes = F, fun = \() lines(study_area), type = "continuous", range = c(0,1))
+selected_species <- species_details %>%
+filter(species == 'Philoria_frosti') %>%
+arrange(scenario, timestep)
+feature_rep_nr <- global(species[[selected_species$id]] * sv1, fun = 'sum', na.rm = T) %>%
+rownames_to_column("name") %>%
+rename(non_robust = sum)
+feature_rep_r <- global(species[[selected_species$id]] * rsv2, fun = 'sum', na.rm = T) %>%
+rownames_to_column("name") %>%
+rename(robust = sum)
+species_details %>%
+right_join(feature_rep_nr) %>%
+right_join(feature_rep_r) %>%
+pivot_longer(c('non_robust', 'robust'), names_to = 'solution') %>%
+left_join(worst_case_occurrence, by = 'species') %>%
+mutate(species_scenario = paste(species, scenario)) %>%
+filter(timestep > 1990) %>%
+ggplot(aes(x = timestep, y = value, color = scenario, group = species_scenario)) +
+facet_wrap(vars(solution)) +
+geom_hline(data = worst_case_occurrence %>% filter(species == 'Philoria_frosti'), aes(yintercept = rt2), linetype = 2) +
+geom_line() +
+theme_bw() +
+labs(x = "Time-step", y = "Representation (number of cells)") +
+coord_cartesian(xlim = c(2030, 2090)) +
+theme(panel.grid = element_blank(),
+legend.position = 'bottom')
+selected_species <- species_details %>%
+filter(species == 'Pseudophryne_corroboree') %>%
+arrange(scenario, timestep)
+feature_rep_nr <- global(species[[selected_species$id]] * sv1, fun = 'sum', na.rm = T) %>%
+rownames_to_column("name") %>%
+rename(non_robust = sum)
+feature_rep_r <- global(species[[selected_species$id]] * rsv2, fun = 'sum', na.rm = T) %>%
+rownames_to_column("name") %>%
+rename(robust = sum)
+species_details %>%
+right_join(feature_rep_nr) %>%
+right_join(feature_rep_r) %>%
+pivot_longer(c('non_robust', 'robust'), names_to = 'solution') %>%
+left_join(worst_case_occurrence, by = 'species') %>%
+mutate(species_scenario = paste(species, scenario)) %>%
+filter(timestep > 1990) %>%
+ggplot(aes(x = timestep, y = value, color = scenario, group = species_scenario)) +
+facet_wrap(vars(solution)) +
+geom_hline(data = worst_case_occurrence %>% filter(species == 'Pseudophryne_corroboree'), aes(yintercept = rt2), linetype = 2) +
+geom_line() +
+theme_bw() +
+labs(x = "Time-step", y = "Representation (number of cells)") +
+coord_cartesian(xlim = c(2030, 2090)) +
+theme(panel.grid = element_blank(),
+legend.position = 'bottom')
+selected_species <- species_details %>%
+filter(species == 'Litoria_spenceri') %>%
+arrange(scenario, timestep)
+feature_rep_nr <- global(species[[selected_species$id]] * sv1, fun = 'sum', na.rm = T) %>%
+rownames_to_column("name") %>%
+rename(non_robust = sum)
+feature_rep_r <- global(species[[selected_species$id]] * rsv2, fun = 'sum', na.rm = T) %>%
+rownames_to_column("name") %>%
+rename(robust = sum)
+species_details %>%
+right_join(feature_rep_nr) %>%
+right_join(feature_rep_r) %>%
+pivot_longer(c('non_robust', 'robust'), names_to = 'solution') %>%
+left_join(worst_case_occurrence, by = 'species') %>%
+mutate(species_scenario = paste(species, scenario)) %>%
+filter(timestep > 1990) %>%
+ggplot(aes(x = timestep, y = value, color = scenario, group = species_scenario)) +
+facet_wrap(vars(solution)) +
+geom_hline(data = worst_case_occurrence %>% filter(species == 'Litoria_spenceri'), aes(yintercept = rt2), linetype = 2) +
+geom_line() +
+theme_bw() +
+labs(x = "Time-step", y = "Representation (number of cells)") +
+coord_cartesian(xlim = c(2030, 2090)) +
+theme(panel.grid = element_blank(),
+legend.position = 'bottom')
+selected_species <- species_details %>%
+filter(species == 'Sarcophilus_harrisii') %>%
+arrange(scenario, timestep)
+feature_rep_nr <- global(species[[selected_species$id]] * sv1, fun = 'sum', na.rm = T) %>%
+rownames_to_column("name") %>%
+rename(non_robust = sum)
+feature_rep_r <- global(species[[selected_species$id]] * rsv2, fun = 'sum', na.rm = T) %>%
+rownames_to_column("name") %>%
+rename(robust = sum)
+species_details %>%
+right_join(feature_rep_nr) %>%
+right_join(feature_rep_r) %>%
+pivot_longer(c('non_robust', 'robust'), names_to = 'solution') %>%
+left_join(worst_case_occurrence, by = 'species') %>%
+mutate(species_scenario = paste(species, scenario)) %>%
+filter(timestep > 1990) %>%
+ggplot(aes(x = timestep, y = value, color = scenario, group = species_scenario)) +
+facet_wrap(vars(solution)) +
+geom_hline(data = worst_case_occurrence %>% filter(species == 'Sarcophilus_harrisii'), aes(yintercept = rt2), linetype = 2) +
+geom_line() +
+theme_bw() +
+labs(x = "Time-step", y = "Representation (number of cells)") +
+coord_cartesian(xlim = c(2030, 2090)) +
+theme(panel.grid = element_blank(),
+legend.position = 'bottom')
+selected_species <- species_details %>%
+filter(species == 'Sarcophilus_harrisii') %>%
+arrange(scenario, timestep)
+feature_rep_nr <- global(species[[selected_species$id]] * sv1, fun = 'sum', na.rm = T) %>%
+rownames_to_column("name") %>%
+rename(non_robust = sum)
+feature_rep_r <- global(species[[selected_species$id]] * rsv2, fun = 'sum', na.rm = T) %>%
+rownames_to_column("name") %>%
+rename(robust = sum)
+species_details %>%
+right_join(feature_rep_nr, join_by = 'name') %>%
+right_join(feature_rep_r, join_by = 'name') %>%
+pivot_longer(c('non_robust', 'robust'), names_to = 'solution') %>%
+left_join(worst_case_occurrence, by = 'species') %>%
+mutate(species_scenario = paste(species, scenario)) %>%
+filter(timestep > 1990) %>%
+ggplot(aes(x = timestep, y = value, color = scenario, group = species_scenario)) +
+facet_wrap(vars(solution)) +
+geom_hline(data = worst_case_occurrence %>% filter(species == 'Sarcophilus_harrisii'), aes(yintercept = rt2), linetype = 2) +
+geom_line() +
+theme_bw() +
+labs(x = "Time-step", y = "Representation (number of cells)") +
+coord_cartesian(xlim = c(2030, 2090)) +
+theme(panel.grid = element_blank(),
+legend.position = 'bottom')
+selected_species <- species_details %>%
+filter(species == 'Sarcophilus_harrisii') %>%
+arrange(scenario, timestep)
+feature_rep_nr <- global(species[[selected_species$id]] * sv1, fun = 'sum', na.rm = T) %>%
+rownames_to_column("name") %>%
+rename(non_robust = sum)
+feature_rep_r <- global(species[[selected_species$id]] * rsv2, fun = 'sum', na.rm = T) %>%
+rownames_to_column("name") %>%
+rename(robust = sum)
+species_details %>%
+right_join(feature_rep_nr, by = 'name') %>%
+right_join(feature_rep_r, by = 'name') %>%
+pivot_longer(c('non_robust', 'robust'), names_to = 'solution') %>%
+left_join(worst_case_occurrence, by = 'species') %>%
+mutate(species_scenario = paste(species, scenario)) %>%
+filter(timestep > 1990) %>%
+ggplot(aes(x = timestep, y = value, color = scenario, group = species_scenario)) +
+facet_wrap(vars(solution)) +
+geom_hline(data = worst_case_occurrence %>% filter(species == 'Sarcophilus_harrisii'), aes(yintercept = rt2), linetype = 2) +
+geom_line() +
+theme_bw() +
+labs(x = "Time-step", y = "Representation (number of cells)") +
+coord_cartesian(xlim = c(2030, 2090)) +
+theme(panel.grid = element_blank(),
+legend.position = 'bottom')
+species_details %>%
+right_join(feature_rep_nr, by = 'name') %>%
+right_join(feature_rep_r, by = 'name') %>%
+pivot_longer(c('non_robust', 'robust'), names_to = 'solution') %>%
+left_join(worst_case_occurrence, by = 'species') %>%
+mutate(species_scenario = paste(species, scenario)) %>%
+filter(timestep > 1990) %>%
+ggplot(aes(x = timestep, y = value, color = scenario, group = species_scenario)) +
+facet_wrap(vars(solution)) +
+geom_hline(data = worst_case_occurrence %>% filter(species == 'Sarcophilus_harrisii'), aes(yintercept = rt2), linetype = 2) +
+geom_point() +
+geom_line() +
+theme_bw() +
+labs(x = "Time-step", y = "Representation (number of cells)") +
+coord_cartesian(xlim = c(2030, 2090)) +
+theme(panel.grid = element_blank(),
+legend.position = 'bottom')
+selected_species <- species_details %>%
+filter(species == 'Sarcophilus_harrisii') %>%
+arrange(scenario, timestep)
+feature_rep_nr <- global(species[[selected_species$id]] * sv1, fun = 'sum', na.rm = T) %>%
+rownames_to_column("name") %>%
+rename(non_robust = sum)
+feature_rep_r <- global(species[[selected_species$id]] * rsv2, fun = 'sum', na.rm = T) %>%
+rownames_to_column("name") %>%
+rename(robust = sum)
+species_details %>%
+right_join(feature_rep_nr, by = 'name') %>%
+right_join(feature_rep_r, by = 'name') %>%
+pivot_longer(c('Non-robust', 'Partially robust'), names_to = 'solution') %>%
+left_join(worst_case_occurrence, by = 'species') %>%
+mutate(species_scenario = paste(species, scenario)) %>%
+filter(timestep > 1990) %>%
+ggplot(aes(x = timestep, y = value, color = scenario, group = species_scenario)) +
+facet_wrap(vars(solution)) +
+geom_hline(data = worst_case_occurrence %>% filter(species == 'Sarcophilus_harrisii'), aes(yintercept = rt2), linetype = 2) +
+geom_point() +
+geom_line() +
+theme_bw() +
+labs(x = "Time-step", y = "Representation (number of cells)") +
+coord_cartesian(xlim = c(2030, 2090)) +
+theme(panel.grid = element_blank(),
+legend.position = 'bottom')
+selected_species <- species_details %>%
+filter(species == 'Sarcophilus_harrisii') %>%
+arrange(scenario, timestep)
+feature_rep_nr <- global(species[[selected_species$id]] * sv1, fun = 'sum', na.rm = T) %>%
+rownames_to_column("name") %>%
+rename(non_robust = sum)
+feature_rep_r <- global(species[[selected_species$id]] * rsv2, fun = 'sum', na.rm = T) %>%
+rownames_to_column("name") %>%
+rename(robust = sum)
+species_details %>%
+right_join(feature_rep_nr, by = 'name') %>%
+right_join(feature_rep_r, by = 'name') %>%
+pivot_longer(c('non_robust', 'robust'), names_to = 'solution') %>%
+mutate(solution = factor(solution, c('non_robust', 'robust'), c("Non-robust", "Partially Robust"))) %>%
+left_join(worst_case_occurrence, by = 'species') %>%
+mutate(species_scenario = paste(species, scenario)) %>%
+filter(timestep > 1990) %>%
+ggplot(aes(x = timestep, y = value, color = scenario, group = species_scenario)) +
+facet_wrap(vars(solution)) +
+geom_hline(data = worst_case_occurrence %>% filter(species == 'Sarcophilus_harrisii'), aes(yintercept = rt2), linetype = 2) +
+geom_point() +
+geom_line() +
+theme_bw() +
+labs(x = "Time-step", y = "Representation (number of cells)") +
+coord_cartesian(xlim = c(2030, 2090)) +
+theme(panel.grid = element_blank(),
+legend.position = 'bottom')
+knitr::opts_chunk$set(
+collapse = TRUE,
+comment = "#>"
+)
+library(prioritizr)
+library(robust.prioritizr)
+library(terra)
+library(dplyr)
+library(tibble)
+library(stringr)
+library(knitr)
+library(ggplot2)
+library(tidyr)
+data("vic_cmip6")
+species <- unwrap(vic_cmip6$species)
+cost <- unwrap(vic_cmip6$cost)
+pa <- unwrap(vic_cmip6$pa)
+species_details <- vic_cmip6$species_details
+study_area <- unwrap(vic_cmip6$study_area)
+rm(vic_cmip6)
+wallaby <- species_details %>%
+filter(species == 'Petrogale_penicillata' & timestep <= 2050)
+wallaby_ids <- pull(wallaby, id)
+wallaby_maps <- species[[wallaby_ids]]
+names(wallaby_maps) <- paste0(pull(wallaby, scenario), ": ", pull(wallaby, timestep))
+plot(wallaby_maps, axes = F, maxcell = 1e4, , fun= \() lines(study_area))
+groups <- species_details$species
+head(groups)
+global_sum_species <- global(species, fun = 'sum', na.rm = TRUE) %>%
+as.data.frame() %>%
+rownames_to_column("name")
+worst_case_occurrence <- species_details %>%
+select(-any_of("sum")) %>%
+left_join(global_sum_species, by = "name") %>%
+group_by(species) %>%
+summarise(worst_case = min(sum),
+pct_20 = quantile(sum, 0.2),
+cvar = mean(sum[sum < quantile(sum, 0.1)]),
+best_case = max(sum),
+max_relative_target = round(worst_case/ best_case, 4),
+pct20_relative_target = round(pct_20/ best_case, 4),
+worst_case_scenario = proj[which.min(sum)]) %>%
+arrange(max_relative_target)
+worst_case_occurrence %>%
+head()# %>%
+#kable()
+rt <- 0.0022
+rpv1 <- problem(cost, species) %>%
+add_relative_targets(rt) %>%
+robust.prioritizr::add_constant_robust_constraints(groups = groups) %>%
+robust.prioritizr::add_robust_min_set_objective() %>%
+add_locked_in_constraints(pa) %>%
+add_default_solver(verbose = F)
+rsv1 <- solve(rpv1, force = TRUE)
+plot(rsv1, axes = F)
+plot(study_area, add = TRUE)
+title("Robust Solution (Target = 1%)")
+feature_rep_r <- global(species * rsv1, fun = 'sum', na.rm = T) %>%
+as.data.frame() %>%
+rownames_to_column('name')
+worst_case_occurrence$rt <- rt*worst_case_occurrence$best_case
+species_details %>%
+select(-any_of(contains('sum'))) %>%
+arrange(species, scenario, timestep) %>%
+left_join(feature_rep_r, by = "name") %>%
+mutate(species_scenario = paste(species, scenario)) %>%
+ggplot(aes(x = timestep, y = sum, color = scenario, group = species_scenario)) +
+facet_wrap(vars(species), scales = "free_y") +
+geom_line() +
+theme_bw() +
+geom_hline(data = worst_case_occurrence, aes(yintercept = rt)) +
+labs(x = "Time-step", y = "Representation (number of cells)") +
+coord_cartesian(xlim = c(2030, 2090)) +
+theme(panel.grid = element_blank(),
+legend.position = 'bottom')
+rt2 <- 0.07
+rpv2 <- problem(cost, species) %>%
+add_relative_targets(rt2) %>%
+robust.prioritizr::add_constant_robust_constraints(groups = groups,
+conf_level = 0.8) %>%
+add_locked_in_constraints(pa) %>%
+robust.prioritizr::add_robust_min_set_objective(method = "Chance") %>%
+add_default_solver(verbose = F)
+rsv2 <- solve(rpv2, force = TRUE)
+rs <- c(rsv1, rsv2, rsv2-rsv1)
+names(rs) <- c("Robust (1% target)", "Partially Robust (7% target)", "Difference")
+plot(rs, axes = F, fun = \() lines(study_area))
+feature_rep_r2 <- global(species * rsv2, fun = 'sum', na.rm = T) %>%
+as.data.frame() %>%
+rownames_to_column('name')
+worst_case_occurrence$rt2 <- rt2*worst_case_occurrence$best_case
+rsv2_representation <- species_details %>%
+select(-any_of(contains('sum'))) %>%
+arrange(species, scenario, timestep) %>%
+left_join(feature_rep_r2, by = "name") %>%
+mutate(species_scenario = paste(species, scenario))
+rsv2_representation %>%
+ggplot(aes(x = timestep, y = sum, color = scenario, group = species_scenario)) +
+facet_wrap(vars(species), scales = "free_y") +
+geom_hline(data = worst_case_occurrence, aes(yintercept = rt2), linetype = 2) +
+geom_line() +
+theme_bw() +
+labs(x = "Time-step", y = "Representation (number of cells)") +
+coord_cartesian(xlim = c(2030, 2090)) +
+theme(panel.grid = element_blank(),
+legend.position = 'bottom')
+rsv2_representation %>%
+left_join(worst_case_occurrence, by = 'species') %>%
+group_by(species) %>%
+summarise(
+violation_pct = round(mean(sum < rt2), 3)
+) %>%
+arrange(-violation_pct) %>%
+head()
+is_historic_baseline <- species_details %>%
+filter(scenario == 'historic_baseline') %>%
+pull(id)
+species_hb <- species[[is_historic_baseline]]
+pv1 <- problem(cost, species_hb) %>%
+add_relative_targets(0.07) %>%
+add_min_set_objective() %>%
+add_locked_in_constraints(pa) %>%
+add_default_solver(verbose = F)
+cv1 <- compile(pv1)
+sv1 <- solve(pv1)
+soln_v1 <- c(sv1, rsv2, sv1-pa, rsv2-pa)
+names(soln_v1) <- c("Non-robust", "Robust", "New PA (Non-robust)", "New PA (Robust)")
+plot(soln_v1, axes = F, fun = \() lines(study_area), type = "continuous", range = c(0,1))
+selected_species <- species_details %>%
+filter(species == 'Sarcophilus_harrisii') %>%
+arrange(scenario, timestep)
+feature_rep_nr <- global(species[[selected_species$id]] * sv1, fun = 'sum', na.rm = T) %>%
+rownames_to_column("name") %>%
+rename(non_robust = sum)
+feature_rep_r <- global(species[[selected_species$id]] * rsv2, fun = 'sum', na.rm = T) %>%
+rownames_to_column("name") %>%
+rename(robust = sum)
+species_details %>%
+right_join(feature_rep_nr, by = 'name') %>%
+right_join(feature_rep_r, by = 'name') %>%
+pivot_longer(c('non_robust', 'robust'), names_to = 'solution') %>%
+mutate(solution = factor(solution, c('non_robust', 'robust'), c("Non-robust", "Partially Robust"))) %>%
+left_join(worst_case_occurrence, by = 'species') %>%
+mutate(species_scenario = paste(species, scenario)) %>%
+filter(timestep > 1990) %>%
+ggplot(aes(x = timestep, y = value, color = scenario, group = species_scenario)) +
+facet_wrap(vars(solution)) +
+geom_hline(data = worst_case_occurrence %>% filter(species == 'Sarcophilus_harrisii'), aes(yintercept = rt2), linetype = 2) +
+geom_point() +
+geom_line() +
+theme_bw() +
+labs(x = "Time-step", y = "Representation (number of cells)") +
+coord_cartesian(xlim = c(2030, 2090)) +
+theme(panel.grid = element_blank(),
+legend.position = 'bottom')
+devtools::document()
+plot(rs, axes = F, fun = \() lines(study_area), type = 'continuous', range = c(0,1))

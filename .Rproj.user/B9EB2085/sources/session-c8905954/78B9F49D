@@ -1,0 +1,26 @@
+{
+    "id": "78B9F49D",
+    "path": "C:/Github/robust.prioritzr/tests/testthat/test_add_robust_constraints.R",
+    "project_path": "tests/testthat/test_add_robust_constraints.R",
+    "type": "r_source",
+    "hash": "0",
+    "contents": "",
+    "dirty": false,
+    "created": 1756804834313.0,
+    "source_on_save": false,
+    "relative_order": 6,
+    "properties": {
+        "source_window_id": "",
+        "Source": "Source0xjux0rq17lf",
+        "cursorPosition": "161,3",
+        "scrollLine": "0"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1757033613,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1757033613,
+    "read_only": false,
+    "read_only_alternatives": []
+}

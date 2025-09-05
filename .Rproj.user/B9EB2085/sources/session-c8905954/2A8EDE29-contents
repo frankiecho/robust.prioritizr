@@ -1,0 +1,3 @@
+#' Generate simulated planning unit data for the robust prioritizr package
+#'
+#' Generates a N x N terra object

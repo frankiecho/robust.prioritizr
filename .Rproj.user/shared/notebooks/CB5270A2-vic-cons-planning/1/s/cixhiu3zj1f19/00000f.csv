@@ -1,0 +1,7 @@
+"0","data(""vic_cmip6"")"
+"0","species <- get_vic_species()"
+"0","cost <- get_vic_cost()"
+"0","pa <- get_vic_pa()"
+"0","species_details <- vic_cmip6"
+"0","study_area <- get_vic_study_area()"
+"0","rm(vic_cmip6)"

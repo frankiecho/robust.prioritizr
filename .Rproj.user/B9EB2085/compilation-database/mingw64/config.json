@@ -1,0 +1,25 @@
+{
+    "args": [
+        "-std=gnu++17",
+        "-IC:/Users/uqfcho/AppData/Local/Programs/R/R-4.5.1/include",
+        "-DNDEBUG",
+        "-IC:/Users/uqfcho/AppData/Local/Programs/R/R-4.5.1/library/Rcpp/include",
+        "-IC:/Users/uqfcho/AppData/Local/Programs/R/R-4.5.1/library/RcppArmadillo/include",
+        "-DEIGEN_DONT_VECTORIZE",
+        "-nostdinc",
+        "-IC:/rtools45/x86_64-w64-mingw32.static.posix/bin/../lib/gcc/x86_64-w64-mingw32.static.posix/14.2.0/include/c++",
+        "-IC:/rtools45/x86_64-w64-mingw32.static.posix/bin/../lib/gcc/x86_64-w64-mingw32.static.posix/14.2.0/include/c++/x86_64-w64-mingw32.static.posix",
+        "-IC:/rtools45/x86_64-w64-mingw32.static.posix/bin/../lib/gcc/x86_64-w64-mingw32.static.posix/14.2.0/include/c++/backward",
+        "-IC:/rtools45/x86_64-w64-mingw32.static.posix/bin/../lib/gcc/x86_64-w64-mingw32.static.posix/14.2.0/include",
+        "-IC:/rtools45/x86_64-w64-mingw32.static.posix/bin/../lib/gcc/x86_64-w64-mingw32.static.posix/14.2.0/../../../../include",
+        "-IC:/rtools45/x86_64-w64-mingw32.static.posix/bin/../lib/gcc/x86_64-w64-mingw32.static.posix/14.2.0/include-fixed",
+        "-include",
+        "C:/Github/robust.prioritzr/.Rproj.user/B9EB2085/compilation-database/mingw64/cpp-definitions.h"
+    ],
+    "pch": "RcppArmadillo",
+    "is_cpp": true,
+    "hash": "1757033613",
+    "compiler": "17718157760293237186",
+    "rversion": "4.5.1",
+    "dbversion": 4
+}

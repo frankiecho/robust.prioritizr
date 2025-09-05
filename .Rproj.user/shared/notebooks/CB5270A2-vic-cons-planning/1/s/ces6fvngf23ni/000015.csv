@@ -1,0 +1,8 @@
+"0","rsv2_representation %>%"
+"0","  left_join(worst_case_occurrence, by = 'species') %>%"
+"0","  group_by(species) %>%"
+"0","  summarise("
+"0","    violation_pct = round(mean(sum < rt2), 3)"
+"0","  ) %>%"
+"0","  arrange(-violation_pct) %>%"
+"0","  head()"

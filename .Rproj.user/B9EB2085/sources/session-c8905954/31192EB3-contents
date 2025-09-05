@@ -1,0 +1,15 @@
+skip_if_not_installed("terra")
+# import data
+sim_pu_raster <- prioritizr::get_sim_pu_raster()
+sim_features <- prioritizr::get_sim_features()
+# define feature groupings
+x <- rep_len(c("a", "b"), terra::nlyr(sim_features))
+# build problem
+p <-
+  prioritizr::problem(sim_pu_raster, sim_features) |>
+  add_robust_min_set_objective() |>
+  prioritizr::add_relative_targets(0.1) |>
+  add_constant_robust_constraints(x, 0.1) |>
+  prioritizr::add_binary_decisions()
+
+cp <- compile(p)

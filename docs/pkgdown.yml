@@ -1,0 +1,11 @@
+pandoc: 3.7.0.2
+pkgdown: 2.1.3
+pkgdown_sha: ~
+articles:
+  climate-sdm: climate-sdm.html
+  robust.prioritizr: robust.prioritizr.html
+  vic-cons-planning: vic-cons-planning.html
+last_built: 2025-09-05T00:56Z
+urls:
+  reference: https://frankiecho.github.io/robust.prioritizr/reference
+  article: https://frankiecho.github.io/robust.prioritizr/articles

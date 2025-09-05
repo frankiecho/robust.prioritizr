@@ -1,0 +1,37 @@
+url: https://frankiecho.github.io/robust.prioritizr/
+authors:
+  Frankie Cho:
+    href: https://frankiecho.github.io/
+  Jeffrey O Hanson:
+    href: https://jeffrey-hanson.com
+template:
+  bootstrap: 5
+  math_method: mathjax
+  params:
+    bootswatch: flatly
+home:
+  sidebar:
+    structure:
+    - links
+    - citation
+    - license
+    - authors
+    - dev
+navbar:
+  components:
+    reference:
+      text: Reference
+      href: reference/index.html
+    articles:
+      text: Articles
+      menu:
+      - text: Getting started with robust systematic conservation planning
+        href: articles/robust.prioritizr.html
+      - text: Example using simulated data from a species distribution model
+        href: articles/climate-sdm.html
+      - text: 'Example: Robust Conservation Planning in Victoria, Australia'
+        href: articles/vic-cons-planning.html
+    news:
+      text: News
+      href: news/index.html
+

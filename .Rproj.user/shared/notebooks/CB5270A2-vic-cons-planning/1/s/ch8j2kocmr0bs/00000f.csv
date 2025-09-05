@@ -1,0 +1,7 @@
+"0","data(""vic_cmip6"")"
+"0","species <- unwrap(vic_cmip6$species)"
+"0","cost <- unwrap(vic_cmip6$cost)"
+"0","pa <- unwrap(vic_cmip6$pa)"
+"0","species_details <- vic_cmip6$species_details"
+"0","study_area <- unwrap(vic_cmip6$study_area)"
+"0","rm(vic_cmip6)"
