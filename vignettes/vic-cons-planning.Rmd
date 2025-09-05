@@ -87,7 +87,7 @@ The data package contains the following datasets:
 
 -   **Species details (`species_details`):** A table linking the raster layer names to their corresponding species, climate scenarios, and timesteps.
 
--   **Conservation cost (`cost`):** A proxy for conservation cost based on the 2013 Human Footprint Index.
+-   **Conservation cost (`cost`):** A proxy for conservation cost based on the 2013 Human Footprint Index by Williams et al. (2020).
 
 -   **Protected areas (`pa`):** The location of current protected areas.
 
@@ -97,7 +97,7 @@ We can visualize the projected occurrence of the brush-tailed rock-wallaby (*Pet
 
 ```{r}
 wallaby <- species_details %>%
-  filter(species == 'Petrogale_penicillata' & timestep >= 2050)
+  filter(species == 'Petrogale_penicillata' & timestep %in% c(1990, 2030, 2090))
 wallaby_ids <- pull(wallaby, id)
 wallaby_maps <- species[[wallaby_ids]]
 names(wallaby_maps) <- paste0(pull(wallaby, scenario), ": ", pull(wallaby, timestep))
@@ -143,7 +143,7 @@ worst_case_occurrence <- species_details %>%
   left_join(global_sum_species, by = "name") %>%
   group_by(species) %>%
   summarise(worst_case = min(sum),
-            pct_20 = quantile(sum, 0.2),
+            pct_20 = max(sum[sum < quantile(sum, 0.2)]),
             cvar = mean(sum[sum < quantile(sum, 0.1)]),
             best_case = max(sum),
             max_relative_target = round(worst_case/ best_case, 4),
@@ -156,7 +156,7 @@ worst_case_occurrence %>%
 
 This shows that if we are interested in a fully robust solution, the maximum relative target that is achievable for this problem would be 0.0022, as in the worst-case scenario, the Snowy Mountains skink (*Liopholis guthega*) is only represented in 1 5km grid cell, out of 452 grid cells in its best-case scenario. This means that even if all the planning units are selected for conservation, in the worst-case high-emissions climate scenario the Snowy Mountains skink will only be represented in a very small area.
 
-In this piece of code here we also lay the groundwork for alternative relative targets we can use by computing the 20th percentile of maximum species representation achievable. If we let the solution fall below the target for up to 20% of the outcomes, the maximum relative target that is achievable for the Snown Mountains skink would be near 0.075.
+In this piece of code here we also lay the groundwork for alternative relative targets we can use by computing the 20th percentile of maximum species representation achievable. If we let the solution fall below the target for up to 20% of the outcomes, the maximum relative target that is achievable for the Snown Mountains skink would be near 0.073.
 
 After solving the initial problem, we will progress to explore how to increase the relative targets we use by relaxing the robustness of the problem, such that the representation of other species in the data can be increased.
 
@@ -222,20 +222,21 @@ As the previous example shows, enforcing targets to be held robustly across all 
 Users can control the robustness of the solution through the `conf_level` parameter in `add_*_robust_constraints`, which specifies the proportion of the constraints that must be met in each group for the solution to be considered feasible. In this case, specifying 80% means that out of the 17 historic and future climate projections, the solution needs to meet the target in at least 13 (17 \times 0.8) climate projections/ time-steps. In other words, the target can only be breached for 3 climate projections/ time-steps. By relaxing this target, we can pursue much more ambitious relative targets (0.07 protection), while ensuring that the solution is feasible and reasonably robust under most climate projections and time-steps.
 
 ```{r}
-rt2 <- 0.07
+rt2 <- 0.073
 rpv2 <- problem(cost, species) %>%
   add_relative_targets(rt2) %>%
   robust.prioritizr::add_constant_robust_constraints(groups = groups,
-                                                     conf_level = 0.5) %>%
+                                                     conf_level = 0.8) %>%
   add_locked_in_constraints(pa) %>%
   add_binary_decisions() %>%
   robust.prioritizr::add_robust_min_set_objective(method = "Chance") %>%
   add_default_solver(verbose = F)
 
+csv2 <- compile(rpv2)
 rsv2 <- solve(rpv2)
 
 rs <- c(rsv1, rsv2, rsv1-pa, rsv2-pa)
-names(rs) <- c("Robust (1% target)", "Partially Robust (6% target)", "New PA (Robust 1%)", "New PA (Partially Robust 6%)")
+names(rs) <- c("Robust (1% target)", "Partially Robust (7% target)", "New PA (Robust 1%)", "New PA (Partially Robust 7%)")
 plot(rs, axes = F, fun = \() lines(study_area), type = 'continuous', range = c(0,1))
 ```
 
@@ -248,13 +249,13 @@ rsv2_representation <- species_details %>%
   left_join(feature_rep_r2, by = "feature") %>%
   mutate(species_scenario = paste(species, scenario)) 
 rsv2_representation %>%
-  ggplot(aes(x = timestep, y = sum, color = scenario, group = species_scenario)) +
+  ggplot(aes(x = timestep, y = absolute_held, color = scenario, group = species_scenario)) +
   facet_wrap(vars(species), scales = "free_y") +
   geom_hline(data = worst_case_occurrence, aes(yintercept = rt2), linetype = 2) +
   geom_line() +
   theme_bw() +
   labs(x = "Time-step", y = "Representation (number of cells)") +
-  coord_cartesian(xlim = c(2030, 2090)) +
+  coord_cartesian(xlim = c(2030, 2090), ylim = c(0, NA)) +
   theme(panel.grid = element_blank(),
         legend.position = 'bottom')
 ```
@@ -266,7 +267,7 @@ rsv2_representation %>%
   left_join(worst_case_occurrence, by = 'species') %>%
   group_by(species) %>%
   summarise(
-    violation_pct = round(mean(sum < rt2), 3)
+    violation_pct = round(mean(absolute_held < rt2), 3)
   ) %>%
   arrange(-violation_pct) %>%
   head()
@@ -296,20 +297,20 @@ names(soln_v1) <- c("Non-robust", "Robust", "New PA (Non-robust)", "New PA (Robu
 plot(soln_v1, axes = F, fun = \() lines(study_area), type = "continuous", range = c(0,1))
 ```
 
-While the non-robust solution may appear effective from the historical baseline, it may potentially miss targets under future climate projections. We can check the representation of the Tasmanian devil (*Sarcophilus harrisii*) and compare it against the partially robust solution. The partially robust solution limits the total number of climate projections/ time-steps where the Tasmanian devil representation falls below the desired target.
+While the non-robust solution may appear effective when evaluated against the historical baseline, it may potentially miss targets under future climate projections. We can check the representation of the Tasmanian devil (*Sarcophilus harrisii*) and compare it against the partially robust solution. The partially robust solution limits the total number of climate projections/ time-steps where the Tasmanian devil representation falls below the desired target.
 
 ```{r}
 selected_species <- species_details %>%
   filter(species == 'Sarcophilus_harrisii') %>%
   arrange(scenario, timestep)
 feature_rep_nr <- eval_feature_representation_summary(rpv2, sv1) %>%
-  filter(row_number() %in% selected_species$id) %>%
+  filter(feature %in% selected_species$name) %>%
   rownames_to_column("name") %>%
-  rename(non_robust = total_amount )
+  rename(non_robust = absolute_held )
 feature_rep_r <- eval_feature_representation_summary(rpv2, rsv2) %>%
-  filter(row_number() %in% selected_species$id) %>%
+  filter(feature %in% selected_species$name) %>%
   rownames_to_column("name") %>%
-  rename(robust = total_amount )
+  rename(robust = absolute_held )
 
 species_details %>%
   rename(feature = name) %>%

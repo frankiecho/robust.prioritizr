@@ -2,25 +2,30 @@
 % Please edit documentation in R/robust_objectives.R
 \name{robust_objectives}
 \alias{robust_objectives}
-\title{Add a robust objective}
+\title{Add a robust objective function}
 \description{
-TODO.
+Specify an objective function for a conservation planning problem that
+accounts for uncertainty. This function is used to add a robust objective
+to a \code{\link[prioritizr:problem]{prioritizr::problem()}} object.
 }
 \details{
-The following objectives can be added to a conservation planning
-\code{\link[prioritizr:problem]{prioritizr::problem()}}:
+Robust objective functions are used to find solutions that are likely to
+meet conservation targets across a range of different scenarios or
+realizations of the input data. This is particularly useful when working
+with data that is uncertain, such as species distribution models under
+climate change scenarios.
+
+The following robust objective functions can be added to a
+conservation planning problem:
 
 \describe{
 
-\item{\code{\link[=add_robust_min_set_objective]{add_robust_min_set_objective()}}}{TODO.}
+\item{\code{\link[=add_robust_min_set_objective]{add_robust_min_set_objective()}}}{Minimize the cost of the solution
+while ensuring that all targets are met across all data realizations.}
 
-\item{\code{\link[=add_robust_min_shortfall_objective]{add_robust_min_shortfall_objective()}}}{TODO.}
+\item{\code{\link[=add_robust_min_shortfall_objective]{add_robust_min_shortfall_objective()}}}{Minimize the shortfall
+in meeting targets measured across all data realizations, subject to a budget.}
 
 }
 }
-\examples{
-\dontrun{
-# TODO
-}
-}
-\concept{overviews}
+\concept{objectives}
