@@ -33,8 +33,8 @@ is_check <-
   any(c("CI", "GITHUB_ACTIONS", "GITHUB_SHA") %in% names(Sys.getenv()))
 knitr::opts_chunk$set(
   fig.align = "center",
-  # eval = !is_check,
-  # purl = !is_check,
+  eval = !is_check,
+  purl = !is_check,
   R.options = list(width = 80)
 )
 ```
