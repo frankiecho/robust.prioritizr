@@ -92,11 +92,9 @@ necessary in understanding the vignette.</p>
 <h2 id="data-generating-process">Data generating process<a class="anchor" aria-label="anchor" href="#data-generating-process"></a>
 </h2>
 <p>Suppose the analyst fitted the following statistical model of the
-species abundance based on data:</p>
-<p>$$</p>
-<p>r_{ij} (<em>{ij}) \ </em>{ij} = (_0 + _1 Temp_i + _2 Temp_i^2 + _3
-Prec_i + <em>4 Prec_i^2 + </em>{ij})</p>
-<p>$$</p>
+species abundance based on data:
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>r</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>∼</mo><mtext mathvariant="normal">Poisson</mtext><mo stretchy="false" form="prefix">(</mo><msub><mi>θ</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex"> r_{ij} \sim \text{Poisson}(\theta_{ij}) </annotation></semantics></math></p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>θ</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>=</mo><mrow><mi>log</mi><mo>⁡</mo></mrow><mo stretchy="false" form="prefix">(</mo><msub><mi>β</mi><mn>0</mn></msub><mo>+</mo><msub><mi>β</mi><mn>1</mn></msub><mi>T</mi><mi>e</mi><mi>m</mi><msub><mi>p</mi><mi>i</mi></msub><mo>+</mo><msub><mi>β</mi><mn>2</mn></msub><mi>T</mi><mi>e</mi><mi>m</mi><msubsup><mi>p</mi><mi>i</mi><mn>2</mn></msubsup><mo>+</mo><msub><mi>β</mi><mn>3</mn></msub><mi>P</mi><mi>r</mi><mi>e</mi><msub><mi>c</mi><mi>i</mi></msub><mo>+</mo><msub><mi>β</mi><mn>4</mn></msub><mi>P</mi><mi>r</mi><mi>e</mi><msubsup><mi>c</mi><mi>i</mi><mn>2</mn></msubsup><mo>+</mo><msub><mi>ε</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex"> \theta_{ij} = \log(\beta_0 + \beta_1 Temp_i + \beta_2 Temp_i^2 + \beta_3 Prec_i + \beta_4 Prec_i^2 + \varepsilon_{ij}) </annotation></semantics></math></p>
 <p>where the abundance
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>r</mi><annotation encoding="application/x-tex">r</annotation></semantics></math>
 of species
@@ -368,12 +366,9 @@ problem.</p>
 Prioritizr specification, using only one of the climate scenarios
 (SSP2-RCP4.5) for planning. The specification below solves the following
 conservation planning problem:</p>
-<p><span class="math display">$$
-\min \sum_{i=1}^{I} x_i c_i \\
-\text{subject to} \\
-\sum_{i=1}^I x_i r_{ij} \geq T_j \quad \forall \space j \in J \\
-x_i \in \{0,1\} \quad \forall \space i \in I
-$$</span></p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi>min</mi><mo>⁡</mo></mrow><munderover><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>I</mi></munderover><msub><mi>x</mi><mi>i</mi></msub><msub><mi>c</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex"> \min \sum_{i=1}^{I} x_i c_i </annotation></semantics></math><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="normal">subject to</mtext><annotation encoding="application/x-tex"> \text{subject to} </annotation></semantics></math><span class="math display">$$ \sum_{i=1}^I x_i r_{ij} \geq T_j \quad
+\forall \space j \in J $$</span> <span class="math display">$$x_i \in
+\{0,1\} \quad \forall \space i \in I$$</span></p>
 <p>where
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>x</mi><annotation encoding="application/x-tex">x</annotation></semantics></math>
 is the binary decision variable of whether to protect cell
@@ -441,11 +436,9 @@ under an extreme climate scenario.</p>
 conservation planning problems that are robust to alternative climate
 scenarios and other sources of uncertainty. Using the modified minimum
 set objective, users can solve the following problem:</p>
-<p><span class="math display">$$
-\min \sum_{i=1}^{I} x_i c_i \\ \text{subject to} \\ \Pr_k \{
-\sum_{i=1}^I x_i r_{ijk} \geq T_j \} \geq \alpha \quad \forall \space j
-\in J \\ x_i \in \{0,1\} \quad \forall \space i \in I
-$$</span></p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi>min</mi><mo>⁡</mo></mrow><munderover><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>I</mi></munderover><msub><mi>x</mi><mi>i</mi></msub><msub><mi>c</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex"> \min \sum_{i=1}^{I} x_i c_i </annotation></semantics></math><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="normal">subject to</mtext><annotation encoding="application/x-tex">\text{subject to} </annotation></semantics></math><span class="math display">$$\Pr_k \{ \sum_{i=1}^I x_i r_{ijk} \geq T_j
+\} \geq \alpha \quad \forall \space j \in J $$</span> <span class="math display">$$x_i \in \{0,1\} \quad \forall \space i \in
+I$$</span></p>
 <p>where now
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>r</mi><annotation encoding="application/x-tex">r</annotation></semantics></math>
 is indexed by

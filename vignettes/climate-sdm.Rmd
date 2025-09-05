@@ -72,13 +72,9 @@ Robust Prioritizr is agnostic to the data generating process - users who only wi
 # Data generating process
 
 Suppose the analyst fitted the following statistical model of the species abundance based on data:
+$$ r_{ij} \sim \text{Poisson}(\theta_{ij}) $$
 
-$$
-
-r_{ij} \sim \text{Poisson}(\theta_{ij}) \\
-\theta_{ij} = \log(\beta_0 + \beta_1 Temp_i + \beta_2 Temp_i^2 + \beta_3 Prec_i + \beta_4 Prec_i^2 + \varepsilon_{ij})
-
-$$
+$$ \theta_{ij} = \log(\beta_0 + \beta_1 Temp_i + \beta_2 Temp_i^2 + \beta_3 Prec_i + \beta_4 Prec_i^2 + \varepsilon_{ij}) $$
 
 where the abundance $r$ of species $j$ in location $i$ follows a Poisson distribution with the mean $\theta$, which is function of the climate covariates Temperature $Temp$ and Precipitation $Prec$ and a random i.i.d. error term $\varepsilon$. The relationships between the climate variables and the mean are modelled using the regression coefficients $\beta_1, \beta_2, \beta_3, \beta_4$. For simplicity, we assume here that its abundance only depends on these two climatic variables.
 
@@ -290,12 +286,10 @@ For simplicity, we do not specify additional constraints, such as connectivity c
 
 As a first pass, we can solve this problem in the traditional Prioritizr specification, using only one of the climate scenarios (SSP2-RCP4.5) for planning. The specification below solves the following conservation planning problem:
 
-$$
-\min \sum_{i=1}^{I} x_i c_i \\
-\text{subject to} \\
-\sum_{i=1}^I x_i r_{ij} \geq T_j \quad \forall \space j \in J \\
-x_i \in \{0,1\} \quad \forall \space i \in I 
-$$
+$$ \min \sum_{i=1}^{I} x_i c_i $$
+$$ \text{subject to} $$
+$$ \sum_{i=1}^I x_i r_{ij} \geq T_j \quad \forall \space j \in J $$
+$$x_i \in \{0,1\} \quad \forall \space i \in I$$
 
 where $x$ is the binary decision variable of whether to protect cell $i$ or not, $c$ is the conservation cost, $r$ is the abundance of species $j$ in cell $i$ (taken as the abundance under SSP2-RCP4.5 at the moment) and $T$ is the representation target for species $j$ (taken as 20 for all species at the moment).
 
@@ -342,9 +336,10 @@ The planning solution identified is not robust to alternative climate scenarios,
 
 Robust Prioritizr gives users a flexible interface to solve conservation planning problems that are robust to alternative climate scenarios and other sources of uncertainty. Using the modified minimum set objective, users can solve the following problem:
 
-$$
-\min \sum_{i=1}^{I} x_i c_i \\ \text{subject to} \\ \Pr_k \{ \sum_{i=1}^I x_i r_{ijk} \geq T_j \} \geq \alpha \quad \forall \space j \in J \\ x_i \in \{0,1\} \quad \forall \space i \in I
-$$
+$$ \min \sum_{i=1}^{I} x_i c_i $$
+$$\text{subject to} $$
+$$\Pr_k \{ \sum_{i=1}^I x_i r_{ijk} \geq T_j \} \geq \alpha \quad \forall \space j \in J $$
+$$x_i \in \{0,1\} \quad \forall \space i \in I$$
 
 where now $r$ is indexed by $k$, the feature value for the specific realization (i.e., climate scenario). The problem ensures that the targets are met not just in one specific realization of species abundance, but across many different realizations of scenario $k$, such that the probability that the targets are met across the realizations exceeds a certain confidence level $\alpha$. If $\alpha=1$ (the default and most robust approach), then the solution must meet the species abundance targets across all realizations $k$ and all species $j$.
 
