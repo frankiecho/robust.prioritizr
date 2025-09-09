@@ -28,6 +28,7 @@ For more information on using this package, see the vignettes:
 Useful links:
 \itemize{
   \item \url{https://github.com/frankiecho/robust.prioritizr}
+  \item \url{https://frankiecho.github.io/robust.prioritizr/}
   \item Report bugs at \url{https://github.com/frankiecho/robust.prioritizr/issues}
 }
 

@@ -222,7 +222,8 @@ As the previous example shows, enforcing targets to be held robustly across all 
 Users can control the robustness of the solution through the `conf_level` parameter in `add_*_robust_constraints`, which specifies the proportion of the constraints that must be met in each group for the solution to be considered feasible. In this case, specifying 80% means that out of the 17 historic and future climate projections, the solution needs to meet the target in at least 13 (17 \times 0.8) climate projections/ time-steps. In other words, the target can only be breached for 3 climate projections/ time-steps. By relaxing this target, we can pursue much more ambitious relative targets (0.07 protection), while ensuring that the solution is feasible and reasonably robust under most climate projections and time-steps.
 
 ```{r}
-rt2 <- 0.073
+rt2 <- 0.07
+
 rpv2 <- problem(cost, species) %>%
   add_relative_targets(rt2) %>%
   robust.prioritizr::add_constant_robust_constraints(groups = groups,
@@ -273,6 +274,44 @@ rsv2_representation %>%
   head()
 ```
 
+## Varying the confidence level
+
+As we lower the confidence level for all species to aid the feasibility of the problem, the optimization problem also takes advantage of the lowered confidence level to help further reduce the costs. This may not be desirable for some species with broader ranges where a solution can be found even if their targets are met robustly across all climate scenarios and time-steps. Ideally, we only want to relax the confidence levels for species if it helps solve a problem that would otherwise be infeasible, rather than relaxing the confidence levels for all species.
+
+In this example, we can use the `add_variable_robust_constraints` to flexibly specify which species we want the lowered confidence levels to apply, while ensuring the other species meets its targets robustly across all scenarios.
+
+```{r}
+var_rob_cons <- tibble::tibble(
+  features = split(names(species), groups)[unique(groups)],
+  conf_level = 1
+)
+
+relax_cons_species <- c(
+  "Liopholis_guthega",
+  "Burramys_parvus",
+  "Philoria_frosti",
+  "Pseudophryne_corroboree",
+  "Sarcophilus_harrisii"
+)
+
+var_rob_cons$conf_level <- if_else(unique(groups) %in% relax_cons_species, 0.8, 1)
+
+rpv3 <- problem(cost, species) %>%
+  add_relative_targets(rt2) %>%
+  add_variable_robust_constraints(var_rob_cons) %>%
+  add_locked_in_constraints(pa) %>%
+  add_binary_decisions() %>%
+  robust.prioritizr::add_robust_min_set_objective(method = "Chance") %>%
+  add_default_solver(verbose = F)
+
+rsv3 <- solve(rpv3)
+
+rs <- c(rsv1, rsv2, rsv3, rsv1-pa, rsv2-pa, rsv3-pa)
+names(rs) <- c("Robust (1% target)", "Partially Robust (7% target)", "Fully Robust (7% target)", "New PA (Robust 1%)", "New PA (Partially Robust 7%)", "New PA (Fully Robust 7%)")
+plot(rs, axes = F, fun = \() lines(study_area), type = 'continuous', range = c(0,1))
+```
+
+
 ## Comparison with a Non-Robust Solution
 
 For comparison, we solve a standard `prioritizr` problem using only the historical baseline data and a higher target. We apply the same 7% target to the problem, but only solve this using the historical baseline data.
@@ -297,11 +336,13 @@ names(soln_v1) <- c("Non-robust", "Robust", "New PA (Non-robust)", "New PA (Robu
 plot(soln_v1, axes = F, fun = \() lines(study_area), type = "continuous", range = c(0,1))
 ```
 
-While the non-robust solution may appear effective when evaluated against the historical baseline, it may potentially miss targets under future climate projections. We can check the representation of the Tasmanian devil (*Sarcophilus harrisii*) and compare it against the partially robust solution. The partially robust solution limits the total number of climate projections/ time-steps where the Tasmanian devil representation falls below the desired target.
+While the non-robust solution may appear effective when evaluated against the historical baseline, it may potentially miss targets under future climate projections. We can check the representation of the Orange-bellied parrot (*Neophema chrysogaster*) and compare it against the partially robust solution. The partially robust solution limits the total number of climate projections/ time-steps where the Orange-bellied parrot representation falls below the desired target.
 
 ```{r}
+spotlight_species <- 'Neophema_chrysogaster'
+
 selected_species <- species_details %>%
-  filter(species == 'Sarcophilus_harrisii') %>%
+  filter(species == spotlight_species) %>%
   arrange(scenario, timestep)
 feature_rep_nr <- eval_feature_representation_summary(rpv2, sv1) %>%
   filter(feature %in% selected_species$name) %>%
@@ -311,19 +352,25 @@ feature_rep_r <- eval_feature_representation_summary(rpv2, rsv2) %>%
   filter(feature %in% selected_species$name) %>%
   rownames_to_column("name") %>%
   rename(robust = absolute_held )
+feature_rep_fr <- eval_feature_representation_summary(rpv2, rsv3) %>%
+  filter(feature %in% selected_species$name) %>%
+  rownames_to_column("name") %>%
+  rename(fully_robust = absolute_held )
 
 species_details %>%
   rename(feature = name) %>%
   right_join(feature_rep_nr, by = 'feature') %>%
   right_join(feature_rep_r, by = 'feature') %>%
-  pivot_longer(c('non_robust', 'robust'), names_to = 'solution') %>%
-  mutate(solution = factor(solution, c('non_robust', 'robust'), c("Non-robust", "Partially Robust"))) %>%
+  right_join(feature_rep_fr, by = 'feature') %>%
+  pivot_longer(c('non_robust', 'robust', "fully_robust"), names_to = 'solution') %>%
+  mutate(solution = factor(solution, c('non_robust', 'robust', 'fully_robust'), 
+                           c("Non-robust", "Partially Robust", "Fully Robust"))) %>%
   left_join(worst_case_occurrence, by = 'species') %>%
   mutate(species_scenario = paste(species, scenario)) %>%
   filter(timestep > 1990) %>%
   ggplot(aes(x = timestep, y = value, color = scenario, group = species_scenario)) +
   facet_wrap(vars(solution)) +
-  geom_hline(data = worst_case_occurrence %>% filter(species == 'Sarcophilus_harrisii'), aes(yintercept = rt2), linetype = 2) +
+  geom_hline(data = worst_case_occurrence %>% filter(species == spotlight_species), aes(yintercept = rt2), linetype = 2) +
   geom_point() +
   geom_line() +
   theme_bw() +
@@ -332,3 +379,14 @@ species_details %>%
   theme(panel.grid = element_blank(),
         legend.position = 'bottom')
 ```
+
+```{r}
+cost_nr <- eval_cost_summary(rpv2, sv1) 
+cost_r <- eval_cost_summary(rpv2, rsv2) 
+cost_fr <- eval_cost_summary(rpv2, rsv3)
+
+rs <- c(sv1, sv1-pa, rsv3, rsv1-pa, rsv2-pa, rsv3-pa)
+names(rs) <- c("Not robust", "Partially Robust", "Fully Robust", "New PA (Not Robust)", "New PA (Partially Robust)", "New PA (Fully Robust 7%)")
+plot(rs, axes = F, fun = \() lines(study_area), type = 'continuous', range = c(0,1))
+```
+

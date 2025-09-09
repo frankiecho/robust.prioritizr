@@ -9,10 +9,10 @@ editor_options:
 
 # Robust Systematic Conservation Prioritization in R
 
-  <!-- badges: start -->
-  [![R-CMD-check](https://github.com/frankiecho/robust.prioritizr/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/frankiecho/robust.prioritizr/actions/workflows/R-CMD-check.yaml)
-  [![Codecov test coverage](https://codecov.io/gh/frankiecho/robust.prioritizr/graph/badge.svg)](https://app.codecov.io/gh/frankiecho/robust.prioritizr)
-  <!-- badges: end -->
+  <!-- <!-- badges: start --> -->
+  <!-- [![R-CMD-check](https://github.com/frankiecho/robust.prioritizr/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/frankiecho/robust.prioritizr/actions/workflows/R-CMD-check.yaml) -->
+  <!-- [![Codecov test coverage](https://codecov.io/gh/frankiecho/robust.prioritizr/graph/badge.svg)](https://app.codecov.io/gh/frankiecho/robust.prioritizr) -->
+  <!-- <!-- badges: end --> -->
 
 `robust.prioritizr` is a R package for robust systematic conservation
 prioritization based on the `prioritizr` ecosystem. It allows users to

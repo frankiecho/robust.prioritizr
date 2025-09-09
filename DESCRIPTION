@@ -33,8 +33,6 @@ BugReports: https://github.com/frankiecho/robust.prioritizr/issues
 VignetteBuilder: knitr
 LazyData: true
 Imports:
-    utils,
-    methods,
     Rcpp,
     prioritizr (>= 8.0.6.6),
     R6 (>= 2.5.1),
@@ -46,8 +44,12 @@ Suggests:
     knitr,
     rmarkdown,
     terra (>= 1.8.54),
+    raster (>= 3.6.11),
+    sf (>= 1.0-12),
+    tibble (>= 2.0.0),
     Matrix (>= 1.3-0),
-    Rsymphony
+    highs,
+    dplyr
 Depends:
     R (>= 4.1.0)
 LinkingTo: 

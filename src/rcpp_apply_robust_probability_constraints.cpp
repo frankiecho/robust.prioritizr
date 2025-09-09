@@ -66,7 +66,7 @@ bool rcpp_apply_robust_probability_constraints(
 
   for (std::size_t i = 0; i < n_groups; ++i) {
     // RHS of the constraint
-    conf_levels_rhs[i] = (1.0 - conf_levels[feature_group_ids[i]]) * feature_group_cardinality[i];
+    conf_levels_rhs[i] = (1.0 - conf_levels[i]) * feature_group_cardinality[i];
 
     // If the RHS is smaller than 1, there is no other solution on the LHS other
     // than have everything 0. This means the constraint/ variable is redundant
