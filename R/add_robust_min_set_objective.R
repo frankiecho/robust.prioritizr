@@ -1,5 +1,7 @@
 #' Add robust minimum set objective
 #'
+#' `r lifecycle::badge('experimental')`
+#'
 #' Set the objective of a conservation planning problem to minimize the cost of the solution while ensuring that all targets are met robustly across all realizations of data.
 #'
 #' @param x [prioritizr::problem()] object.
