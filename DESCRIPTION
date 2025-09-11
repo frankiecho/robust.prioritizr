@@ -1,7 +1,7 @@
 Package: robust.prioritizr
 Type: Package
 Title: Robust Systematic Conservation Prioritization
-Version: 0.0.0.1
+Version: 0.1.0.0
 Authors@R:
     c(person(c('Frankie'), 'Cho',
         email='frankie.cho@qut.edu.au', role = c('aut', 'cre'),
@@ -76,7 +76,6 @@ Collate:
     'prioritizr_assertions_class.R'
     'prioritizr_assertions_misc.R'
     'prioritizr_assertions_vector.R'
-    'robust.prioritizr-package.R'
     'robust_objectives.R'
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2

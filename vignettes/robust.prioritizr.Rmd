@@ -58,7 +58,7 @@ To illustrate the extent of the issue, we consider a simplified conservation pla
 
 We solve this problem in `prioritizr`.
 
-```{r}
+```{r, fig.alt="Features and cost of the prioritization problem"}
 library(terra)
 library(prioritizr)
 library(robust.prioritizr)
@@ -93,12 +93,11 @@ s1 <- solve(p1)
 names(s1) <- c('solution')
 
 plot(c(sim_features_not_robust_raster, sim_pu_raster, s1))
-
 ```
 
 In the prioritization process, planning units that have a higher number of `feature_1` in the planning unit will be selected over other planning units with less of `feature_1`. As shown below, `prioritizr` selects the planning units with the highest estimated number of features.
 
-```{r}
+```{r, fig.alt = "Ranking of feature 1 values and its prioritization outcomes"}
 df <- data.frame(
   feature_1 = values(sim_features_not_robust_raster[[1]]),
   solution = values(s1)
@@ -121,7 +120,7 @@ If uncertainties in features are not accounted for, a prioritization problem wou
 
 To see this, we generate 500 realizations of feature_1 from the same distribution and evaluate how good our solution is across each of these realizations. We can estimate how likely it is that our solution violates the target constraint.
 
-```{r}
+```{r, fig.alt="Feature 1 representation evaluated across the distribution"}
 # Number of simulations
 n_sims <- 500
 sim_feature_1 <- replicate(n_sims, matrix(rnorm(N^2, mean = mu, sd = sigma), nrow = N, ncol = N)) %>%
@@ -155,7 +154,7 @@ In what operations researchers call the "Curse of Optimality", the prioritizatio
 
 To parameterize the uncertainty in the features, we need to supply the counts of each feature under each of the realizations we have simulated. The core of the `robust.prioritizr` approach is the use of `groupings`, that tell the algorithm which
 
-```{r}
+```{r, fig.alt="Prioritization outcome of the non-robust and robust solutions"}
 ## Note: here I exploited the fact that the min set objective does not actually use the feature groupings behind the scenes
 ## Note: add_relative_targets will be a bit tricky to interpret as the "number of features" in each realization is different... will need to override with the max of the group (i.e. relative to the maximum of number of features across all realisations), or the mean... need to be transparent
 
@@ -175,12 +174,13 @@ p2 <- problem(sim_pu_raster, sim_features_robust_raster) %>%
 s2 <- solve(p2, force = TRUE)
 soln <- c(s1, s2)
 names(soln) <- c("Non-robust Solution", "Robust Solution")
+
 plot(soln)
 ```
 
 Using the same approach, we can evaluate the representation of the new solution `s2` across all the realizations of Feature 1.
 
-```{r}
+```{r, fig.alt="Faceted histogram comparing the distribution of feature representation for the not-robust and robust solutions. The robust solution shows a much lower violation rate."}
 feature_1_targets_robust <- values(sim_feature_1 * s2) %>%
   apply(2, sum) %>%
   unname
@@ -188,7 +188,7 @@ feature_1_targets_robust <- values(sim_feature_1 * s2) %>%
 data.frame(`not_robust` = unname(feature_1_targets),
            `robust` = unname(feature_1_targets_robust)) %>%
   tidyr::pivot_longer(c('not_robust', 'robust'), names_to = 'name', values_to = 'values') %>%
-  mutate(name = factor(name, c('not_robust', 'robust'), c('Not Robust', 'Robust'))) %>%
+  mutate(name = factor(name, c('not_robust', 'robust'), c('Non-Robust', 'Robust'))) %>%
   mutate(violated = if_else(values < target, "Below target", "Above target")) %>%
   mutate(violated = factor(violated, c("Below target", "Above target"))) %>%
   ggplot(aes(x = values, fill = violated)) +
@@ -209,7 +209,7 @@ Likewise, the problem can be solved for a minimum shortfall objective, where the
 
 We demonstrate this first with the use of the standard (not robust) use of `prioritizr`, focusing again on minimizing the shortfall of `feature_1` to the target.
 
-```{r}
+```{r, fig.alt="Prioritization outcome of the robust minimum shortfall objective"}
 budget <- target*2
 
 p3 <- problem(sim_pu_raster, sim_features_not_robust_raster) %>%
@@ -219,12 +219,13 @@ p3 <- problem(sim_pu_raster, sim_features_not_robust_raster) %>%
   add_default_solver(verbose = FALSE)
 
 s3 <- solve(p3)
+
 plot(s3)
 ```
 
 Using the same approach as before, we evaluate the full distribution of possible representations of `feature_1` across the realizations we have simulated above.
 
-```{r}
+```{r, fig.alt="Histogram of feature 1 representation, showing the distribution of outcomes, with bars colored based on whether they are below or above the target. Vertical lines indicate the target and the expected target."}
 feature_1_outcomes <- sim_feature_1 * s3
 feature_1_targets <- values(feature_1_outcomes) %>%
   apply(2, sum) %>%
@@ -254,7 +255,7 @@ Observe that while `prioritizr` sees `feature_1` as being achieved at the expect
 
 Now, let's observe how the solution will differ if we instead used robust approaches. In this robust approach, the shortfall is instead quantified as the minimum value in the distribution of representation for `feature_1`.
 
-```{r}
+```{r, fig.alt="Map of the robust minimum shortfall objective solution."}
 p4 <- problem(sim_pu_raster, sim_features_robust_raster) %>%
   add_constant_robust_constraints(groups = feature_groupings, conf_level = 1) %>%
   add_absolute_targets(target) %>%
@@ -268,7 +269,7 @@ plot(s4)
 
 Importantly, the relative improvement of the solution here will be limited by the budget constraint that was imposed on the function.
 
-```{r}
+```{r, fig.alt="Faceted histogram comparing the distribution of feature representation for the not-robust and robust solutions. The robust solution shows a much lower violation rate."}
 feature_1_targets_robust <- values(sim_feature_1 * s4) %>%
   apply(2, sum) %>%
   unname
@@ -305,7 +306,7 @@ The robust approach is able to find a solution that has a much higher probabilit
 
 Though it is important to recognize that the amount of improvement that are yielded by a robust solution is dependent on other constraints being imposed on it. Consider these alternative problems with the same formulation, but a much smaller budget.
 
-```{r}
+```{r, fig.alt="Map comparing the non-robust and robust solutions with a small budget."}
 # Use a small budget
 small_budget <- 5
 
@@ -343,7 +344,7 @@ plot(fig_rast)
 
 Here, the budget is constrained tightly at 5 cells. Robustness is typically achieved by selecting more planning units. Therefore, even though a robust solution is used, the solution did not improve much.
 
-```{r}
+```{r, fig.alt="Faceted histogram comparing the distribution of feature representation for the not-robust and robust solutions with a small budget. The distributions are similar due to the tight budget constraint."}
 
 representation_summary <- eval_feature_representation_summary(p6, s6)
 
