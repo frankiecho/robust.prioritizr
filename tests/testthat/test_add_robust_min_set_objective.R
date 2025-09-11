@@ -12,8 +12,8 @@ test_that("compile (single zone)", {
   # build problem
   p <-
     prioritizr::problem(sim_pu_raster, sim_features) |>
-    add_robust_min_set_objective() |>
-    add_constant_robust_constraints(groups = x) |>
+    add_robust_min_set_objective(method = 'chance') |>
+    add_constant_robust_constraints(groups = x, conf_level = 0.5) |>
     prioritizr::add_absolute_targets(0.1) |>
     prioritizr::add_binary_decisions()
 
@@ -23,8 +23,10 @@ test_that("compile (single zone)", {
   # run preliminary checks
   expect_s3_class(c, "OptimizationProblem")
   expect_equal(c$modelsense(), "min")
-  expect_equal(c$rhs(), rep(0.1, 5))
-  expect_equal(c$sense(), rep(">=", 5))
+  expect_equal(c$rhs()[1:5], rep(0.1, 5))
+  expect_equal(c$rhs()[6:7], rep(1.5, 1))
+  expect_equal(c$sense()[1:5], rep(">=", 5))
+
 })
 
 test_that("solve (single zone)", {
@@ -101,10 +103,15 @@ test_that("solve (single zone)", {
 test_that("compile (multiple zones)", {
   skip_if_not_installed("terra")
   # import data
-  sim_pu_raster <- c(prioritizr::get_sim_pu_raster(),
-                     prioritizr::get_sim_pu_raster(),
-                     prioritizr::get_sim_pu_raster())
-  sim_features <- prioritizr::get_sim_features()
+  grid <- matrix(rep(1, 25), nrow = 5)
+  sim_pu_raster <- c(rast(grid),
+                     rast(grid*2),
+                     rast(grid*3))
+  sim_features <- c(rast(grid),
+                    rast(grid*2),
+                    rast(grid*3),
+                    rast(grid*4),
+                    rast(grid*5))
   sim_zones <-
     prioritizr::zones(a = sim_features, b = sim_features, c = sim_features)
   x <- rep_len(c("a", "b"), terra::nlyr(sim_features))
@@ -123,6 +130,7 @@ test_that("compile (multiple zones)", {
   # run preliminary checks
   expect_s3_class(c, "OptimizationProblem")
   expect_equal(c$modelsense(), "min")
+  expect_true(all(apply(c$A(), 1, sum)[1:15] > c$rhs()[1:15]))
 })
 
 test_that("solve (multiple zones)", {

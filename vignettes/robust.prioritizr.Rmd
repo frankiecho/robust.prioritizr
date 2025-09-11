@@ -174,7 +174,7 @@ p2 <- problem(sim_pu_raster, sim_features_robust_raster) %>%
 
 s2 <- solve(p2, force = TRUE)
 soln <- c(s1, s2)
-names(soln) <- c("Non-robust", "Robust")
+names(soln) <- c("Non-robust Solution", "Robust Solution")
 plot(soln)
 ```
 
@@ -336,7 +336,7 @@ p6 <- problem(sim_pu_raster, sim_features_robust_raster) %>%
 s6 <- solve(p6)
 
 fig_rast <- c(s5,s6)
-names(fig_rast) <- c('Not robust', 'Robust')
+names(fig_rast) <- c('Non-Robust Solution', 'Robust Solution')
 
 plot(fig_rast)
 ```
