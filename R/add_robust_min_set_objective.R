@@ -6,7 +6,6 @@
 #'
 #' @param method the probabilistic constraint formulation method, either `Chance` (default) or `CondValueAtRisk`. See details.
 #'
-#'
 #' @details
 #' The robust minimum set objective seeks to find the set of planning units at a minimum cost such that the targets are met across all realizations of data.
 #'
@@ -125,20 +124,18 @@
 #' }
 #'
 #' @name add_robust_min_set_objective
-NULL
-
-#' @rdname add_robust_min_set_objective
 #' @export
-add_robust_min_set_objective <- function(x, method = "Chance") {
+add_robust_min_set_objective <- function(x, method = "chance") {
   # assert argument is valid
   assert_required(x)
   assert(is_conservation_problem(x))
   assert(assertthat::noNA(method))
   assert(assertthat::is.string(method))
-  allowed_methods <- c("CondValueAtRisk", "Chance")
+  method <- tolower(method) # for reverse compatibility
+  allowed_methods <- c("cvar", "chance")
   assert(
-    isTRUE(method %in% c("CondValueAtRisk", "Chance")),
-    msg = "`method` must be either \"CondValueAtRisk\" or \"Chance\"."
+    isTRUE(method %in% c("cvar", "chance")),
+    msg = "`method` must be either \"cvar\" or \"chance\"."
   )
   # add objective to problem
   x$add_objective(
@@ -177,7 +174,7 @@ add_robust_min_set_objective <- function(x, method = "Chance") {
             )
           )
           if (isTRUE(is_prob_needed)) {
-            if (identical(method, "CondValueAtRisk")) {
+            if (identical(method, "cvar")) {
               invisible(
                 rcpp_apply_robust_cvar_constraints(
                   x$ptr,

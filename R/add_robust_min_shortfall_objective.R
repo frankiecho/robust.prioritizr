@@ -2,7 +2,7 @@
 #'
 #' Solves a minimum shortfall objective that minimises a robust shortfall objective across all features. For each feature, the shortfall objective is quantified based on the distribution of shortfall across all realizations of data. For a fully robust solution, the shortfall metric used for optimization is the maximum shortfall across all realizations of the data. For a partially robust solution (`conf_level` < 1), the solution guarantees that the probability that the shortfall is greater than the shortfall metric used for optimisation is less than or equals to 1 - `conf_level`.
 #'
-#' @param x [prioritizr::problem()] object.
+#' @inheritParams add_robust_min_set_objective
 #'
 #' @param budget `numeric` value specifying the maximum expenditure of
 #'   the prioritization. For problems with multiple zones, the argument
@@ -10,7 +10,6 @@
 #'   for the entire solution or (ii) a `numeric` vector to specify
 #'   a separate budget for each management zone.
 #'
-#' @param method the probabilistic constraint formulation method, either `Chance` (default) or `CondValueAtRisk`. See details.
 #'
 #' @details
 #' Minimises an objective based on the total amount of shortfall (difference between the target and the feature representation) weighted across all features, subject to a budget.
@@ -22,12 +21,14 @@
 #' * If `conf_level = 1`, the shortfall metric is the maximum
 #' of the shortfall across all data realizations in the group
 #'
-#' * If `conf_level < 1`, then the shortfall metric is:
-#'    * `Method = 'CondValueAtRisk'`: the average of the shortfall
-#'    in the set of data realizations that exceed the `1-conf_level`
-#'    quantile
-#'    * `Method = 'Chance'`: the `1-conf_level` quantile of the
-#'    distribution of shortfall
+#' * If `conf_level < 1`, then the shortfall metric is
+#     'the `1-conf_level` quantile of the
+#'    distribution of shortfall, mathematically equivalent to `method = 'chance'`
+#'    in `add_robust_min_set`
+#'
+#' Note that the conditional value-at-risk formulation `method = 'cvar'` of the
+#' objective function is not yet implemented but will be available in a future
+#' release.
 #'
 #'
 #' @section Mathematical formulation:
@@ -118,7 +119,7 @@
 #' # Set up prioritizr problem
 #' p <- problem(pu, features) %>%
 #'   add_constant_robust_constraints(groups = groups) %>%
-#'   add_robust_min_shortfall_objective(budget = relative_budget, method = "Chance") %>%
+#'   add_robust_min_shortfall_objective(budget = relative_budget) %>%
 #'   add_relative_targets(0.1) %>%
 #'   add_binary_decisions() %>%
 #'   add_default_solver()
@@ -131,9 +132,6 @@
 #' }
 #'
 #' @name add_robust_min_shortfall_objective
-NULL
-
-#' @rdname add_robust_min_shortfall_objective
 #' @export
 add_robust_min_shortfall_objective <- function(x, budget) {
   # assert arguments are valid

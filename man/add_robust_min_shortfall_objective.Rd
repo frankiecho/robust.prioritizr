@@ -14,8 +14,6 @@ the prioritization. For problems with multiple zones, the argument
 to \code{budget} can be (i) a single \code{numeric} value to specify a single budget
 for the entire solution or (ii) a \code{numeric} vector to specify
 a separate budget for each management zone.}
-
-\item{method}{the probabilistic constraint formulation method, either \code{Chance} (default) or \code{CondValueAtRisk}. See details.}
 }
 \value{
 An updated \code{\link[prioritizr:problem]{prioritizr::problem()}} object with the objective added
@@ -33,15 +31,14 @@ based on the following approach:
 \itemize{
 \item If \code{conf_level = 1}, the shortfall metric is the maximum
 of the shortfall across all data realizations in the group
-\item If \code{conf_level < 1}, then the shortfall metric is:
-\itemize{
-\item \code{Method = 'CondValueAtRisk'}: the average of the shortfall
-in the set of data realizations that exceed the \code{1-conf_level}
-quantile
-\item \code{Method = 'Chance'}: the \code{1-conf_level} quantile of the
-distribution of shortfall
+\item If \code{conf_level < 1}, then the shortfall metric is
+distribution of shortfall, mathematically equivalent to \code{method = 'chance'}
+in \code{add_robust_min_set}
 }
-}
+
+Note that the conditional value-at-risk formulation \code{method = 'cvar'} of the
+objective function is not yet implemented but will be available in a future
+release.
 }
 \section{Mathematical formulation}{
 
@@ -120,7 +117,7 @@ groups <- rep(paste0("feature_", 1:5), 2)
 # Set up prioritizr problem
 p <- problem(pu, features) \%>\%
   add_constant_robust_constraints(groups = groups) \%>\%
-  add_robust_min_shortfall_objective(budget = relative_budget, method = "Chance") \%>\%
+  add_robust_min_shortfall_objective(budget = relative_budget) \%>\%
   add_relative_targets(0.1) \%>\%
   add_binary_decisions() \%>\%
   add_default_solver()
