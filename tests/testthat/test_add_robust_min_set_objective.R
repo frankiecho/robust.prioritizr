@@ -24,7 +24,7 @@ test_that("compile (single zone)", {
   expect_s3_class(c, "OptimizationProblem")
   expect_equal(c$modelsense(), "min")
   expect_equal(c$rhs()[1:5], rep(0.1, 5))
-  expect_equal(c$rhs()[6:7], rep(1.5, 1))
+  expect_equal(c$rhs()[6:7], c(1.5, 1))
   expect_equal(c$sense()[1:5], rep(">=", 5))
 
 })
@@ -69,7 +69,7 @@ test_that("solve (single zone)", {
 
   p <-
     prioritizr::problem(sim_pu_raster, sim_features) |>
-    add_robust_min_set_objective(method = 'CondValueAtRisk') |>
+    add_robust_min_set_objective(method = 'cvar') |>
     prioritizr::add_absolute_targets(5) |>
     add_constant_robust_constraints(groups = x, conf_level = conf_level) |>
     prioritizr::add_binary_decisions() |>
@@ -87,7 +87,7 @@ test_that("solve (single zone)", {
 
   p <-
     prioritizr::problem(sim_pu_raster, sim_features) |>
-    add_robust_min_set_objective(method = 'CondValueAtRisk') |>
+    add_robust_min_set_objective(method = 'cvar') |>
     prioritizr::add_absolute_targets(5) |>
     add_constant_robust_constraints(groups = x, conf_level = conf_level) |>
     prioritizr::add_binary_decisions() |>

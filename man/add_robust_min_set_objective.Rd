@@ -9,16 +9,18 @@ add_robust_min_set_objective(x, method = "chance")
 \arguments{
 \item{x}{\code{\link[prioritizr:problem]{prioritizr::problem()}} object.}
 
-\item{method}{the probabilistic constraint formulation method, either \code{Chance} (default) or \code{CondValueAtRisk}. See details.}
+\item{method}{the probabilistic constraint formulation method, either \code{chance} (default) or \code{cvar} (conditional value-at-risk). See details.}
 }
 \value{
 An updated \code{\link[prioritizr:problem]{prioritizr::problem()}} object with the objective added
 to it.
 }
 \description{
-Set the objective of a conservation planning problem to minimize the cost of the solution while ensuring that all targets are met robustly across all realizations of data.
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 }
 \details{
+Set the objective of a conservation planning problem to minimize the cost of the solution while ensuring that all targets are met robustly across all realizations of data.
+
 The robust minimum set objective seeks to find the set of planning units at a minimum cost such that the targets are met across all realizations of data.
 }
 \section{Mathematical formulation}{
@@ -52,8 +54,8 @@ the following constraint:
 }{}
 
 If \eqn{\alpha}{\alpha} is less than 1, the probabilistic constraint is formulated using either a Chance Constraint
-Programming approach (\code{method = "Chance"}), or a Conditional Value-at-Risk
-\code{method = 'CondValueAtRisk'} approach.
+Programming approach (\code{method = "chance"}), or a Conditional Value-at-Risk
+\code{method = 'cvar'} approach.
 
 For the Chance Constraint approach, the probabilistic constraint is parameterised using a "big-M" formulation,
 which replaces the constraint as follows:
@@ -112,7 +114,7 @@ groups <- rep(paste0("feature_", 1:5), 2)
 # Set up problem
 p <- problem(pu, features) \%>\%
   add_constant_robust_constraints(groups = groups) \%>\%
-  add_robust_min_set_objective(method = "CondValueAtRisk") \%>\%
+  add_robust_min_set_objective(method = "cvar") \%>\%
   add_binary_decisions() \%>\%
   add_relative_targets(0.1) \%>\%
   add_default_solver()

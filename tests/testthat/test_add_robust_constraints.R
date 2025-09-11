@@ -36,7 +36,7 @@ test_that("compile (single zone)", {
   # Expect the confidence level to be reflected in the RHS
   expect_true(all((group_cardinality*(1-conf_level) - cp$rhs()[6:7]) > 1e-5))
 
-  var_rob_cons <- tibble(
+  var_rob_cons <- tibble::tibble(
     features = list(c("feature_1", "feature_3", "feature_5"), c("feature_2", "feature_4")),
     conf_level = c(0.3, 0.5)
   )
@@ -84,7 +84,7 @@ test_that("solve (single zone)", {
 
   p2 <-
     prioritizr::problem(sim_pu_raster, sim_features) |>
-    add_robust_min_set_objective(method = "CondValueAtRisk") |>
+    add_robust_min_set_objective(method = "cvar") |>
     prioritizr::add_relative_targets(target) |>
     add_constant_robust_constraints(x, conf_level) |>
     prioritizr::add_binary_decisions() %>%    prioritizr::add_default_solver(verbose = F)

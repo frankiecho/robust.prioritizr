@@ -168,7 +168,7 @@ p2 <- problem(sim_pu_raster, sim_features_robust_raster) %>%
   add_constant_robust_constraints(groups = feature_groupings,
                                   conf_level = .9) %>%
   add_absolute_targets(target) %>%
-  add_robust_min_set_objective(method = 'CondValueAtRisk') %>%
+  add_robust_min_set_objective(method = 'cvar') %>%
   add_binary_decisions() %>%
   add_default_solver(verbose = FALSE)
 

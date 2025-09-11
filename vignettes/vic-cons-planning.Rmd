@@ -271,7 +271,7 @@ rpv2 <- problem(cost, species) %>%
                                                      conf_level = 0.8) %>%
   add_locked_in_constraints(pa) %>%
   add_binary_decisions() %>%
-  robust.prioritizr::add_robust_min_set_objective(method = "Chance") %>%
+  robust.prioritizr::add_robust_min_set_objective(method = "chance") %>%
   add_default_solver(verbose = F)
 
 rsv2 <- solve(rpv2)
@@ -346,7 +346,7 @@ rpv3 <- problem(cost, species) %>%
   add_variable_robust_constraints(var_rob_cons) %>%
   add_locked_in_constraints(pa) %>%
   add_binary_decisions() %>%
-  robust.prioritizr::add_robust_min_set_objective(method = "Chance") %>%
+  robust.prioritizr::add_robust_min_set_objective(method = "chance") %>%
   add_default_solver(verbose = F)
 
 rsv3 <- solve(rpv3)

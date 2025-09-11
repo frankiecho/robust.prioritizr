@@ -558,7 +558,7 @@ If we relax the confidence level a bit, we can allow for the target to not be me
 rp2b <- problem(costs_rast, abundance_uncertainty) %>%
   add_constant_robust_constraints(groups = groups_uncertainty, conf_level = .9) %>%
   add_absolute_targets(target) %>%
-  add_robust_min_set_objective(method = 'Chance') %>%
+  add_robust_min_set_objective(method = 'chance') %>%
   add_binary_decisions() %>%
   add_default_solver(verbose = F)
 
@@ -583,7 +583,7 @@ solve_chance_cons <- function(c) {
                  p <- problem(costs_rast, abundance_uncertainty) %>%
                   add_constant_robust_constraints(groups = groups_uncertainty, conf_level = c) %>%
                   add_absolute_targets(target) %>%
-                  add_robust_min_set_objective(method = 'Chance') %>%
+                  add_robust_min_set_objective(method = 'chance') %>%
                   add_binary_decisions() %>%
                   add_default_solver(verbose = F)
                  solve(p)

@@ -6,7 +6,7 @@
 #'
 #' @param x [prioritizr::problem()] object.
 #'
-#' @param method the probabilistic constraint formulation method, either `Chance` (default) or `CondValueAtRisk`. See details.
+#' @param method the probabilistic constraint formulation method, either `chance` (default) or `cvar` (conditional value-at-risk). See details.
 #'
 #' @details
 #' The robust minimum set objective seeks to find the set of planning units at a minimum cost such that the targets are met across all realizations of data.
@@ -41,8 +41,8 @@
 #' }{}
 #'
 #' If \eqn{\alpha}{\alpha} is less than 1, the probabilistic constraint is formulated using either a Chance Constraint
-#' Programming approach (`method = "Chance"`), or a Conditional Value-at-Risk
-#' `method = 'CondValueAtRisk'` approach.
+#' Programming approach (`method = "chance"`), or a Conditional Value-at-Risk
+#' `method = 'cvar'` approach.
 #'
 #' For the Chance Constraint approach, the probabilistic constraint is parameterised using a "big-M" formulation,
 #' which replaces the constraint as follows:
@@ -114,7 +114,7 @@
 #' # Set up problem
 #' p <- problem(pu, features) %>%
 #'   add_constant_robust_constraints(groups = groups) %>%
-#'   add_robust_min_set_objective(method = "CondValueAtRisk") %>%
+#'   add_robust_min_set_objective(method = "cvar") %>%
 #'   add_binary_decisions() %>%
 #'   add_relative_targets(0.1) %>%
 #'   add_default_solver()
