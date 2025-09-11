@@ -63,6 +63,8 @@ library(tibble)
 library(stringr)
 library(ggplot2)
 library(tidyr)
+library(tidyterra)
+library(patchwork)
 ```
 
 This example demonstrates how to use `robust.prioritizr` for systematic conservation planning in Victoria, Australia. We will use data for historic and future species occurrence projections, conservation costs, and existing protected areas.
@@ -78,7 +80,6 @@ cost <- get_vic_cost()
 pa <- get_vic_pa()
 species_details <- vic_cmip6
 study_area <- get_vic_study_area()
-rm(vic_cmip6)
 ```
 
 The data package contains the following datasets:
@@ -92,6 +93,22 @@ The data package contains the following datasets:
 -   **Protected areas (`pa`):** The location of current protected areas.
 
 -   **Study area (`study_area`):** A boundary for the state of Victoria.
+
+We first generate a plot of the current protected areas in the state, which act as locked-in constraints that must be selected as part of a planning solution.
+
+```{r}
+pa_categorical <- pa
+levels(pa_categorical) <- data.frame(id = 0:1, cover = c("Not PA", "Current PA"))
+pa_plt <- ggplot() +
+  geom_spatraster(data = pa_categorical, na.rm = T) +
+  geom_sf(data = study_area, fill = NA) +
+  scale_fill_manual('', 
+                    values = c("#F0E442", "#009E73"),
+                    na.value = "transparent", na.translate = FALSE) +
+  theme_void() +
+  theme(legend.position = 'bottom')
+pa_plt
+```
 
 We can visualize the projected occurrence of the brush-tailed rock-wallaby (*Petrogale penicillata*), a critically endangered species in Victoria. The figure below shows that the wallaby's suitable habitat is projected to shrink considerably under a high-emissions climate scenario.
 
@@ -160,6 +177,31 @@ In this piece of code here we also lay the groundwork for alternative relative t
 
 After solving the initial problem, we will progress to explore how to increase the relative targets we use by relaxing the robustness of the problem, such that the representation of other species in the data can be increased.
 
+To visualise the planning solutions, we also define a helper function as follows.
+
+```{r}
+# Function to plot a planning solution
+plot_planning_soln <- function(soln) {
+  soln[soln==1] <- 2
+  soln[pa==1] <- 1
+  levels(soln) <- data.frame(
+    id = c(0,1,2),
+    cover = c("Not Current PA", "Current PA", "New PA")
+  )
+  
+  plt <- ggplot() +
+    geom_spatraster(data = soln, na.rm = T) +
+    geom_sf(data = study_area, fill = NA, show.legend = TRUE) +
+    scale_fill_manual('', 
+                      values = c("#F0E442", "#009E73", "#D55E00"),
+                      na.value = "transparent", na.translate = FALSE,
+                      drop = FALSE) +
+    theme_void() +
+    theme(legend.position = 'bottom')
+  return(plt)
+}
+```
+
 ## Solving the Robust Problem
 
 The workflow for a robust problem is similar to `prioritizr`, but with the addition of robust-specific functions. Here is a breakdown of the problem construction:
@@ -182,9 +224,8 @@ rpv1 <- problem(cost, species) %>%
 
 rsv1 <- solve(rpv1)
 
-plot(rsv1, axes = F)
-lines(study_area)
-title("Robust Solution (Target = 1%)")
+plot_planning_soln(rsv1) +
+  ggtitle("Robust Solution (Target = 1%)")
 
 ```
 
@@ -233,12 +274,16 @@ rpv2 <- problem(cost, species) %>%
   robust.prioritizr::add_robust_min_set_objective(method = "Chance") %>%
   add_default_solver(verbose = F)
 
-csv2 <- compile(rpv2)
 rsv2 <- solve(rpv2)
 
-rs <- c(rsv1, rsv2, rsv1-pa, rsv2-pa)
-names(rs) <- c("Robust (1% target)", "Partially Robust (7% target)", "New PA (Robust 1%)", "New PA (Partially Robust 7%)")
-plot(rs, axes = F, fun = \() lines(study_area), type = 'continuous', range = c(0,1))
+rs <- (plot_planning_soln(rsv1) + 
+  ggtitle("Robust (1% target)") +
+    guides(color = 'none', fill = 'none')) +
+  plot_planning_soln(rsv2) +
+  ggtitle("Partially Robust (7% target)") +
+  plot_layout(guides = 'collect') +
+  theme(legend.position = 'bottom')
+rs
 ```
 
 ```{r}
@@ -306,11 +351,18 @@ rpv3 <- problem(cost, species) %>%
 
 rsv3 <- solve(rpv3)
 
-rs <- c(rsv1, rsv2, rsv3, rsv1-pa, rsv2-pa, rsv3-pa)
-names(rs) <- c("Robust (1% target)", "Partially Robust (7% target)", "Fully Robust (7% target)", "New PA (Robust 1%)", "New PA (Partially Robust 7%)", "New PA (Fully Robust 7%)")
-plot(rs, axes = F, fun = \() lines(study_area), type = 'continuous', range = c(0,1))
+comb_plt <- (plot_planning_soln(rsv1) + 
+  ggtitle("Robust (1% target)") +
+  guides(fill = 'none', color = 'none')) +
+  plot_planning_soln(rsv2) + 
+  ggtitle("Partially Robust (7% target)") +
+  plot_planning_soln(rsv3) + 
+  ggtitle("Fully Robust* (7% target)") +
+  plot_layout(guides = 'collect') &
+  theme(legend.position = 'bottom')
+comb_plt +
+  labs(caption = "* Robust up to 80% probability for some species")
 ```
-
 
 ## Comparison with a Non-Robust Solution
 
@@ -329,11 +381,14 @@ pv1 <- problem(cost, species_hb) %>%
   add_locked_in_constraints(pa) %>%
   add_default_solver(verbose = F)
 
-cv1 <- compile(pv1)
-sv1 <- solve(pv1)
-soln_v1 <- c(sv1, rsv2, sv1-pa, rsv2-pa)
-names(soln_v1) <- c("Non-robust", "Robust", "New PA (Non-robust)", "New PA (Robust)")
-plot(soln_v1, axes = F, fun = \() lines(study_area), type = "continuous", range = c(0,1))
+comb_plt <- (plot_planning_soln(sv1) + 
+  ggtitle("Robust (1% target)") +
+  guides(fill = 'none', color = 'none')) +
+  plot_planning_soln(rsv2) + 
+  ggtitle("Partially Robust (7% target)") +
+  plot_layout(guides = 'collect') &
+  theme(legend.position = 'bottom')
+comb_plt
 ```
 
 While the non-robust solution may appear effective when evaluated against the historical baseline, it may potentially miss targets under future climate projections. We can check the representation of the Orange-bellied parrot (*Neophema chrysogaster*) and compare it against the partially robust solution. The partially robust solution limits the total number of climate projections/ time-steps where the Orange-bellied parrot representation falls below the desired target.
@@ -364,7 +419,7 @@ species_details %>%
   right_join(feature_rep_fr, by = 'feature') %>%
   pivot_longer(c('non_robust', 'robust', "fully_robust"), names_to = 'solution') %>%
   mutate(solution = factor(solution, c('non_robust', 'robust', 'fully_robust'), 
-                           c("Non-robust", "Partially Robust", "Fully Robust"))) %>%
+                           c("Non-robust", "Partially Robust", "Fully Robust*"))) %>%
   left_join(worst_case_occurrence, by = 'species') %>%
   mutate(species_scenario = paste(species, scenario)) %>%
   filter(timestep > 1990) %>%
@@ -377,16 +432,6 @@ species_details %>%
   labs(x = "Time-step", y = "Representation (number of cells)") +
   coord_cartesian(xlim = c(2030, 2090)) +
   theme(panel.grid = element_blank(),
-        legend.position = 'bottom')
+        legend.position = 'bottom')+
+  labs(caption = "* Robust up to 80% probability for some species")
 ```
-
-```{r}
-cost_nr <- eval_cost_summary(rpv2, sv1) 
-cost_r <- eval_cost_summary(rpv2, rsv2) 
-cost_fr <- eval_cost_summary(rpv2, rsv3)
-
-rs <- c(sv1, sv1-pa, rsv3, rsv1-pa, rsv2-pa, rsv3-pa)
-names(rs) <- c("Not robust", "Partially Robust", "Fully Robust", "New PA (Not Robust)", "New PA (Partially Robust)", "New PA (Fully Robust 7%)")
-plot(rs, axes = F, fun = \() lines(study_area), type = 'continuous', range = c(0,1))
-```
-
