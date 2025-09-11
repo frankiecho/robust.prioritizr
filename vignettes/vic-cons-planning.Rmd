@@ -281,7 +281,7 @@ rs <- (plot_planning_soln(rsv1) +
     guides(color = 'none', fill = 'none')) +
   plot_planning_soln(rsv2) +
   ggtitle("Partially Robust (7% target)") +
-  plot_layout(guides = 'collect') +
+  plot_layout(guides = 'collect') &
   theme(legend.position = 'bottom')
 rs
 ```
@@ -381,8 +381,10 @@ pv1 <- problem(cost, species_hb) %>%
   add_locked_in_constraints(pa) %>%
   add_default_solver(verbose = F)
 
+sv1 <- solve(pv1)
+
 comb_plt <- (plot_planning_soln(sv1) + 
-  ggtitle("Robust (1% target)") +
+  ggtitle("Non-Robust (7% target)") +
   guides(fill = 'none', color = 'none')) +
   plot_planning_soln(rsv2) + 
   ggtitle("Partially Robust (7% target)") +
