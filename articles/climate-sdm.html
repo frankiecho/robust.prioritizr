@@ -25,7 +25,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">robust.prioritizr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -65,7 +65,7 @@
       <img src="../logo.png" class="logo" alt=""><h1>Example using simulated data from a species distribution model</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/frankiecho/robust.prioritizr/blob/unit-tests/vignettes/climate-sdm.Rmd" class="external-link"><code>vignettes/climate-sdm.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/frankiecho/robust.prioritizr/blob/master/vignettes/climate-sdm.Rmd" class="external-link"><code>vignettes/climate-sdm.Rmd</code></a></small>
       <div class="d-none name"><code>climate-sdm.Rmd</code></div>
     </div>
 
@@ -92,11 +92,9 @@ necessary in understanding the vignette.</p>
 <h2 id="data-generating-process">Data generating process<a class="anchor" aria-label="anchor" href="#data-generating-process"></a>
 </h2>
 <p>Suppose the analyst fitted the following statistical model of the
-species abundance based on data:</p>
-<p>$$</p>
-<p>r_{ij} (<em>{ij}) \ </em>{ij} = (_0 + _1 Temp_i + _2 Temp_i^2 + _3
-Prec_i + <em>4 Prec_i^2 + </em>{ij})</p>
-<p>$$</p>
+species abundance based on data:
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>r</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>∼</mo><mtext mathvariant="normal">Poisson</mtext><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>θ</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex"> r_{ij} \sim \text{Poisson}(\theta_{ij}) </annotation></semantics></math></p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>θ</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>=</mo><mo>log</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>β</mi><mn>0</mn></msub><mo>+</mo><msub><mi>β</mi><mn>1</mn></msub><mi>T</mi><mi>e</mi><mi>m</mi><msub><mi>p</mi><mi>i</mi></msub><mo>+</mo><msub><mi>β</mi><mn>2</mn></msub><mi>T</mi><mi>e</mi><mi>m</mi><msubsup><mi>p</mi><mi>i</mi><mn>2</mn></msubsup><mo>+</mo><msub><mi>β</mi><mn>3</mn></msub><mi>P</mi><mi>r</mi><mi>e</mi><msub><mi>c</mi><mi>i</mi></msub><mo>+</mo><msub><mi>β</mi><mn>4</mn></msub><mi>P</mi><mi>r</mi><mi>e</mi><msubsup><mi>c</mi><mi>i</mi><mn>2</mn></msubsup><mo>+</mo><msub><mi>ε</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex"> \theta_{ij} = \log(\beta_0 + \beta_1 Temp_i + \beta_2 Temp_i^2 + \beta_3 Prec_i + \beta_4 Prec_i^2 + \varepsilon_{ij}) </annotation></semantics></math></p>
 <p>where the abundance
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>r</mi><annotation encoding="application/x-tex">r</annotation></semantics></math>
 of species
@@ -364,12 +362,12 @@ problem.</p>
 Prioritizr specification, using only one of the climate scenarios
 (SSP2-RCP4.5) for planning. The specification below solves the following
 conservation planning problem:</p>
-<p><span class="math display">$$
-\min \sum_{i=1}^{I} x_i c_i \\
-\text{subject to} \\
-\sum_{i=1}^I x_i r_{ij} \geq T_j \quad \forall \space j \in J \\
-x_i \in \{0,1\} \quad \forall \space i \in I
-$$</span></p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>min</mo><munderover><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>I</mi></munderover><msub><mi>x</mi><mi>i</mi></msub><msub><mi>c</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex"> \min \sum_{i=1}^{I} x_i c_i </annotation></semantics></math></p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="normal">subject to</mtext><annotation encoding="application/x-tex"> \text{subject to} </annotation></semantics></math></p>
+<p><span class="math display">$$ \sum_{i=1}^I x_i r_{ij} \geq T_j \quad
+\forall \space j \in J $$</span></p>
+<p><span class="math display">$$ x_i \in \{0,1\} \quad \forall \space i
+\in I $$</span></p>
 <p>where
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>x</mi><annotation encoding="application/x-tex">x</annotation></semantics></math>
 is the binary decision variable of whether to protect cell
@@ -435,10 +433,8 @@ under an extreme climate scenario.</p>
 conservation planning problems that are robust to alternative climate
 scenarios and other sources of uncertainty. Using the modified minimum
 set objective, users can solve the following problem:</p>
-<p><span class="math display">$$
-\min \sum_{i=1}^{I} x_i c_i \\ \text{subject to} \\ \Pr_k \{
-\sum_{i=1}^I x_i r_{ijk} \geq T_j \} \geq \alpha \quad \forall \space j
-\in J \\ x_i \in \{0,1\} \quad \forall \space i \in I
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>min</mo><munderover><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>I</mi></munderover><msub><mi>x</mi><mi>i</mi></msub><msub><mi>c</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex"> \min \sum_{i=1}^{I} x_i c_i </annotation></semantics></math><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="normal">subject to</mtext><annotation encoding="application/x-tex"> \text{subject to} </annotation></semantics></math><span class="math display">$$ \Pr_k \{ \sum_{i=1}^I x_i r_{ijk} \geq T_j
+\} \geq \alpha \quad \forall \space j \in J $$</span> <span class="math display">$$ x_i \in \{0,1\} \quad \forall \space i \in I
 $$</span></p>
 <p>where now
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>r</mi><annotation encoding="application/x-tex">r</annotation></semantics></math>
@@ -492,7 +488,7 @@ scenarios. We can use the robust minimum set objective by invoking
 <span><span class="va">rs1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/solve.html" class="external-link">solve</a></span><span class="op">(</span><span class="va">rp1</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">s1_combined</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">s1</span>, <span class="va">rs1</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">s1_combined</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'Not robust'</span>, <span class="st">'Robust'</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">s1_combined</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'Non-robust'</span>, <span class="st">'Robust'</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">s1_combined</span><span class="op">)</span></span></code></pre></div>
 <p>The robust solution identified a lot more planning units compared to
@@ -571,10 +567,9 @@ not solve the problem.</p>
 <span><span class="fu">plot_solution_eval</span><span class="op">(</span><span class="va">s2b</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
-<h3 id="taking-the-minimum-value-across-scenarios-climate-refugia-analyses">Taking the minimum value across scenarios (climate refugia
-analyses)<a class="anchor" aria-label="anchor" href="#taking-the-minimum-value-across-scenarios-climate-refugia-analyses"></a>
+<h3 id="taking-the-minimum-value-across-scenarios">Taking the minimum value across scenarios<a class="anchor" aria-label="anchor" href="#taking-the-minimum-value-across-scenarios"></a>
 </h3>
-<p>A common misconception to why robust optimisation does under the hood
+<p>A common misconception to why robust optimization does under the hood
 (one that I had in the past) was that solving a problem with a robust
 approach is equivalent to solving the problem while supplying the
 minimum value of the abundance across all scenarios. Such approaches are
@@ -740,11 +735,11 @@ we can specify the <code>conf_level=0.9</code>, which mandates that the
 solution meet the objective in at least 90% of the random realizations
 supplied to the problem.</p>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Note that "method = 'Chance'" may not be scalable to larger problems</span></span>
+<code class="sourceCode R"><span><span class="co"># Note that "method = 'chance'" may not be scalable to larger problems</span></span>
 <span><span class="va">rp2b</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://prioritizr.net/reference/problem.html" class="external-link">problem</a></span><span class="op">(</span><span class="va">costs_rast</span>, <span class="va">abundance_uncertainty</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/add_constant_robust_constraints.html">add_constant_robust_constraints</a></span><span class="op">(</span>groups <span class="op">=</span> <span class="va">groups_uncertainty</span>, conf_level <span class="op">=</span> <span class="fl">.9</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://prioritizr.net/reference/add_absolute_targets.html" class="external-link">add_absolute_targets</a></span><span class="op">(</span><span class="va">target</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="../reference/add_robust_min_set_objective.html">add_robust_min_set_objective</a></span><span class="op">(</span>method <span class="op">=</span> <span class="st">'Chance'</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/add_robust_min_set_objective.html">add_robust_min_set_objective</a></span><span class="op">(</span>method <span class="op">=</span> <span class="st">'chance'</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://prioritizr.net/reference/add_binary_decisions.html" class="external-link">add_binary_decisions</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://prioritizr.net/reference/add_default_solver.html" class="external-link">add_default_solver</a></span><span class="op">(</span>verbose <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></span>
 <span></span>
@@ -768,7 +763,7 @@ curve across different confidence level specifications.</p>
 <span>                 <span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://prioritizr.net/reference/problem.html" class="external-link">problem</a></span><span class="op">(</span><span class="va">costs_rast</span>, <span class="va">abundance_uncertainty</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>                  <span class="fu"><a href="../reference/add_constant_robust_constraints.html">add_constant_robust_constraints</a></span><span class="op">(</span>groups <span class="op">=</span> <span class="va">groups_uncertainty</span>, conf_level <span class="op">=</span> <span class="va">c</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>                  <span class="fu"><a href="https://prioritizr.net/reference/add_absolute_targets.html" class="external-link">add_absolute_targets</a></span><span class="op">(</span><span class="va">target</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>                  <span class="fu"><a href="../reference/add_robust_min_set_objective.html">add_robust_min_set_objective</a></span><span class="op">(</span>method <span class="op">=</span> <span class="st">'Chance'</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>                  <span class="fu"><a href="../reference/add_robust_min_set_objective.html">add_robust_min_set_objective</a></span><span class="op">(</span>method <span class="op">=</span> <span class="st">'chance'</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>                  <span class="fu"><a href="https://prioritizr.net/reference/add_binary_decisions.html" class="external-link">add_binary_decisions</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>                  <span class="fu"><a href="https://prioritizr.net/reference/add_default_solver.html" class="external-link">add_default_solver</a></span><span class="op">(</span>verbose <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></span>
 <span>                 <span class="fu"><a href="https://rdrr.io/r/base/solve.html" class="external-link">solve</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span>
