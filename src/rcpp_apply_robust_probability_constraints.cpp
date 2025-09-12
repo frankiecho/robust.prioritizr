@@ -50,7 +50,7 @@ bool rcpp_apply_robust_probability_constraints(
   Rcpp::NumericVector big_m(n_targets, 0.0);
 
   for (std::size_t i = 0; i < n_targets; ++i) {
-    if ((targets_sense[i] == "<=") | (targets_sense[i] == "<")) {
+    if ((targets_sense[i] == "<=") || (targets_sense[i] == "<")) {
       big_m[i] = -feature_group_target[feature_group_ids[i]];
     } else {
       big_m[i] = feature_group_target[feature_group_ids[i]];
