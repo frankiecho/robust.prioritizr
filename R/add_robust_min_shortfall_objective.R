@@ -1,14 +1,16 @@
 #' Add robust minimum shortfall objective
+#' `r lifecycle::badge('experimental')`
 #'
 #' Solves a minimum shortfall objective that minimises a robust shortfall objective across all features. For each feature, the shortfall objective is quantified based on the distribution of shortfall across all realizations of data. For a fully robust solution, the shortfall metric used for optimization is the maximum shortfall across all realizations of the data. For a partially robust solution (`conf_level` < 1), the solution guarantees that the probability that the shortfall is greater than the shortfall metric used for optimisation is less than or equals to 1 - `conf_level`.
 #'
-#' @param x [prioritizr::problem()] object.
+#' @inheritParams add_robust_min_set_objective
 #'
 #' @param budget `numeric` value specifying the maximum expenditure of
 #'   the prioritization. For problems with multiple zones, the argument
 #'   to `budget` can be (i) a single `numeric` value to specify a single budget
 #'   for the entire solution or (ii) a `numeric` vector to specify
 #'   a separate budget for each management zone.
+#'
 #'
 #' @details
 #' Minimises an objective based on the total amount of shortfall (difference between the target and the feature representation) weighted across all features, subject to a budget.
@@ -20,12 +22,14 @@
 #' * If `conf_level = 1`, the shortfall metric is the maximum
 #' of the shortfall across all data realizations in the group
 #'
-#' * If `conf_level < 1`, then the shortfall metric is:
-#'    * `Method = 'CondValueAtRisk'`: the average of the shortfall
-#'    in the set of data realizations that exceed the `1-conf_level`
-#'    quantile
-#'    * `Method = 'Chance'`: the `1-conf_level` quantile of the
-#'    distribution of shortfall
+#' * If `conf_level < 1`, then the shortfall metric is
+#     'the `1-conf_level` quantile of the
+#'    distribution of shortfall, mathematically equivalent to `method = 'chance'`
+#'    in `add_robust_min_set`
+#'
+#' Note that the conditional value-at-risk formulation `method = 'cvar'` of the
+#' objective function is not yet implemented but will be available in a future
+#' release.
 #'
 #'
 #' @section Mathematical formulation:
@@ -44,7 +48,7 @@
 #' sum_i^I (xi * ci) <= B
 #' }
 #'
-#' Here, \eqn{x_i}{xi} is the [decisions] variable (e.g.,
+#' Here, \eqn{x_i}{xi} is the decisions variable (e.g.,
 #' specifying whether planning unit \eqn{i}{i} has been selected (1) or not
 #' (0)), \eqn{r_{ijk}}{rijk} is the amount of feature \eqn{j}{j} in planning
 #' unit \eqn{i}{i} in realization \eqn{k}{k}, \eqn{t_j}{tj} is the maximum representation target for feature
@@ -53,7 +57,7 @@
 #' the target \eqn{t_j}{tj} for feature \eqn{j}{j} across all realizations \eqn{k}{k},
 #' \eqn{v_{jk}}{vjk} is the shortfall for feature \eqn{j}{j} under realization \eqn{k}{k}, and \eqn{w_j}{wj} is the
 #' weight for feature \eqn{j}{j} (defaults to 1 for all features; see
-#' [add_feature_weights()] to specify weights). \eqn{\alpha}{\alpha} is the
+#' [prioritizr::add_feature_weights()] to specify weights). \eqn{\alpha}{\alpha} is the
 #' specified `conf_level` confidence level for the uncertain constraint
 #' (as specified in `add_*_robust_constraints`), and ensures that the proportion of
 #' constraints for each feature group \eqn{k}{k} that are held is higher than the
@@ -129,9 +133,6 @@
 #' }
 #'
 #' @name add_robust_min_shortfall_objective
-NULL
-
-#' @rdname add_robust_min_shortfall_objective
 #' @export
 add_robust_min_shortfall_objective <- function(x, budget) {
   # assert arguments are valid

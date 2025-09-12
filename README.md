@@ -1,13 +1,18 @@
 
-# robust.prioritizr: Robust Systematic Conservation Prioritization in R
+# robust.prioritizr <img src="man/figures/logo.png" align="right" style="width:140px"/>
 
-[![lifecycle](https://img.shields.io/badge/Lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html)
-[![R-CMD-check-Ubuntu](https://img.shields.io/github/actions/workflow/status/frankiecho/roubust.prioritizr/R-CMD-check-ubuntu.yaml?branch=main&label=Ubuntu)](https://github.com/frankiecho/roubust.prioritizr/actions)
-[![R-CMD-check-Windows](https://img.shields.io/github/actions/workflow/status/frankiecho/roubust.prioritizr/R-CMD-check-windows.yaml?branch=main&label=Windows)](https://github.com/frankiecho/roubust.prioritizr/actions)
-[![R-CMD-check-macOS](https://img.shields.io/github/actions/workflow/status/frankiecho/roubust.prioritizr/R-CMD-check-macos.yaml?branch=main&label=macOS)](https://github.com/frankiecho/roubust.prioritizr/actions)
-[![Documentation](https://img.shields.io/github/actions/workflow/status/frankiecho/roubust.prioritizr/documentation.yaml?branch=main&label=Documentation)](https://github.com/frankiecho/roubust.prioritizr/actions)
-[![Coverage-Status](https://img.shields.io/codecov/c/github/frankiecho/roubust.prioritizr?label=Coverage)](https://app.codecov.io/gh/frankiecho/roubust.prioritizr/branch/main)
-[![CRAN-Status-Badge](https://www.r-pkg.org/badges/version/robust.prioritizr)](https://CRAN.R-project.org/package=robust.prioritizr)
+# Robust Systematic Conservation Prioritization in R
+
+<!-- badges: start -->
+
+[![R-CMD-check](https://github.com/frankiecho/robust.prioritizr/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/frankiecho/robust.prioritizr/actions/workflows/R-CMD-check.yaml)
+[![Codecov test
+coverage](https://codecov.io/gh/frankiecho/robust.prioritizr/graph/badge.svg)](https://app.codecov.io/gh/frankiecho/robust.prioritizr)
+[![CRAN
+status](https://www.r-pkg.org/badges/version/robust.prioritizr)](https://CRAN.R-project.org/package=robust.prioritizr)
+[![Lifecycle:
+experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+<!-- badges: end -->
 
 `robust.prioritizr` is a R package for robust systematic conservation
 prioritization based on the `prioritizr` ecosystem. It allows users to
@@ -80,13 +85,7 @@ soln <- solve(p)
 # Plot the solution
 plot(soln)
 
-# Observe that the targets are met across all realizations of data
+# Validate that the targets are met across all realizations of data
 feature_rep <- eval_feature_representation_summary(p, soln)
 all(feature_rep$relative_held > 0.1)
 ```
-
-## Getting Help
-
-If you have questions or suggestions, please post an issue on the
-[GitHub
-repository](https://github.com/frankiecho/robust.prioritizr/issues).

@@ -96,7 +96,7 @@ write_raster_w_params <- function(raster, path) {
 
 data_path <- "inst/extdata"
 
-write_raster_w_params(cost, file.path(data_path, "vic_cost.tif"))
+writeRaster(cost, file.path(data_path, "vic_cost.tif"), overwrite=TRUE)
 
 write_raster_w_params(pa, file.path(data_path, "vic_pa.tif"))
 

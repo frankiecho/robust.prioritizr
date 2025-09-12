@@ -2,7 +2,8 @@
 % Please edit documentation in R/add_robust_min_shortfall_objective.R
 \name{add_robust_min_shortfall_objective}
 \alias{add_robust_min_shortfall_objective}
-\title{Add robust minimum shortfall objective}
+\title{Add robust minimum shortfall objective
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}}
 \usage{
 add_robust_min_shortfall_objective(x, budget)
 }
@@ -31,15 +32,14 @@ based on the following approach:
 \itemize{
 \item If \code{conf_level = 1}, the shortfall metric is the maximum
 of the shortfall across all data realizations in the group
-\item If \code{conf_level < 1}, then the shortfall metric is:
-\itemize{
-\item \code{Method = 'CondValueAtRisk'}: the average of the shortfall
-in the set of data realizations that exceed the \code{1-conf_level}
-quantile
-\item \code{Method = 'Chance'}: the \code{1-conf_level} quantile of the
-distribution of shortfall
+\item If \code{conf_level < 1}, then the shortfall metric is
+distribution of shortfall, mathematically equivalent to \code{method = 'chance'}
+in \code{add_robust_min_set}
 }
-}
+
+Note that the conditional value-at-risk formulation \code{method = 'cvar'} of the
+objective function is not yet implemented but will be available in a future
+release.
 }
 \section{Mathematical formulation}{
 
@@ -58,7 +58,7 @@ sum_i^I (xi * rij) + tj * yj >= tj for all j in J &
 sum_i^I (xi * ci) <= B
 }
 
-Here, \eqn{x_i}{xi} is the \link{decisions} variable (e.g.,
+Here, \eqn{x_i}{xi} is the decisions variable (e.g.,
 specifying whether planning unit \eqn{i}{i} has been selected (1) or not
 (0)), \eqn{r_{ijk}}{rijk} is the amount of feature \eqn{j}{j} in planning
 unit \eqn{i}{i} in realization \eqn{k}{k}, \eqn{t_j}{tj} is the maximum representation target for feature
@@ -67,7 +67,7 @@ unit \eqn{i}{i} in realization \eqn{k}{k}, \eqn{t_j}{tj} is the maximum represen
 the target \eqn{t_j}{tj} for feature \eqn{j}{j} across all realizations \eqn{k}{k},
 \eqn{v_{jk}}{vjk} is the shortfall for feature \eqn{j}{j} under realization \eqn{k}{k}, and \eqn{w_j}{wj} is the
 weight for feature \eqn{j}{j} (defaults to 1 for all features; see
-\code{\link[=add_feature_weights]{add_feature_weights()}} to specify weights). \eqn{\alpha}{\alpha} is the
+\code{\link[prioritizr:add_feature_weights]{prioritizr::add_feature_weights()}} to specify weights). \eqn{\alpha}{\alpha} is the
 specified \code{conf_level} confidence level for the uncertain constraint
 (as specified in \verb{add_*_robust_constraints}), and ensures that the proportion of
 constraints for each feature group \eqn{k}{k} that are held is higher than the

@@ -72,11 +72,9 @@ Robust Prioritizr is agnostic to the data generating process - users who only wi
 # Data generating process
 
 Suppose the analyst fitted the following statistical model of the species abundance based on data:
+$$ r_{ij} \sim \text{Poisson}(\theta_{ij}) $$
 
-$$
-r_{ij} \sim \text{Poisson}(\theta_{ij}) \\
-\theta_{ij} = \log(\beta_0 + \beta_1 Temp_i + \beta_2 Temp_i^2 + \beta_3 Prec_i + \beta_4 Prec_i^2 + \varepsilon_{ij})
-$$
+$$ \theta_{ij} = \log(\beta_0 + \beta_1 Temp_i + \beta_2 Temp_i^2 + \beta_3 Prec_i + \beta_4 Prec_i^2 + \varepsilon_{ij}) $$
 
 where the abundance $r$ of species $j$ in location $i$ follows a Poisson distribution with the mean $\theta$, which is function of the climate covariates Temperature $Temp$ and Precipitation $Prec$ and a random i.i.d. error term $\varepsilon$. The relationships between the climate variables and the mean are modelled using the regression coefficients $\beta_1, \beta_2, \beta_3, \beta_4$. For simplicity, we assume here that its abundance only depends on these two climatic variables.
 
@@ -88,7 +86,7 @@ We simulate the abundance data for two species as follows:
 
 Here, we generate the temperature and precipitation values of a simulated landscape and plot the expected abundance with respect to temperature (holding precipitation constant). As we can see in the figure below, Species 1 have a lower expected abundance, and its expected abundance declines rapidly once temperature changes away from its optimal temperature.
 
-```{r}
+```{r, fig.alt = "Line plot showing the expected abundance of Species 1 and Species 2 as a function of temperature."}
 set.seed(19895894)
 N <- 10
 
@@ -167,7 +165,7 @@ data.frame(x, resp_1, resp_2) %>%
 
 In this simulated landscape, we see that the range of species 1 is much smaller compared to species 2, because it has a much narrower climatic range.
 
-```{r}
+```{r, fig.alt = "Raster showing temperature, precipitation and abundance of the two species"}
 # Baseline occurrences for species 1 and 2
 baseline_ab_1 <- rpois_matrix(exp_ab_1(temp, prec))
 baseline_ab_2 <- rpois_matrix(exp_ab_2(temp, prec))
@@ -192,7 +190,7 @@ In the figure below, we plot the simulated abundances of species 1 and species 2
 
 plot(abundance_rast)
 
-```{r}
+```{r, fig.alt="Species distributions under different scenarios"}
 # Baseline temp and precipitation
 temp_ssp1_rcp26 <- temp
 prec_ssp1_rcp26 <- prec
@@ -272,7 +270,7 @@ In our first example, we focus mostly on scenario uncertainty, while we will sta
 
 Consider that the analyst has set of predictions of future species abundances for two species under four future RCP-SSP scenarios (SSP1-RCP2.6, SSP2-RCP4.5, SSP4-RCP6.0, and SSP5-RCP8.5), with a specified conservation cost. In the diagram below, we plot the abundance estimates across climate scenarios and its cost:
 
-```{r}
+```{r,  fig.alt="Species distributions under different scenarios and cost"}
 plot(c(abundance_rast, costs_rast))
 ```
 
@@ -288,16 +286,18 @@ For simplicity, we do not specify additional constraints, such as connectivity c
 
 As a first pass, we can solve this problem in the traditional Prioritizr specification, using only one of the climate scenarios (SSP2-RCP4.5) for planning. The specification below solves the following conservation planning problem:
 
-$$
-\min \sum_{i=1}^{I} x_i c_i \\
-\text{subject to} \\
-\sum_{i=1}^I x_i r_{ij} \geq T_j \quad \forall \space j \in J \\
-x_i \in \{0,1\} \quad \forall \space i \in I 
-$$
+$$ \min \sum_{i=1}^{I} x_i c_i $$
+
+$$ \text{subject to} $$
+
+$$ \sum_{i=1}^I x_i r_{ij} \geq T_j \quad \forall \space j \in J $$
+
+$$ x_i \in \{0,1\} \quad \forall \space i \in I $$
+
 
 where $x$ is the binary decision variable of whether to protect cell $i$ or not, $c$ is the conservation cost, $r$ is the abundance of species $j$ in cell $i$ (taken as the abundance under SSP2-RCP4.5 at the moment) and $T$ is the representation target for species $j$ (taken as 20 for all species at the moment).
 
-```{r}
+```{r, fig.alt="Planning solution using standard prioritizr"}
 target <- 20
 abundance_ssp2_rcp45 <- abundance_rast[[c('ssp2_rcp45_ab_1',
                                          'ssp2_rcp45_ab_2')]]
@@ -315,7 +315,7 @@ plot(s1)
 
 The challenge with this planning approach is that it does not account for other climates. As a result, the planning solution would fail to reach the targets in other climate scenarios, particularly under the extreme climate scenario SSP5-RCP8.5.
 
-```{r}
+```{r,  fig.alt="Evaluation of species representation across scenarios"}
 plot_solution_eval <- function(soln) {
   representation_rs1 <- values(abundance_rast * soln) %>%
     apply(2, sum, na.rm = T)
@@ -340,9 +340,10 @@ The planning solution identified is not robust to alternative climate scenarios,
 
 Robust Prioritizr gives users a flexible interface to solve conservation planning problems that are robust to alternative climate scenarios and other sources of uncertainty. Using the modified minimum set objective, users can solve the following problem:
 
-$$
-\min \sum_{i=1}^{I} x_i c_i \\ \text{subject to} \\ \Pr_k \{ \sum_{i=1}^I x_i r_{ijk} \geq T_j \} \geq \alpha \quad \forall \space j \in J \\ x_i \in \{0,1\} \quad \forall \space i \in I
-$$
+$$ \min \sum_{i=1}^{I} x_i c_i $$
+$$ \text{subject to} $$
+$$ \Pr_k \{ \sum_{i=1}^I x_i r_{ijk} \geq T_j \} \geq \alpha \quad \forall \space j \in J $$
+$$ x_i \in \{0,1\} \quad \forall \space i \in I $$
 
 where now $r$ is indexed by $k$, the feature value for the specific realization (i.e., climate scenario). The problem ensures that the targets are met not just in one specific realization of species abundance, but across many different realizations of scenario $k$, such that the probability that the targets are met across the realizations exceeds a certain confidence level $\alpha$. If $\alpha=1$ (the default and most robust approach), then the solution must meet the species abundance targets across all realizations $k$ and all species $j$.
 
@@ -360,7 +361,7 @@ groups
 
 Then, we can solve the problem using Robust Prioritizr, supplying the full raster containing all the abundance predictions across all climate scenarios and the groups argument. For now, we keep the confidence level to 1, ensuring that the targets are met for all species across all scenarios. We can use the robust minimum set objective by invoking `add_robust_min_set_objective`.
 
-```{r}
+```{r, fig.alt="Planning solution of the non-robust and robust approaches"}
 rp1 <- problem(costs_rast, abundance_rast) %>%
   add_constant_robust_constraints(groups = groups) %>%
   add_absolute_targets(target) %>%
@@ -371,7 +372,7 @@ rp1 <- problem(costs_rast, abundance_rast) %>%
 rs1 <- solve(rp1)
 
 s1_combined <- c(s1, rs1)
-names(s1_combined) <- c('Not robust', 'Robust')
+names(s1_combined) <- c('Non-robust', 'Robust')
 
 plot(s1_combined)
 ```
@@ -380,7 +381,7 @@ The robust solution identified a lot more planning units compared to the non-rob
 
 We can examine whether the robust solution indeed meets the targets across all of the specified climate scenarios:
 
-```{r}
+```{r, fig.alt="Evaluation of feature representation of the robust approach"}
 plot_solution_eval(rs1)
 ```
 
@@ -398,7 +399,7 @@ The reader is justified in questioning why Robust Prioritizr exists when there c
 
 Given in particular the narrow ranges of Species 1, we can see that a protected area network that specifically focuses on protecting its climatic niches under the extreme climate scenario (SSP5-RCP8.5) would still fail to meet its targets under a milder climate scenario. Protecting species with narrow climate niches like Species 1 requires a planning solution that jointly considers all, not just one, climate scenario.
 
-```{r}
+```{r, fig.alt="Evaluation of feature representation of the solution of taking the most extreme climate scenario"}
 abundance_ssp5_rcp85 <- abundance_rast[[c('ssp5_rcp85_ab_1',
                                          'ssp5_rcp85_ab_2')]]
 p2a <- problem(costs_rast, abundance_ssp5_rcp85) %>%
@@ -416,7 +417,7 @@ plot_solution_eval(s2a)
 
 Increasing targets might appear to be an easy fix, but it does not account for the reality that the area with abundant species under one climate scenario is not the same as the area with abundant species under a different climate scenario. Thus, increasing the target is only going to select more planning units in areas that are predicted to have an abundant number of species under one climate scenario, while failing to represent the same species under an alternative climate scenario. As a simple demonstration, we see that even multiplying the target by 3 does not solve the problem.
 
-```{r}
+```{r, fig.alt="Feature representation of solution of adding a buffer to the target"}
 p2b <- problem(costs_rast, abundance_ssp2_rcp45) %>%
   add_min_set_objective() %>%
   add_absolute_targets(target * 3) %>%
@@ -428,13 +429,13 @@ s2b <- solve(p2b)
 plot_solution_eval(s2b)
 ```
 
-## Taking the minimum value across scenarios (climate refugia analyses)
+## Taking the minimum value across scenarios
 
-A common misconception to why robust optimisation does under the hood (one that I had in the past) was that solving a problem with a robust approach is equivalent to solving the problem while supplying the minimum value of the abundance across all scenarios. Such approaches are common in so-called "climate refugia" analyses, where the objective is to identify overlaps in species ranges across multiple climate scenarios and direct conservation efforts to those areas.
+A common misconception to why robust optimization does under the hood (one that I had in the past) was that solving a problem with a robust approach is equivalent to solving the problem while supplying the minimum value of the abundance across all scenarios. Such approaches are common in so-called "climate refugia" analyses, where the objective is to identify overlaps in species ranges across multiple climate scenarios and direct conservation efforts to those areas.
 
 For example, we can identify areas where Species 2 (the species with broader climatic niches) are present in the dataset by taking the minimum of the abundance estimates across climate scenarios:
 
-```{r}
+```{r, fig.alt="Map of species 2 under different climate scenarios"}
 abundance_min_2 <- c(abundance_rast[[5]] > 0,
                    abundance_rast[[8]] > 0,
                    min(abundance_rast[[5:8]] > 0))
@@ -443,7 +444,7 @@ abundance_min_2 %>% plot()
 
 In this case, we see that there are still some overlap in species ranges across climate scenarios. If we use the minimum to represent the abundance for species 2, we can solve the problem, but still see that the solution that it identifies becomes too conservative, with the abundance levels exceeding the target by a substantial margin (leading to higher costs).
 
-```{r}
+```{r, fig.alt="Feature representation of taking the minimum value out of scenarios"}
 abundance_min <- abundance_ssp2_rcp45
 abundance_min[[2]] <- min(abundance_rast[[5:8]]) # Only set that for species 2
 p2c <- problem(costs_rast, abundance_min) %>%
@@ -457,11 +458,11 @@ plot_solution_eval(s2c)
 
 In some cases, such an analysis may not even yield feasible solutions. For example, consider Species 1, where its ranges do not overlap at all across climate scenarios. Taking the minimum out of abundance estimates of all scenarios would lead to a minimum value of zero abundance for all planning units. If these features were used for prioritization, the problem would be infeasible. As seen in the figure below, the minimum value of the abundance levels are all zero in all planning units.
 
-```{r}
+```{r, fig.alt="Map of Species 1 under different climates"}
 abundance_min_1 <- c(abundance_rast[[1]] > 0,
                    abundance_rast[[4]] > 0,
                    min(abundance_rast[[1:4]] > 0))
-abundance_min_1 %>% plot()
+abundance_min_1 %>% plot(type = 'continuous', range = c(0,1))
 ```
 
 # Tuning the level of robustness
@@ -532,7 +533,7 @@ rs2a <- solve(rp2a)
 
 Fortunately, a solution can be found. We can see that the target is met across all of the replicates we provide to the problem.
 
-```{r}
+```{r, fig.alt="Feature representation across data replicates"}
 eval_soln_uncertain <- function(soln, return_df = FALSE) {
   dist <- values(soln * abundance_uncertainty) %>% 
     unname %>% 
@@ -556,16 +557,16 @@ As the number of replicates increase, it becomes increasingly hard for the probl
 
 If we relax the confidence level a bit, we can allow for the target to not be met in some realizations of uncertainty. This allows the optimisation problem to search for a lower cost solution. For example, we can specify the `conf_level=0.9`, which mandates that the solution meet the objective in at least 90% of the random realizations supplied to the problem.
 
-```{r}
-# Note that "method = 'Chance'" may not be scalable to larger problems
+```{r, fig.alt="Feature representation across data replicates, with a lower confidence level"}
+# Note that "method = 'chance'" may not be scalable to larger problems
 rp2b <- problem(costs_rast, abundance_uncertainty) %>%
   add_constant_robust_constraints(groups = groups_uncertainty, conf_level = .9) %>%
   add_absolute_targets(target) %>%
-  add_robust_min_set_objective(method = 'Chance') %>%
+  add_robust_min_set_objective(method = 'chance') %>%
   add_binary_decisions() %>%
   add_default_solver(verbose = F)
 
-rs2b <- solve(rp2b, force = TRUE)
+rs2b <- solve(rp2b)
 
 eval_soln_uncertain(rs2b)
 ```
@@ -580,13 +581,13 @@ eval_soln_uncertain(rs2b, return_df = TRUE) %>%
 
 Users can also evaluate the relative trade-offs between robustness and the costs of the solutions identified by examining the trade-off curve across different confidence level specifications.
 
-```{r}
+```{r, fig.alt="Cost trade-off between cost and robustness"}
 conf_level_vect <- seq(0.5, 1, 0.1)
 solve_chance_cons <- function(c) {
                  p <- problem(costs_rast, abundance_uncertainty) %>%
                   add_constant_robust_constraints(groups = groups_uncertainty, conf_level = c) %>%
                   add_absolute_targets(target) %>%
-                  add_robust_min_set_objective(method = 'Chance') %>%
+                  add_robust_min_set_objective(method = 'chance') %>%
                   add_binary_decisions() %>%
                   add_default_solver(verbose = F)
                  solve(p)
@@ -620,7 +621,7 @@ chance_cons_df %>%
 
 Do however note that the setting of `conf_level` to anything other than 1 will increase the solve times and can make your problem intractable for a large number of planning units/ realizations.
 
-```{r}
+```{r, fig.alt="Computational solve time trade-off with robustness relaxation"}
 chance_cons_df %>%
   ggplot(aes(x = conf_level, y = solve_times)) +
   geom_point() +
