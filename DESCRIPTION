@@ -1,59 +1,37 @@
 Package: robust.prioritizr
 Type: Package
 Title: Robust Systematic Conservation Prioritization
-Version: 0.1.0.0
+Version: 0.0.0.1
 Authors@R:
     c(person(c('Frankie'), 'Cho',
-        email='frankie.cho@qut.edu.au', role = c('aut', 'cre'),
+        email='frankie.cho@qut.edu.au', role = c('aut', 'cre', 'cph'),
         comment = c(ORCID = '0000-0003-1369-4980')),
       person(c('Jeffrey', 'O'), 'Hanson',
         email='jeffrey.hanson@uqconnect.edu.au', role = c('aut'),
         comment = c(ORCID = '0000-0002-4716-6134')))
-Description: 
-    Robust systematic conservation prioritization based on chance constrained 
-    programming and robust optimization. It enables conservation prioritization users
-    to account of uncertainty in input data from climate change scenario projections, species
-    distribution models or measurement errors. It extends the flexible interface of the 'prioritizr' R package, 
-    a systematic conservation prioritization framework, creating robust versions 
-    of systematic conservation planning problems that can be solved using exact 
-    solvers. Problems can be specified to be fully robust to all data 
-    realizations provided, or partially robust, which guarantees that the probability
-    that the constraints are met is higher than the specified confidence level. 
-    Fully robust optimization problems are formulated as a "Minimax" 
-    linear programming problem, which minimises or maximises the objective
-    under the worst possible data realization. The partially robust optimization problems can be 
-    formulated as a Chance Constrained Programming problem (Charnes & Cooper, 1959, <doi:10.1287/mnsc.6.1.73>), 
-    which ensures that the constraint is met up to a certain confidence level (probability
-    which the constraint is met), or a Conditional Value-at-Risk optimization problem (Rockafellar & 
-    Uryasev, 2000, <doi:10.21314/JOR.2000.038>), where the constraint is met even when taken as the average of the
-    distribution of values that fall above/ below a certain quantile, which also
-    guarantees that the constraint is met up to a certain confidence level.
+Description: Robust systematic conservation prioritization tools in R
 Encoding: UTF-8
-License: GPL (>= 3)
+License: GPL-3
 Language: en-US
 URL: https://github.com/frankiecho/robust.prioritizr, https://frankiecho.github.io/robust.prioritizr/
 BugReports: https://github.com/frankiecho/robust.prioritizr/issues
 VignetteBuilder: knitr
 LazyData: true
 Imports:
+    utils,
+    methods,
     Rcpp,
     prioritizr (>= 8.0.6.6),
     R6 (>= 2.5.1),
     rlang (>= 1.0.6),
     cli (>= 3.6.0),
-    assertthat (>= 0.2.0),
-    lifecycle
+    assertthat (>= 0.2.0)
 Suggests:
     testthat (>= 3.1.0),
-    knitr (>= 1.50),
-    rmarkdown (>= 2.29),
+    knitr,
+    rmarkdown,
     terra (>= 1.8.54),
-    raster (>= 3.6.11),
-    sf (>= 1.0-12),
-    tibble (>= 2.0.0),
-    Matrix (>= 1.3-0),
-    highs (>= 1.10.0-3),
-    dplyr (>= 1.1.4)
+    Matrix (>= 1.3-0)
 Depends:
     R (>= 4.1.0)
 LinkingTo: 
@@ -81,10 +59,11 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
 Config/testthat/edition: 3
 Config/Needs/website:
-    tibble,
-    stringr,
-    ggplot2,
-    tidyr,
-    patchwork
+    tibble (>= 3.3.0),
+    stringr (>= 1.5.1),
+    ggplot2 (>= 3.5.2),
+    tidyr (>= 1.3.1),
+    patchwork (>= 1.3.2),
+    tidyterra (>= 0.7.2)
 Remotes:
   prioritizr/prioritizr@speedup-blm
