@@ -11,5 +11,4 @@ Load a raster indicating whether the cell is covered by a protected area (1) or 
 }
 \references{
 DCCEEW (2024), Collaborative Australian Protected Areas Database (CAPAD).
-\url{https://www.dcceew.gov.au/environment/land/nrs/science/capad}
 }

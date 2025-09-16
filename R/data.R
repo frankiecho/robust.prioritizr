@@ -26,7 +26,7 @@
 #' @references
 #' Archibald, C., Summers, D., Graham, E. and Bryan, B. (2024). Habitat suitability maps
 #' for Australian flora and fauna under CMIP6 climate scenarios. GigaScience, Volume
-#' 13, 2024, giae002. <https://doi.org/10.1093/gigascience/giae002>
+#' 13, 2024, giae002. <doi:10.1093/gigascience/giae002>
 #'
 #'
 "vic_cmip6"
@@ -44,7 +44,7 @@
 #' @references
 #' Archibald, C., Summers, D., Graham, E. and Bryan, B. (2024). Habitat suitability maps
 #' for Australian flora and fauna under CMIP6 climate scenarios. GigaScience, Volume
-#' 13, 2024, giae002. <https://doi.org/10.1093/gigascience/giae002>
+#' 13, 2024, giae002. <doi:10.1093/gigascience/giae002>
 #'
 #' @export
 get_vic_species <- function() {
@@ -91,7 +91,6 @@ get_vic_study_area <- function() {
 #'
 #' @references
 #' DCCEEW (2024), Collaborative Australian Protected Areas Database (CAPAD).
-#' <https://www.dcceew.gov.au/environment/land/nrs/science/capad>
 #'
 #' @export
 get_vic_pa <- function() {
