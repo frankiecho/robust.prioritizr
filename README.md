@@ -8,15 +8,13 @@
 [![R-CMD-check](https://github.com/frankiecho/robust.prioritizr/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/frankiecho/robust.prioritizr/actions/workflows/R-CMD-check.yaml)
 [![Codecov test
 coverage](https://codecov.io/gh/frankiecho/robust.prioritizr/graph/badge.svg)](https://app.codecov.io/gh/frankiecho/robust.prioritizr)
-[![CRAN
-status](https://www.r-pkg.org/badges/version/robust.prioritizr)](https://CRAN.R-project.org/package=robust.prioritizr)
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 <!-- badges: end -->
 
 `robust.prioritizr` is a R package for robust systematic conservation
-prioritization based on the `prioritizr` ecosystem. It allows users to
-generate conservation plans that are robust to uncertainties in input
+prioritization which extends the `prioritizr` package. It allows users
+to generate conservation plans that are robust to uncertainties in input
 data, such as those arising from climate change projections, species
 distribution models, or measurement errors.
 
@@ -36,7 +34,13 @@ a more resilient conservation plan.
 
 ## Installation
 
-You can install the development version of `robust.prioritizr` from
+You can install the CRAN version of ‘robust.prioritizr’ from CRAN:
+
+``` r
+install.packages('robust.prioritizr')
+```
+
+You can install the development version of ‘robust.prioritizr’ from
 GitHub:
 
 ``` r
