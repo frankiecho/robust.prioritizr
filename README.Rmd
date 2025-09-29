@@ -14,7 +14,8 @@ editor_options:
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/frankiecho/robust.prioritizr/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/frankiecho/robust.prioritizr/actions/workflows/R-CMD-check.yaml)
 [![Codecov test coverage](https://codecov.io/gh/frankiecho/robust.prioritizr/graph/badge.svg)](https://app.codecov.io/gh/frankiecho/robust.prioritizr)
-[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+[![CRAN status](https://www.r-pkg.org/badges/version/robust.prioritizr)](https://CRAN.R-project.org/package=robust.prioritizr)
+[![Lifecycle: stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
 <!-- badges: end -->
 
 `robust.prioritizr` is a R package for robust systematic conservation

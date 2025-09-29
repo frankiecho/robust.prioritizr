@@ -64,7 +64,7 @@ verify <- function(..., env = parent.frame(), call = fn_caller_env()) {
     names(res)[[1]] <- ">"
   }
   # throw warning
-  cli_warning(res, .envir = call, call = call)
+  cli::cli_warn(res, .envir = call, call = call)
   # return result
   invisible(FALSE)
 }

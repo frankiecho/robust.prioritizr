@@ -144,7 +144,7 @@ all_is_valid_total_unit_ids <- function(x, y) {
   # if the identifiers are valid using simple bounds check
   if (x$is_ids_equivalent_to_indices()) {
     return(
-      (max(y) <= number_of_total_units(x)) &&
+      (max(y) <= prioritizr::number_of_total_units(x)) &&
       (min(y) >= 0)
     )
   }
@@ -159,7 +159,7 @@ assertthat::on_failure(all_is_valid_total_unit_ids) <- function(call, env) {
   # error handling if ids are equivalent to indices...
   if (x$is_ids_equivalent_to_indices()) {
     ## find invalid ids
-    invalid_ids <- y[(y > number_of_total_units(x)) | (y < 0)]
+    invalid_ids <- y[(y > prioritizr::number_of_total_units(x)) | (y < 0)]
   } else {
     # otherwise, error handling if ids are equivalent to indices...
     ## find invalid ids
