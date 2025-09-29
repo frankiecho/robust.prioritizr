@@ -37,12 +37,11 @@ VignetteBuilder: knitr
 LazyData: true
 Imports:
     Rcpp,
-    prioritizr (>= 8.0.6.6),
+    prioritizr (>= 8.0.6),
     R6 (>= 2.5.1),
     rlang (>= 1.0.6),
     cli (>= 3.6.0),
-    assertthat (>= 0.2.0),
-    prioritizr (>= 8.0.0)
+    assertthat (>= 0.2.0)
 Suggests:
     testthat (>= 3.1.0),
     knitr (>= 1.50),
