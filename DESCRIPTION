@@ -36,7 +36,7 @@ BugReports: https://github.com/frankiecho/robust.prioritizr/issues
 VignetteBuilder: knitr
 LazyData: true
 Imports:
-    Rcpp,
+    Rcpp (>= 1.0.7),
     prioritizr (>= 8.0.6),
     R6 (>= 2.5.1),
     rlang (>= 1.0.6),
