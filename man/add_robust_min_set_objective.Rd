@@ -16,11 +16,9 @@ An updated \code{\link[prioritizr:problem]{prioritizr::problem()}} object with t
 to it.
 }
 \description{
-\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+Set the objective of a conservation planning problem to minimize the cost of the solution while ensuring that all targets are met robustly across all realizations of data.
 }
 \details{
-Set the objective of a conservation planning problem to minimize the cost of the solution while ensuring that all targets are met robustly across all realizations of data.
-
 The robust minimum set objective seeks to find the set of planning units at a minimum cost such that the targets are met across all realizations of data.
 }
 \section{Mathematical formulation}{

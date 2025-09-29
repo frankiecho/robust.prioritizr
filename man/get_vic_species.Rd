@@ -19,5 +19,5 @@ vic_species <- get_vic_species()
 \references{
 Archibald, C., Summers, D., Graham, E. and Bryan, B. (2024). Habitat suitability maps
 for Australian flora and fauna under CMIP6 climate scenarios. GigaScience, Volume
-13, 2024, giae002. \url{https://doi.org/10.1093/gigascience/giae002}
+13, 2024, giae002. \url{doi:10.1093/gigascience/giae002}
 }

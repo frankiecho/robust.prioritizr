@@ -2,8 +2,7 @@
 % Please edit documentation in R/add_robust_min_shortfall_objective.R
 \name{add_robust_min_shortfall_objective}
 \alias{add_robust_min_shortfall_objective}
-\title{Add robust minimum shortfall objective
-\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}}
+\title{Add robust minimum shortfall objective}
 \usage{
 add_robust_min_shortfall_objective(x, budget)
 }

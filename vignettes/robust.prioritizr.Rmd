@@ -48,6 +48,14 @@ print <- function(x, ...) {
 }
 ```
 
+```{r setup}
+library(terra)
+library(prioritizr)
+library(robust.prioritizr)
+library(ggplot2)
+library(dplyr)
+```
+
 ## Introduction
 
 Most systematic conservation planning problems require users to parameterize planning unit data and costs based on statistical models or future projections that are bound to contain uncertainty. For example, conservation planning problems that involve designing protected areas that are resilient across future climate change have to ensure that the targets are met not just only one predicted scenario, but also across most plausible climate scenarios. Likewise, conservation planning problems that involve the use of predictions from species distribution models carry uncertainty that, if ignored, can mean that targets of the conservation planning problem are frequently violated.
@@ -59,12 +67,6 @@ To illustrate the extent of the issue, we consider a simplified conservation pla
 We solve this problem in `prioritizr`.
 
 ```{r, fig.alt="Features and cost of the prioritization problem"}
-library(terra)
-library(prioritizr)
-library(robust.prioritizr)
-library(ggplot2)
-library(dplyr)
-
 set.seed(500)
 
 mu <- 1

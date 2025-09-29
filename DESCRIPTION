@@ -4,7 +4,7 @@ Title: Robust Systematic Conservation Prioritization
 Version: 0.1.0.0
 Authors@R:
     c(person(c('Frankie'), 'Cho',
-        email='frankie.cho@qut.edu.au', role = c('aut', 'cre'),
+        email='frankie.cho@qut.edu.au', role = c('aut', 'cre', 'cph'),
         comment = c(ORCID = '0000-0003-1369-4980')),
       person(c('Jeffrey', 'O'), 'Hanson',
         email='jeffrey.hanson@uqconnect.edu.au', role = c('aut'),
@@ -36,13 +36,12 @@ BugReports: https://github.com/frankiecho/robust.prioritizr/issues
 VignetteBuilder: knitr
 LazyData: true
 Imports:
-    Rcpp,
-    prioritizr (>= 8.0.6.6),
+    Rcpp (>= 1.0.7),
     R6 (>= 2.5.1),
     rlang (>= 1.0.6),
     cli (>= 3.6.0),
     assertthat (>= 0.2.0),
-    lifecycle
+    prioritizr (>= 8.0.6)
 Suggests:
     testthat (>= 3.1.0),
     knitr (>= 1.50),
@@ -81,10 +80,11 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
 Config/testthat/edition: 3
 Config/Needs/website:
-    tibble,
-    stringr,
-    ggplot2,
-    tidyr,
-    patchwork
+    tibble (>= 3.3.0),
+    stringr (>= 1.5.1),
+    ggplot2 (>= 3.5.2),
+    tidyr (>= 1.3.1),
+    patchwork (>= 1.3.2),
+    tidyterra (>= 0.7.2)
 Remotes:
-  prioritizr/prioritizr@speedup-blm
+    prioritizr/prioritizr@speedup-blm

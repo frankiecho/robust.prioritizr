@@ -34,7 +34,7 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Frankie Cho \email{frankie.cho@qut.edu.au} (\href{https://orcid.org/0000-0003-1369-4980}{ORCID})
+\strong{Maintainer}: Frankie Cho \email{frankie.cho@qut.edu.au} (\href{https://orcid.org/0000-0003-1369-4980}{ORCID}) [copyright holder]
 
 Authors:
 \itemize{
