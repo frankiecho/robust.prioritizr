@@ -71,14 +71,17 @@
 </h1>
 <!-- badges: start -->
 
-<p><code>robust.prioritizr</code> is a R package for robust systematic conservation prioritization based on the <code>prioritizr</code> ecosystem. It allows users to generate conservation plans that are robust to uncertainties in input data, such as those arising from climate change projections, species distribution models, or measurement errors.</p>
+<p><code>robust.prioritizr</code> is a R package for robust systematic conservation prioritization which extends the <code>prioritizr</code> package. It allows users to generate conservation plans that are robust to uncertainties in input data, such as those arising from climate change projections, species distribution models, or measurement errors.</p>
 <p>Conventional conservation prioritization problems typically identify the optimal solution by using targets and constraints from a “best guess” of the input data. This means that even minor changes to the input data can dramatically affect whether the planning solution still meets its targets. <code>robust.prioritizr</code> helps users identify solutions to conservation planning problems that meets their targets across a range of possible future scenarios or data realizations.</p>
 <p>For example, you can include species occurrence projections from several different climate models and time periods to planning objectives and targets. The package then finds a solution that meets your targets across all (or a specified proportion) of these scenarios, resulting in a more resilient conservation plan.</p>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<p>You can install the development version of <code>robust.prioritizr</code> from GitHub:</p>
+<p>You can install the CRAN version of ‘robust.prioritizr’ from CRAN:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">'robust.prioritizr'</span><span class="op">)</span></span></code></pre></div>
+<p>You can install the development version of ‘robust.prioritizr’ from GitHub:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="va"><a href="https://remotes.r-lib.org" class="external-link">remotes</a></span><span class="op">)</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span></span>
 <span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"frankiecho/robust.prioritizr"</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -87,7 +90,7 @@
 </h2>
 <p>Here is a minimal example demonstrating how to build a robust conservation plan.</p>
 <p>The key difference from a standard <code>prioritizr</code> workflow is the use of <strong>groups</strong>. Because a single feature (e.g., a species) is now represented by multiple data layers (each being a different scenario or “realization”), the <code>groups</code> argument tells the function which layers belong to the same feature.</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://prioritizr.net" class="external-link">prioritizr</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rspatial.org/" class="external-link">terra</a></span><span class="op">)</span></span>
 <span></span>
@@ -150,7 +153,7 @@
 <h2 data-toc-skip>Developers</h2>
 <ul class="list-unstyled">
 <li>
-<a href="https://frankiecho.github.io/" class="external-link">Frankie Cho</a> <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0003-1369-4980" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a>  </li>
+<a href="https://frankiecho.github.io/" class="external-link">Frankie Cho</a> <br><small class="roles"> Author, maintainer, copyright holder </small> <a href="https://orcid.org/0000-0003-1369-4980" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a>  </li>
 <li>
 <a href="https://jeffrey-hanson.com" class="external-link">Jeffrey O Hanson</a> <br><small class="roles"> Author </small> <a href="https://orcid.org/0000-0002-4716-6134" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a>  </li>
 </ul>
@@ -161,7 +164,6 @@
 <ul class="list-unstyled">
 <li><a href="https://github.com/frankiecho/robust.prioritizr/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/frankiecho/robust.prioritizr/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
 <li><a href="https://app.codecov.io/gh/frankiecho/robust.prioritizr" class="external-link"><img src="https://codecov.io/gh/frankiecho/robust.prioritizr/graph/badge.svg" alt="Codecov test coverage"></a></li>
-<li><a href="https://CRAN.R-project.org/package=robust.prioritizr" class="external-link"><img src="https://www.r-pkg.org/badges/version/robust.prioritizr" alt="CRAN status"></a></li>
 <li><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg" alt="Lifecycle: experimental"></a></li>
 </ul>
 </div>
