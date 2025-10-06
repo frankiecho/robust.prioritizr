@@ -51,7 +51,7 @@ Suggests:
     testthat (>= 3.1.0),
     knitr (>= 1.50),
     rmarkdown (>= 2.29),
-    Rsymphony (>= 0.1-33)
+    highs (>= 1.10.0-3)
 Depends:
     R (>= 4.1.0)
 LinkingTo:
