@@ -1,9 +1,9 @@
 ---
-title: "Example: Robust Conservation Planning in Victoria, Australia"
+title: "Example using Victoria, Australia"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Example: Robust Conservation Planning in Victoria, Australia}
-  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteIndexEntry{Example using Victoria, Australia}
+  %\VignetteEngine{knitr::rmarkdown_notangle}
   %\VignetteEncoding{UTF-8}
 ---
 
@@ -11,8 +11,8 @@ vignette: >
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  fig.width=8, 
-  fig.height=6,
+  fig.width = 8,
+  fig.height = 6,
   fig.retina = TRUE
 )
 ```
@@ -40,6 +40,9 @@ knitr::opts_chunk$set(
 ```
 
 ```{r, include = FALSE}
+# load developmental version of package
+devtools::load_all()
+
 # set up print method
 print <- function(x, ...) {
   if (!interactive() && inherits(x, "ConservationProblem")) {
@@ -71,14 +74,13 @@ This example demonstrates how to use `robust.prioritizr` for systematic conserva
 
 ## Dataset
 
-First, we load the `vic_cmip6` dataset, which is bundled with the package. The primary data is a packed `terra` SpatRaster object, which we will unwrap to access the individual raster layers.
+First, we load the dataset bundled with the package. To achieve this, we will use the following functions.
 
 ```{r}
-data("vic_cmip6")
 species <- get_vic_species()
 cost <- get_vic_cost()
 pa <- get_vic_pa()
-species_details <- vic_cmip6
+species_details <- get_vic_species_metadata()
 study_area <- get_vic_study_area()
 ```
 
@@ -102,7 +104,7 @@ levels(pa_categorical) <- data.frame(id = 0:1, cover = c("Not PA", "Current PA")
 pa_plt <- ggplot() +
   geom_spatraster(data = pa_categorical, na.rm = T) +
   geom_sf(data = study_area, fill = NA) +
-  scale_fill_manual('', 
+  scale_fill_manual('',
                     values = c("#F0E442", "#009E73"),
                     na.value = "transparent", na.translate = FALSE) +
   theme_void() +
@@ -166,7 +168,7 @@ worst_case_occurrence <- species_details %>%
             max_relative_target = round(worst_case/ best_case, 4),
             pct20_relative_target = round(pct_20/ best_case, 4),
             worst_case_scenario = proj[which.min(sum)]) %>%
-  arrange(max_relative_target) 
+  arrange(max_relative_target)
 worst_case_occurrence %>%
   head()
 ```
@@ -188,11 +190,11 @@ plot_planning_soln <- function(soln) {
     id = c(0,1,2),
     cover = c("Not Current PA", "Current PA", "New PA")
   )
-  
+
   plt <- ggplot() +
     geom_spatraster(data = soln, na.rm = T) +
     geom_sf(data = study_area, fill = NA, show.legend = TRUE) +
-    scale_fill_manual('', 
+    scale_fill_manual('',
                       values = c("#F0E442", "#009E73", "#D55E00"),
                       na.value = "transparent", na.translate = FALSE,
                       drop = FALSE) +
@@ -276,9 +278,9 @@ rpv2 <- problem(cost, species) %>%
 
 rsv2 <- solve(rpv2)
 
-rs <- (plot_planning_soln(rsv1) + 
+rs <- (plot_planning_soln(rsv1) +
   ggtitle("Robust (1% target)") +
-    guides(color = 'none', fill = 'none')) + 
+    guides(color = 'none', fill = 'none')) +
   plot_planning_soln(rsv2) +
   ggtitle("Partially Robust (7% target)") +
   plot_layout(guides = 'collect') &
@@ -293,7 +295,7 @@ rsv2_representation <- species_details %>%
   rename(feature = name) %>%
   arrange(species, scenario, timestep) %>%
   left_join(feature_rep_r2, by = "feature") %>%
-  mutate(species_scenario = paste(species, scenario)) 
+  mutate(species_scenario = paste(species, scenario))
 rsv2_representation %>%
   ggplot(aes(x = timestep, y = absolute_held, color = scenario, group = species_scenario)) +
   facet_wrap(vars(species), scales = "free_y") +
@@ -351,9 +353,9 @@ rpv3 <- problem(cost, species) %>%
 
 rsv3 <- solve(rpv3)
 
-comb_plt <- (plot_planning_soln(rsv1) + 
+comb_plt <- (plot_planning_soln(rsv1) +
   ggtitle("Robust (1% target)") +
-  guides(fill = 'none', color = 'none')) + 
+  guides(fill = 'none', color = 'none')) +
   plot_planning_soln(rsv2) +
   ggtitle("Partially Robust (7% target)") +
   plot_planning_soln(rsv3) +
@@ -383,9 +385,9 @@ pv1 <- problem(cost, species_hb) %>%
 
 sv1 <- solve(pv1)
 
-comb_plt <- (plot_planning_soln(sv1) + 
+comb_plt <- (plot_planning_soln(sv1) +
   ggtitle("Non-Robust (7% target)") +
-  guides(fill = 'none', color = 'none')) + 
+  guides(fill = 'none', color = 'none')) +
   plot_planning_soln(rsv2) +
   ggtitle("Partially Robust (7% target)") +
   plot_layout(guides = 'collect') &
@@ -420,7 +422,7 @@ species_details %>%
   right_join(feature_rep_r, by = 'feature') %>%
   right_join(feature_rep_fr, by = 'feature') %>%
   pivot_longer(c('non_robust', 'robust', "fully_robust"), names_to = 'solution') %>%
-  mutate(solution = factor(solution, c('non_robust', 'robust', 'fully_robust'), 
+  mutate(solution = factor(solution, c('non_robust', 'robust', 'fully_robust'),
                            c("Non-robust", "Partially Robust", "Fully Robust*"))) %>%
   left_join(worst_case_occurrence, by = 'species') %>%
   mutate(species_scenario = paste(species, scenario)) %>%
@@ -434,6 +436,6 @@ species_details %>%
   labs(x = "Time-step", y = "Representation (number of cells)") +
   coord_cartesian(xlim = c(2030, 2090)) +
   theme(panel.grid = element_blank(),
-        legend.position = 'bottom')+ 
+        legend.position = 'bottom')+
   labs(caption = "* Robust up to 80% probability for some species")
 ```
