@@ -139,8 +139,7 @@ test_that("compile (multiple zones, conf_level < 1, method = chance)", {
     add_robust_min_set_objective(method = "chance") |>
     prioritizr::add_relative_targets(targets) |>
     add_constant_robust_constraints(x, conf_level) |>
-    prioritizr::add_binary_decisions() |>
-    prioritizr::add_highs_solver(verbose = FALSE)
+    prioritizr::add_binary_decisions()
 
   # compile problem
   o <- prioritizr::compile(p)

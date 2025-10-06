@@ -24,6 +24,10 @@ test_that("compile (single zone)", {
 })
 
 test_that("solve (single zone)", {
+  # define skip cases
+  skip_on_cran()
+  skip_if_not_installed("highs")
+
   # import data
   sim_pu_raster <- prioritizr::get_sim_pu_raster()
   sim_features <- prioritizr::get_sim_features()
@@ -52,9 +56,6 @@ test_that("solve (single zone)", {
 })
 
 test_that("compile (multiple zones)", {
-  # define skip cases
-  skip_if_not_installed("terra")
-
   # import data
   sim_pu_raster <- prioritizr::get_sim_pu_raster()
   sim_features <- prioritizr::get_sim_features()
