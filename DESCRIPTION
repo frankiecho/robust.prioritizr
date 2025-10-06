@@ -9,25 +9,26 @@ Authors@R:
       person(c('Jeffrey', 'O'), 'Hanson',
         email='jeffrey.hanson@uqconnect.edu.au', role = c('aut'),
         comment = c(ORCID = '0000-0002-4716-6134')))
-Description: 
-    Robust systematic conservation prioritization based on chance constrained 
-    programming and robust optimization. It enables conservation prioritization users
-    to account of uncertainty in input data from climate change scenario projections, species
-    distribution models or measurement errors. It extends the flexible interface of the 'prioritizr' R package, 
-    a systematic conservation prioritization framework, creating robust versions 
-    of systematic conservation planning problems that can be solved using exact 
-    solvers. Problems can be specified to be fully robust to all data 
-    realizations provided, or partially robust, which guarantees that the probability
-    that the constraints are met is higher than the specified confidence level. 
-    Fully robust optimization problems are formulated as a "Minimax" 
-    linear programming problem, which minimises or maximises the objective
-    under the worst possible data realization. The partially robust optimization problems can be 
-    formulated as a Chance Constrained Programming problem (Charnes & Cooper, 1959, <doi:10.1287/mnsc.6.1.73>), 
-    which ensures that the constraint is met up to a certain confidence level (probability
-    which the constraint is met), or a Conditional Value-at-Risk optimization problem (Rockafellar & 
-    Uryasev, 2000, <doi:10.21314/JOR.2000.038>), where the constraint is met even when taken as the average of the
-    distribution of values that fall above/ below a certain quantile, which also
-    guarantees that the constraint is met up to a certain confidence level.
+Description:
+    Systematic conservation prioritization with robust optimization techniques.
+    This is important because
+    conservation prioritizations typically only consider the most likely outcome
+    associated with a conservation action (e.g., establishing a protected area
+    will safeguard a threatened species population) and fail to consider other
+    outcomes and their consequences for meeting conservation objectives. By
+    extending the prioritizr package, this package can be used to generate
+    conservation prioritizations that account of uncertainty in the climate
+    change scenario projections, species distribution models, ecosystem service
+    models, and measurement errors. In particular, prioritizations can be
+    generated to be fully robust to uncertainty by minimizing (or maximizing)
+    objectives under the worst possible outcome. Since reducing the associated
+    with achieving conservation objectives may sacrifice other objectives (e.g.,
+    minimizing protected area implementation costs), prioritizations can also be
+    generated to be partially robust based on a specified confidence level
+    parameter. Partially robust prioritizations can be generated based on the
+    chance constrained programming problem (Charnes & Cooper 1959,
+    <doi:10.1287/mnsc.6.1.73>) and the conditional value-at-risk problem
+    (Rockafellar & Uryasev 2000, <doi:10.21314/JOR.2000.038>).
 Encoding: UTF-8
 License: GPL (>= 3)
 Language: en-US
@@ -36,28 +37,26 @@ BugReports: https://github.com/frankiecho/robust.prioritizr/issues
 VignetteBuilder: knitr
 LazyData: true
 Imports:
+    utils,
     Rcpp (>= 1.0.7),
     R6 (>= 2.5.1),
     rlang (>= 1.0.6),
     cli (>= 3.6.0),
     assertthat (>= 0.2.0),
-    prioritizr (>= 8.0.6)
+    prioritizr (>= 8.0.6),
+    terra (>= 1.8.54),
+    sf (>= 1.0-12),
+    tibble (>= 2.0.0)
 Suggests:
     testthat (>= 3.1.0),
     knitr (>= 1.50),
     rmarkdown (>= 2.29),
-    terra (>= 1.8.54),
-    raster (>= 3.6.11),
-    sf (>= 1.0-12),
-    tibble (>= 2.0.0),
-    Matrix (>= 1.3-0),
-    highs (>= 1.10.0-3),
-    dplyr (>= 1.1.4)
+    Rsymphony (>= 0.1-33)
 Depends:
     R (>= 4.1.0)
-LinkingTo: 
-    Rcpp,
-    RcppArmadillo
+LinkingTo:
+    Rcpp (>= 1.0.7),
+    RcppArmadillo (>= 0.10.7.3.0)
 Collate:
     'RcppExports.R'
     'internal.R'
@@ -65,26 +64,28 @@ Collate:
     'add_robust_min_set_objective.R'
     'add_robust_min_shortfall_objective.R'
     'add_variable_robust_constraints.R'
-    'assertions_robust.R'
     'data.R'
     'get_feature_group_data.R'
+    'has_robust_constraints.R'
     'package.R'
     'prioritizr_all_finite.R'
-    'prioritizr_all_positive.R'
     'prioritizr_assertions.R'
     'prioritizr_assertions_class.R'
     'prioritizr_assertions_misc.R'
     'prioritizr_assertions_vector.R'
+    'robust_constraints.R'
     'robust_objectives.R'
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
 Config/testthat/edition: 3
 Config/Needs/website:
-    tibble (>= 3.3.0),
-    stringr (>= 1.5.1),
-    ggplot2 (>= 3.5.2),
-    tidyr (>= 1.3.1),
-    patchwork (>= 1.3.2),
-    tidyterra (>= 0.7.2)
+    tibble,
+    stringr,
+    ggplot2,
+    tidyr,
+    patchwork,
+    tidyterra,
+    dplyr,
+    piggyback
 Remotes:
-    prioritizr/prioritizr@speedup-blm
+    prioritizr/prioritizr@new-targets
