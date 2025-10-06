@@ -1,7 +1,7 @@
 #' @include internal.R
 NULL
 
-#' Has robust constraints
+#' Has robust constraints?
 #'
 #' Check if a [prioritizr::problem()] has robust constraints.
 #'
@@ -9,7 +9,7 @@ NULL
 #'
 #' @return An invisible `logical` value indicating success.
 #'
-# @noRd
+#' @noRd
 has_robust_constraints <- function(x) {
   assert(is_conservation_problem(x), .internal = TRUE)
   i <- which(vapply(x$constraints, inherits, logical(1), "RobustConstraint"))
@@ -17,9 +17,8 @@ has_robust_constraints <- function(x) {
 }
 
 assertthat::on_failure(has_robust_constraints) <- function(call, env) {
-  i <- which(
-    vapply(env$x$constraints, inherits, logical(1), "RobustConstraint")
-  )
+  x  <- eval(call$x, envir = env)
+  i <- which(vapply(x$constraints, inherits, logical(1), "RobustConstraint"))
   msg <- "Unknown."
   if (identical(length(i), 0L)) {
     msg <- c(
