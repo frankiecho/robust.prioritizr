@@ -15,6 +15,9 @@ spell.log
 gp.log
 examples.log
 
+# developmental version of package website
+docs/
+
 # system files
 .directory
 
