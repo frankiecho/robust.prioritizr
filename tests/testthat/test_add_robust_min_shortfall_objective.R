@@ -55,14 +55,14 @@ test_that("solve (single zone)", {
   expect_lt(terra::global(s, "max", na.rm = TRUE)[[1]], 1 + 1e-5)
 })
 
-test_that("compile (multiple zones)", {
+test_that("compile (multiple zones, single budget)", {
   # import data
   sim_pu_raster <- prioritizr::get_sim_pu_raster()
   sim_features <- prioritizr::get_sim_features()
 
   # define parameters for prioritization
   budget <- as.numeric(
-    terra::global(sim_pu_raster, "sum", na.rm = T)
+    terra::global(sim_pu_raster, "sum", na.rm = TRUE)
   ) * 0.1
   x <- rep_len(c("a", "b"), terra::nlyr(sim_features))
 
@@ -83,6 +83,44 @@ test_that("compile (multiple zones)", {
   # run tests
   expect_s3_class(o, "OptimizationProblem")
   expect_equal(o$modelsense(), "min")
+  expect_equal(
+    o$rhs()[(terra::nlyr(sim_features) * 3) + 1],
+    budget
+  )
+})
+
+test_that("compile (multiple zones, multiple budget)", {
+  # import data
+  sim_pu_raster <- prioritizr::get_sim_pu_raster()
+  sim_features <- prioritizr::get_sim_features()
+
+  # define parameters for prioritization
+  budget <- as.numeric(
+    terra::global(sim_pu_raster, "sum", na.rm = TRUE)
+  ) * c(0.1, 0.2, 0.5)
+  x <- rep_len(c("a", "b"), terra::nlyr(sim_features))
+
+  # build problem
+  p <-
+    prioritizr::problem(
+      sim_pu_raster[[rep(1, 3)]],
+      prioritizr::zones(sim_features, sim_features, sim_features)
+    ) |>
+    add_robust_min_shortfall_objective(budget = budget) |>
+    add_constant_robust_constraints(groups = x) |>
+    prioritizr::add_relative_targets(matrix(0.1, ncol = 3, nrow = 5)) |>
+    prioritizr::add_binary_decisions()
+
+  # compile problem
+  o <- prioritizr::compile(p)
+
+  # run tests
+  expect_s3_class(o, "OptimizationProblem")
+  expect_equal(o$modelsense(), "min")
+  expect_equal(
+    o$rhs()[(terra::nlyr(sim_features) * 3) + seq_len(3)],
+    budget
+  )
 })
 
 test_that("solve (multiple zones)", {
