@@ -15,9 +15,6 @@ spell.log
 gp.log
 examples.log
 
-# developmental version of package website
-docs/
-
 # system files
 .directory
 
@@ -29,6 +26,7 @@ docs/
 !inst/doc/.gitkeep
 
 # devtools files
+docs
 doc/*
 Meta/*
 /doc/
