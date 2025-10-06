@@ -11,7 +11,8 @@
 <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
 <link rel="icon" sizes="any" href="../favicon.ico">
 <link rel="manifest" href="../site.webmanifest">
-<script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<!-- katex math --><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" integrity="sha384-nB0miv6/jRmo5UMMR1wu3Gz6NLsoTkbqJghGIsx//Rlm+ZU03BU6SQNC66uf4l5+" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" integrity="sha384-7zkQWkzuo3B5mTepMUcHkMB5jZaolc2xDwL6VFqjFALcbeS9Ggm/Yr2r3Dy4lfFg" crossorigin="anonymous"></script><script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" integrity="sha384-43gviWU0YVjaDtb/GhzOouOXtZMP/7XUzwPTstBeZFe/+rCMvRwr4yROQP43s0Xk" crossorigin="anonymous" onload="renderMathInElement(document.body);"></script><script src="../katex-auto.js"></script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
@@ -40,7 +41,7 @@
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><a class="dropdown-item" href="../articles/robust.prioritizr.html">Getting started with robust systematic conservation planning</a></li>
     <li><a class="dropdown-item" href="../articles/climate-sdm.html">Example using simulated data from a species distribution model</a></li>
-    <li><a class="dropdown-item" href="../articles/vic-cons-planning.html">Example: Robust Conservation Planning in Victoria, Australia</a></li>
+    <li><a class="dropdown-item" href="../articles/vic-cons-planning.html">Example using Victoria, Australia</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">News</a></li>
@@ -92,28 +93,21 @@ necessary in understanding the vignette.</p>
 <h2 id="data-generating-process">Data generating process<a class="anchor" aria-label="anchor" href="#data-generating-process"></a>
 </h2>
 <p>Suppose the analyst fitted the following statistical model of the
-species abundance based on data:
-<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>r</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>∼</mo><mtext mathvariant="normal">Poisson</mtext><mo stretchy="false" form="prefix">(</mo><msub><mi>θ</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex"> r_{ij} \sim \text{Poisson}(\theta_{ij}) </annotation></semantics></math></p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>θ</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>=</mo><mrow><mi>log</mi><mo>⁡</mo></mrow><mo stretchy="false" form="prefix">(</mo><msub><mi>β</mi><mn>0</mn></msub><mo>+</mo><msub><mi>β</mi><mn>1</mn></msub><mi>T</mi><mi>e</mi><mi>m</mi><msub><mi>p</mi><mi>i</mi></msub><mo>+</mo><msub><mi>β</mi><mn>2</mn></msub><mi>T</mi><mi>e</mi><mi>m</mi><msubsup><mi>p</mi><mi>i</mi><mn>2</mn></msubsup><mo>+</mo><msub><mi>β</mi><mn>3</mn></msub><mi>P</mi><mi>r</mi><mi>e</mi><msub><mi>c</mi><mi>i</mi></msub><mo>+</mo><msub><mi>β</mi><mn>4</mn></msub><mi>P</mi><mi>r</mi><mi>e</mi><msubsup><mi>c</mi><mi>i</mi><mn>2</mn></msubsup><mo>+</mo><msub><mi>ε</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex"> \theta_{ij} = \log(\beta_0 + \beta_1 Temp_i + \beta_2 Temp_i^2 + \beta_3 Prec_i + \beta_4 Prec_i^2 + \varepsilon_{ij}) </annotation></semantics></math></p>
-<p>where the abundance
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>r</mi><annotation encoding="application/x-tex">r</annotation></semantics></math>
-of species
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>j</mi><annotation encoding="application/x-tex">j</annotation></semantics></math>
-in location
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math>
-follows a Poisson distribution with the mean
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>θ</mi><annotation encoding="application/x-tex">\theta</annotation></semantics></math>,
-which is function of the climate covariates Temperature
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi><mi>e</mi><mi>m</mi><mi>p</mi></mrow><annotation encoding="application/x-tex">Temp</annotation></semantics></math>
-and Precipitation
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>P</mi><mi>r</mi><mi>e</mi><mi>c</mi></mrow><annotation encoding="application/x-tex">Prec</annotation></semantics></math>
-and a random i.i.d. error term
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ε</mi><annotation encoding="application/x-tex">\varepsilon</annotation></semantics></math>.
-The relationships between the climate variables and the mean are
-modelled using the regression coefficients
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>β</mi><mn>1</mn></msub><mo>,</mo><msub><mi>β</mi><mn>2</mn></msub><mo>,</mo><msub><mi>β</mi><mn>3</mn></msub><mo>,</mo><msub><mi>β</mi><mn>4</mn></msub></mrow><annotation encoding="application/x-tex">\beta_1, \beta_2, \beta_3, \beta_4</annotation></semantics></math>.
-For simplicity, we assume here that its abundance only depends on these
-two climatic variables.</p>
+species abundance based on data: <span class="math display"> r_{ij} \sim
+\text{Poisson}(\theta_{ij}) </span></p>
+<p><span class="math display"> \theta_{ij} = \log(\beta_0 + \beta_1
+Temp_i + \beta_2 Temp_i^2 + \beta_3 Prec_i + \beta_4 Prec_i^2 +
+\varepsilon_{ij}) </span></p>
+<p>where the abundance <span class="math inline">r</span> of species
+<span class="math inline">j</span> in location <span class="math inline">i</span> follows a Poisson distribution with the
+mean <span class="math inline">\theta</span>, which is function of the
+climate covariates Temperature <span class="math inline">Temp</span> and
+Precipitation <span class="math inline">Prec</span> and a random i.i.d.
+error term <span class="math inline">\varepsilon</span>. The
+relationships between the climate variables and the mean are modelled
+using the regression coefficients <span class="math inline">\beta_1,
+\beta_2, \beta_3, \beta_4</span>. For simplicity, we assume here that
+its abundance only depends on these two climatic variables.</p>
 <p>We simulate the abundance data for two species as follows:</p>
 <ol style="list-style-type: decimal">
 <li><p>Species 1: a species with a narrow climatic niche, best adapted
@@ -183,7 +177,7 @@ its optimal temperature.</p>
 <span><span class="va">beta_species_1</span> <span class="op">&lt;-</span> <span class="fu">beta_coefs</span><span class="op">(</span><span class="fl">18.5</span>, <span class="fl">1000</span>, <span class="op">-</span><span class="fl">.3</span>, <span class="op">-</span><span class="fl">.005</span>, <span class="fl">10</span><span class="op">)</span></span>
 <span><span class="va">beta_species_2</span> <span class="op">&lt;-</span> <span class="fu">beta_coefs</span><span class="op">(</span><span class="fl">20</span>, <span class="fl">1000</span>, <span class="op">-</span><span class="fl">.1</span>, <span class="op">-</span><span class="fl">.0001</span>, <span class="fl">8</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Define functions for species 1 and 2, controlling mu for their optimal temperature and precipitation, </span></span>
+<span><span class="co"># Define functions for species 1 and 2, controlling mu for their optimal temperature and precipitation,</span></span>
 <span><span class="co"># and sigma for the range it can survive in, Ntrials for scaling the absolute number of occurrences</span></span>
 <span><span class="va">exp_ab_1</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">t</span>, <span class="va">p</span>,<span class="va">...</span><span class="op">)</span> <span class="fu">ab_function</span><span class="op">(</span><span class="va">t</span>, <span class="va">p</span>, <span class="va">beta_species_1</span>,<span class="va">...</span><span class="op">)</span></span>
 <span><span class="va">exp_ab_2</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">t</span>, <span class="va">p</span>, <span class="va">...</span><span class="op">)</span> <span class="fu">ab_function</span><span class="op">(</span><span class="va">t</span>, <span class="va">p</span>, <span class="va">beta_species_2</span>,<span class="va">...</span><span class="op">)</span></span>
@@ -301,11 +295,11 @@ niches?</p>
 <span>  <span class="fu"><a href="https://rspatial.github.io/terra/reference/rast.html" class="external-link">rast</a></span><span class="op">(</span><span class="va">ssp5_rcp85_ab_2</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">abundance_rast</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'ssp1_rcp26_ab_1'</span>, </span>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">abundance_rast</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'ssp1_rcp26_ab_1'</span>,</span>
 <span>                       <span class="st">'ssp2_rcp45_ab_1'</span>,</span>
 <span>                       <span class="st">'ssp4_rcp60_ab_1'</span>,</span>
 <span>                       <span class="st">'ssp5_rcp85_ab_1'</span>,</span>
-<span>                       <span class="st">'ssp1_rcp26_ab_2'</span>, </span>
+<span>                       <span class="st">'ssp1_rcp26_ab_2'</span>,</span>
 <span>                       <span class="st">'ssp2_rcp45_ab_2'</span>,</span>
 <span>                       <span class="st">'ssp4_rcp60_ab_2'</span>,</span>
 <span>                       <span class="st">'ssp5_rcp85_ab_2'</span><span class="op">)</span></span>
@@ -366,29 +360,19 @@ problem.</p>
 Prioritizr specification, using only one of the climate scenarios
 (SSP2-RCP4.5) for planning. The specification below solves the following
 conservation planning problem:</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi>min</mi><mo>⁡</mo></mrow><munderover><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>I</mi></munderover><msub><mi>x</mi><mi>i</mi></msub><msub><mi>c</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex"> \min \sum_{i=1}^{I} x_i c_i </annotation></semantics></math></p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="normal">subject to</mtext><annotation encoding="application/x-tex"> \text{subject to} </annotation></semantics></math></p>
-<p><span class="math display">$$ \sum_{i=1}^I x_i r_{ij} \geq T_j \quad
-\forall \space j \in J $$</span></p>
-<p><span class="math display">$$ x_i \in \{0,1\} \quad \forall \space i
-\in I $$</span></p>
-<p>where
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>x</mi><annotation encoding="application/x-tex">x</annotation></semantics></math>
-is the binary decision variable of whether to protect cell
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math>
-or not,
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>c</mi><annotation encoding="application/x-tex">c</annotation></semantics></math>
-is the conservation cost,
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>r</mi><annotation encoding="application/x-tex">r</annotation></semantics></math>
-is the abundance of species
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>j</mi><annotation encoding="application/x-tex">j</annotation></semantics></math>
-in cell
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math>
-(taken as the abundance under SSP2-RCP4.5 at the moment) and
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>T</mi><annotation encoding="application/x-tex">T</annotation></semantics></math>
-is the representation target for species
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>j</mi><annotation encoding="application/x-tex">j</annotation></semantics></math>
-(taken as 20 for all species at the moment).</p>
+<p><span class="math display"> \min \sum_{i=1}^{I} x_i c_i </span></p>
+<p><span class="math display"> \text{subject to} </span></p>
+<p><span class="math display"> \sum_{i=1}^I x_i r_{ij} \geq T_j \quad
+\forall \space j \in J </span></p>
+<p><span class="math display"> x_i \in \{0,1\} \quad \forall \space i
+\in I </span></p>
+<p>where <span class="math inline">x</span> is the binary decision
+variable of whether to protect cell <span class="math inline">i</span>
+or not, <span class="math inline">c</span> is the conservation cost,
+<span class="math inline">r</span> is the abundance of species <span class="math inline">j</span> in cell <span class="math inline">i</span>
+(taken as the abundance under SSP2-RCP4.5 at the moment) and <span class="math inline">T</span> is the representation target for species
+<span class="math inline">j</span> (taken as 20 for all species at the
+moment).</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">target</span> <span class="op">&lt;-</span> <span class="fl">20</span></span>
 <span><span class="va">abundance_ssp2_rcp45</span> <span class="op">&lt;-</span> <span class="va">abundance_rast</span><span class="op">[[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'ssp2_rcp45_ab_1'</span>,</span>
@@ -439,28 +423,17 @@ under an extreme climate scenario.</p>
 conservation planning problems that are robust to alternative climate
 scenarios and other sources of uncertainty. Using the modified minimum
 set objective, users can solve the following problem:</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi>min</mi><mo>⁡</mo></mrow><munderover><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>I</mi></munderover><msub><mi>x</mi><mi>i</mi></msub><msub><mi>c</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex"> \min \sum_{i=1}^{I} x_i c_i </annotation></semantics></math><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="normal">subject to</mtext><annotation encoding="application/x-tex"> \text{subject to} </annotation></semantics></math><span class="math display">$$ \Pr_k \{ \sum_{i=1}^I x_i r_{ijk} \geq T_j
-\} \geq \alpha \quad \forall \space j \in J $$</span> <span class="math display">$$ x_i \in \{0,1\} \quad \forall \space i \in I
-$$</span></p>
-<p>where now
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>r</mi><annotation encoding="application/x-tex">r</annotation></semantics></math>
-is indexed by
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>,
-the feature value for the specific realization (i.e., climate scenario).
-The problem ensures that the targets are met not just in one specific
-realization of species abundance, but across many different realizations
-of scenario
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>,
-such that the probability that the targets are met across the
-realizations exceeds a certain confidence level
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>α</mi><annotation encoding="application/x-tex">\alpha</annotation></semantics></math>.
-If
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>α</mi><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">\alpha=1</annotation></semantics></math>
-(the default and most robust approach), then the solution must meet the
-species abundance targets across all realizations
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>
-and all species
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>j</mi><annotation encoding="application/x-tex">j</annotation></semantics></math>.</p>
+<p><span class="math display"> \min \sum_{i=1}^{I} x_i c_i </span> <span class="math display"> \text{subject to} </span> <span class="math display"> \Pr_k \{ \sum_{i=1}^I x_i r_{ijk} \geq T_j \} \geq
+\alpha \quad \forall \space j \in J </span> <span class="math display">
+x_i \in \{0,1\} \quad \forall \space i \in I </span></p>
+<p>where now <span class="math inline">r</span> is indexed by <span class="math inline">k</span>, the feature value for the specific
+realization (i.e., climate scenario). The problem ensures that the
+targets are met not just in one specific realization of species
+abundance, but across many different realizations of scenario <span class="math inline">k</span>, such that the probability that the targets
+are met across the realizations exceeds a certain confidence level <span class="math inline">\alpha</span>. If <span class="math inline">\alpha=1</span> (the default and most robust
+approach), then the solution must meet the species abundance targets
+across all realizations <span class="math inline">k</span> and all
+species <span class="math inline">j</span>.</p>
 <p>Specification of alternative predictions of abundance the same
 species is achieved through the <code>groups</code> argument of the call
 to Robust Prioritizr. This enables the user to pass in alternative
@@ -472,7 +445,7 @@ object that we have specified, depending on the specific formatting of
 the names. These groupings are then supplied to
 <code>add_*_robust_constraints</code> .</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Recall that the abundance raster is ordered by scenario, then by species, </span></span>
+<code class="sourceCode R"><span><span class="co"># Recall that the abundance raster is ordered by scenario, then by species,</span></span>
 <span><span class="co"># i.e. species_1_scenario_1, species_1_scenario_2 etc.</span></span>
 <span><span class="va">scenario_matrix</span> <span class="op">&lt;-</span> <span class="fu">str_split_fixed</span><span class="op">(</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">abundance_rast</span><span class="op">)</span>, pattern <span class="op">=</span> <span class="st">'_'</span>, n <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span>
 <span><span class="va">groups</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"species_"</span>, <span class="va">scenario_matrix</span><span class="op">[</span>,<span class="fl">4</span><span class="op">]</span><span class="op">)</span> <span class="co"># Extract the index in the fourth position</span></span>
@@ -687,18 +660,18 @@ climate scenario.</p>
 <p>To fit this into Robust Prioritizr, we bring these replicates into 1
 single multilayer raster.</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">species_1_realizations</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/rast.html" class="external-link">rast</a></span><span class="op">(</span><span class="va">ssp1_rcp26_ab_1</span><span class="op">)</span>, </span>
-<span>                            <span class="fu"><a href="https://rspatial.github.io/terra/reference/rast.html" class="external-link">rast</a></span><span class="op">(</span><span class="va">ssp2_rcp45_ab_1</span><span class="op">)</span>, </span>
-<span>                            <span class="fu"><a href="https://rspatial.github.io/terra/reference/rast.html" class="external-link">rast</a></span><span class="op">(</span><span class="va">ssp4_rcp60_ab_1</span><span class="op">)</span>, </span>
+<code class="sourceCode R"><span><span class="va">species_1_realizations</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/rast.html" class="external-link">rast</a></span><span class="op">(</span><span class="va">ssp1_rcp26_ab_1</span><span class="op">)</span>,</span>
+<span>                            <span class="fu"><a href="https://rspatial.github.io/terra/reference/rast.html" class="external-link">rast</a></span><span class="op">(</span><span class="va">ssp2_rcp45_ab_1</span><span class="op">)</span>,</span>
+<span>                            <span class="fu"><a href="https://rspatial.github.io/terra/reference/rast.html" class="external-link">rast</a></span><span class="op">(</span><span class="va">ssp4_rcp60_ab_1</span><span class="op">)</span>,</span>
 <span>                            <span class="fu"><a href="https://rspatial.github.io/terra/reference/rast.html" class="external-link">rast</a></span><span class="op">(</span><span class="va">ssp5_rcp85_ab_1</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">species_1_realizations</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"s1_ssp1_rcp26_r"</span>, <span class="fl">1</span><span class="op">:</span><span class="va">n_replicates</span><span class="op">)</span>,</span>
 <span>                                   <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"s1_ssp2_rcp45_r"</span>, <span class="fl">1</span><span class="op">:</span><span class="va">n_replicates</span><span class="op">)</span>,</span>
 <span>                                   <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"s1_ssp4_rcp60_r"</span>, <span class="fl">1</span><span class="op">:</span><span class="va">n_replicates</span><span class="op">)</span>,</span>
 <span>                                   <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"s1_ssp5_rcp85_r"</span>, <span class="fl">1</span><span class="op">:</span><span class="va">n_replicates</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">species_2_realizations</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/rast.html" class="external-link">rast</a></span><span class="op">(</span><span class="va">ssp1_rcp26_ab_2</span><span class="op">)</span>, </span>
-<span>                            <span class="fu"><a href="https://rspatial.github.io/terra/reference/rast.html" class="external-link">rast</a></span><span class="op">(</span><span class="va">ssp2_rcp45_ab_2</span><span class="op">)</span>, </span>
-<span>                            <span class="fu"><a href="https://rspatial.github.io/terra/reference/rast.html" class="external-link">rast</a></span><span class="op">(</span><span class="va">ssp4_rcp60_ab_2</span><span class="op">)</span>, </span>
+<span><span class="va">species_2_realizations</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/rast.html" class="external-link">rast</a></span><span class="op">(</span><span class="va">ssp1_rcp26_ab_2</span><span class="op">)</span>,</span>
+<span>                            <span class="fu"><a href="https://rspatial.github.io/terra/reference/rast.html" class="external-link">rast</a></span><span class="op">(</span><span class="va">ssp2_rcp45_ab_2</span><span class="op">)</span>,</span>
+<span>                            <span class="fu"><a href="https://rspatial.github.io/terra/reference/rast.html" class="external-link">rast</a></span><span class="op">(</span><span class="va">ssp4_rcp60_ab_2</span><span class="op">)</span>,</span>
 <span>                            <span class="fu"><a href="https://rspatial.github.io/terra/reference/rast.html" class="external-link">rast</a></span><span class="op">(</span><span class="va">ssp5_rcp85_ab_2</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">species_2_realizations</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"s2_ssp1_rcp26_r"</span>, <span class="fl">1</span><span class="op">:</span><span class="va">n_replicates</span><span class="op">)</span>,</span>
 <span>                                   <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"s2_ssp2_rcp45_r"</span>, <span class="fl">1</span><span class="op">:</span><span class="va">n_replicates</span><span class="op">)</span>,</span>
@@ -724,11 +697,11 @@ to be met across all planning units.</p>
 met across all of the replicates we provide to the problem.</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">eval_soln_uncertain</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">soln</span>, <span class="va">return_df</span> <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="va">dist</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/values.html" class="external-link">values</a></span><span class="op">(</span><span class="va">soln</span> <span class="op">*</span> <span class="va">abundance_uncertainty</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
-<span>    <span class="va">unname</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="va">dist</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/values.html" class="external-link">values</a></span><span class="op">(</span><span class="va">soln</span> <span class="op">*</span> <span class="va">abundance_uncertainty</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>    <span class="va">unname</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/apply.html" class="external-link">apply</a></span><span class="op">(</span><span class="fl">2</span>, <span class="va">sum</span>, na.rm <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span>
-<span>  <span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>groups <span class="op">=</span> <span class="va">groups_uncertainty</span>, value <span class="op">=</span> <span class="va">dist</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
-<span>    <span class="fu">mutate</span><span class="op">(</span>target_met <span class="op">=</span> <span class="fu">if_else</span><span class="op">(</span><span class="va">value</span> <span class="op">&gt;=</span> <span class="va">target</span>, <span class="st">'Target met'</span>, <span class="st">'Target not met'</span><span class="op">)</span><span class="op">)</span> </span>
+<span>  <span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>groups <span class="op">=</span> <span class="va">groups_uncertainty</span>, value <span class="op">=</span> <span class="va">dist</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>    <span class="fu">mutate</span><span class="op">(</span>target_met <span class="op">=</span> <span class="fu">if_else</span><span class="op">(</span><span class="va">value</span> <span class="op">&gt;=</span> <span class="va">target</span>, <span class="st">'Target met'</span>, <span class="st">'Target not met'</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="kw">if</span> <span class="op">(</span><span class="va">return_df</span><span class="op">)</span> <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span></span>
 <span>  <span class="va">df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>    <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">value</span>, fill <span class="op">=</span> <span class="va">target_met</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>

@@ -5,17 +5,18 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Example: Robust Conservation Planning in Victoria, Australia • robust.prioritizr</title>
+<title>Example using Victoria, Australia • robust.prioritizr</title>
 <!-- favicons --><link rel="icon" type="image/png" sizes="96x96" href="../favicon-96x96.png">
 <link rel="icon" type="”image/svg+xml”" href="../favicon.svg">
 <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
 <link rel="icon" sizes="any" href="../favicon.ico">
 <link rel="manifest" href="../site.webmanifest">
-<script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<!-- katex math --><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" integrity="sha384-nB0miv6/jRmo5UMMR1wu3Gz6NLsoTkbqJghGIsx//Rlm+ZU03BU6SQNC66uf4l5+" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" integrity="sha384-7zkQWkzuo3B5mTepMUcHkMB5jZaolc2xDwL6VFqjFALcbeS9Ggm/Yr2r3Dy4lfFg" crossorigin="anonymous"></script><script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" integrity="sha384-43gviWU0YVjaDtb/GhzOouOXtZMP/7XUzwPTstBeZFe/+rCMvRwr4yROQP43s0Xk" crossorigin="anonymous" onload="renderMathInElement(document.body);"></script><script src="../katex-auto.js"></script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Example: Robust Conservation Planning in Victoria, Australia">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Example using Victoria, Australia">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -40,7 +41,7 @@
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><a class="dropdown-item" href="../articles/robust.prioritizr.html">Getting started with robust systematic conservation planning</a></li>
     <li><a class="dropdown-item" href="../articles/climate-sdm.html">Example using simulated data from a species distribution model</a></li>
-    <li><a class="dropdown-item" href="../articles/vic-cons-planning.html">Example: Robust Conservation Planning in Victoria, Australia</a></li>
+    <li><a class="dropdown-item" href="../articles/vic-cons-planning.html">Example using Victoria, Australia</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">News</a></li>
@@ -62,7 +63,7 @@
 
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
-      <img src="../logo.png" class="logo" alt=""><h1>Example: Robust Conservation Planning in Victoria, Australia</h1>
+      <img src="../logo.png" class="logo" alt=""><h1>Example using Victoria, Australia</h1>
             
       
       <small class="dont-index">Source: <a href="https://github.com/frankiecho/robust.prioritizr/blob/HEAD/vignettes/vic-cons-planning.Rmd" class="external-link"><code>vignettes/vic-cons-planning.Rmd</code></a></small>
@@ -89,17 +90,14 @@ conservation costs, and existing protected areas.</p>
 <div class="section level2">
 <h2 id="dataset">Dataset<a class="anchor" aria-label="anchor" href="#dataset"></a>
 </h2>
-<p>First, we load the <code>vic_cmip6</code> dataset, which is bundled
-with the package. The primary data is a packed <code>terra</code>
-SpatRaster object, which we will unwrap to access the individual raster
-layers.</p>
+<p>First, we load the dataset bundled with the package. To achieve this,
+we will use the following functions.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"vic_cmip6"</span><span class="op">)</span></span>
-<span><span class="va">species</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_vic_species.html">get_vic_species</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="va">cost</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_vic_cost.html">get_vic_cost</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="va">pa</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_vic_pa.html">get_vic_pa</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="va">species_details</span> <span class="op">&lt;-</span> <span class="va">vic_cmip6</span></span>
-<span><span class="va">study_area</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_vic_study_area.html">get_vic_study_area</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">species</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/data.html">get_vic_species</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">cost</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/data.html">get_vic_cost</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">pa</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/data.html">get_vic_pa</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">species_details</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/data.html">get_vic_species_metadata</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">study_area</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/data.html">get_vic_study_area</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>The data package contains the following datasets:</p>
 <ul>
 <li><p><strong>Species occurrence (<code>species</code>):</strong>
@@ -126,7 +124,7 @@ planning solution.</p>
 <span><span class="va">pa_plt</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://dieghernan.github.io/tidyterra/reference/geom_spatraster.html" class="external-link">geom_spatraster</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">pa_categorical</span>, na.rm <span class="op">=</span> <span class="cn">T</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">study_area</span>, fill <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_fill_manual</a></span><span class="op">(</span><span class="st">''</span>, </span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_fill_manual</a></span><span class="op">(</span><span class="st">''</span>,</span>
 <span>                    values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"#F0E442"</span>, <span class="st">"#009E73"</span><span class="op">)</span>,</span>
 <span>                    na.value <span class="op">=</span> <span class="st">"transparent"</span>, na.translate <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_void</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
@@ -244,7 +242,7 @@ problem to ensure that our problem is still feasible.</p>
 <span>            max_relative_target <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/math-generics.html" class="external-link">round</a></span><span class="op">(</span><span class="va">worst_case</span><span class="op">/</span> <span class="va">best_case</span>, <span class="fl">4</span><span class="op">)</span>,</span>
 <span>            pct20_relative_target <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/math-generics.html" class="external-link">round</a></span><span class="op">(</span><span class="va">pct_20</span><span class="op">/</span> <span class="va">best_case</span>, <span class="fl">4</span><span class="op">)</span>,</span>
 <span>            worst_case_scenario <span class="op">=</span> <span class="va">proj</span><span class="op">[</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/summarize-generics.html" class="external-link">which.min</a></span><span class="op">(</span><span class="va">sum</span><span class="op">)</span><span class="op">]</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">max_relative_target</span><span class="op">)</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">max_relative_target</span><span class="op">)</span></span>
 <span><span class="va">worst_case_occurrence</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://rspatial.github.io/terra/reference/headtail.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 8</span></span></span>
@@ -285,11 +283,11 @@ as follows.</p>
 <span>    id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">1</span>,<span class="fl">2</span><span class="op">)</span>,</span>
 <span>    cover <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Not Current PA"</span>, <span class="st">"Current PA"</span>, <span class="st">"New PA"</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
-<span>  </span>
+<span></span>
 <span>  <span class="va">plt</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu"><a href="https://dieghernan.github.io/tidyterra/reference/geom_spatraster.html" class="external-link">geom_spatraster</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">soln</span>, na.rm <span class="op">=</span> <span class="cn">T</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">study_area</span>, fill <span class="op">=</span> <span class="cn">NA</span>, show.legend <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_fill_manual</a></span><span class="op">(</span><span class="st">''</span>, </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_fill_manual</a></span><span class="op">(</span><span class="st">''</span>,</span>
 <span>                      values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"#F0E442"</span>, <span class="st">"#009E73"</span>, <span class="st">"#D55E00"</span><span class="op">)</span>,</span>
 <span>                      na.value <span class="op">=</span> <span class="st">"transparent"</span>, na.translate <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>                      drop <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">+</span></span>
@@ -402,9 +400,9 @@ projections and time-steps.</p>
 <span></span>
 <span><span class="va">rsv2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/solve.html" class="external-link">solve</a></span><span class="op">(</span><span class="va">rpv2</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">rs</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="fu">plot_planning_soln</span><span class="op">(</span><span class="va">rsv1</span><span class="op">)</span> <span class="op">+</span> </span>
+<span><span class="va">rs</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="fu">plot_planning_soln</span><span class="op">(</span><span class="va">rsv1</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"Robust (1% target)"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/guides.html" class="external-link">guides</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">'none'</span>, fill <span class="op">=</span> <span class="st">'none'</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/guides.html" class="external-link">guides</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">'none'</span>, fill <span class="op">=</span> <span class="st">'none'</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">plot_planning_soln</span><span class="op">(</span><span class="va">rsv2</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"Partially Robust (7% target)"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://patchwork.data-imaginist.com/reference/plot_layout.html" class="external-link">plot_layout</a></span><span class="op">(</span>guides <span class="op">=</span> <span class="st">'collect'</span><span class="op">)</span> <span class="op">&amp;</span></span>
@@ -418,7 +416,7 @@ projections and time-steps.</p>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span>feature <span class="op">=</span> <span class="va">name</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">species</span>, <span class="va">scenario</span>, <span class="va">timestep</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span><span class="va">feature_rep_r2</span>, by <span class="op">=</span> <span class="st">"feature"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>species_scenario <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="va">species</span>, <span class="va">scenario</span><span class="op">)</span><span class="op">)</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>species_scenario <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="va">species</span>, <span class="va">scenario</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">rsv2_representation</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">timestep</span>, y <span class="op">=</span> <span class="va">absolute_held</span>, color <span class="op">=</span> <span class="va">scenario</span>, group <span class="op">=</span> <span class="va">species_scenario</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/vars.html" class="external-link">vars</a></span><span class="op">(</span><span class="va">species</span><span class="op">)</span>, scales <span class="op">=</span> <span class="st">"free_y"</span><span class="op">)</span> <span class="op">+</span></span>
@@ -451,7 +449,7 @@ Snowy Mountains skink (<em>Liopholis guthega</em>).</p>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> Liopholis_guthega               0.176</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> Neophema_chrysogaster           0.176</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> Philoria_frosti                 0.176</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> Sarcophilus_harrisii            0.118</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> Sarcophilus_harrisii            0.176</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> Pseudophryne_corroboree         0.059</span></span></code></pre></div>
 </div>
 <div class="section level2">
@@ -496,9 +494,9 @@ the other species meets its targets robustly across all scenarios.</p>
 <span></span>
 <span><span class="va">rsv3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/solve.html" class="external-link">solve</a></span><span class="op">(</span><span class="va">rpv3</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">comb_plt</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="fu">plot_planning_soln</span><span class="op">(</span><span class="va">rsv1</span><span class="op">)</span> <span class="op">+</span> </span>
+<span><span class="va">comb_plt</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="fu">plot_planning_soln</span><span class="op">(</span><span class="va">rsv1</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"Robust (1% target)"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/guides.html" class="external-link">guides</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="st">'none'</span>, color <span class="op">=</span> <span class="st">'none'</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/guides.html" class="external-link">guides</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="st">'none'</span>, color <span class="op">=</span> <span class="st">'none'</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">plot_planning_soln</span><span class="op">(</span><span class="va">rsv2</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"Partially Robust (7% target)"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">plot_planning_soln</span><span class="op">(</span><span class="va">rsv3</span><span class="op">)</span> <span class="op">+</span></span>
@@ -531,9 +529,9 @@ historical baseline data.</p>
 <span></span>
 <span><span class="va">sv1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/solve.html" class="external-link">solve</a></span><span class="op">(</span><span class="va">pv1</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">comb_plt</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="fu">plot_planning_soln</span><span class="op">(</span><span class="va">sv1</span><span class="op">)</span> <span class="op">+</span> </span>
+<span><span class="va">comb_plt</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="fu">plot_planning_soln</span><span class="op">(</span><span class="va">sv1</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"Non-Robust (7% target)"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/guides.html" class="external-link">guides</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="st">'none'</span>, color <span class="op">=</span> <span class="st">'none'</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/guides.html" class="external-link">guides</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="st">'none'</span>, color <span class="op">=</span> <span class="st">'none'</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">plot_planning_soln</span><span class="op">(</span><span class="va">rsv2</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"Partially Robust (7% target)"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://patchwork.data-imaginist.com/reference/plot_layout.html" class="external-link">plot_layout</a></span><span class="op">(</span>guides <span class="op">=</span> <span class="st">'collect'</span><span class="op">)</span> <span class="op">&amp;</span></span>
@@ -572,7 +570,7 @@ Orange-bellied parrot representation falls below the desired target.</p>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">right_join</a></span><span class="op">(</span><span class="va">feature_rep_r</span>, by <span class="op">=</span> <span class="st">'feature'</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">right_join</a></span><span class="op">(</span><span class="va">feature_rep_fr</span>, by <span class="op">=</span> <span class="st">'feature'</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html" class="external-link">pivot_longer</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'non_robust'</span>, <span class="st">'robust'</span>, <span class="st">"fully_robust"</span><span class="op">)</span>, names_to <span class="op">=</span> <span class="st">'solution'</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>solution <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">solution</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'non_robust'</span>, <span class="st">'robust'</span>, <span class="st">'fully_robust'</span><span class="op">)</span>, </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>solution <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">solution</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'non_robust'</span>, <span class="st">'robust'</span>, <span class="st">'fully_robust'</span><span class="op">)</span>,</span>
 <span>                           <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Non-robust"</span>, <span class="st">"Partially Robust"</span>, <span class="st">"Fully Robust*"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span><span class="va">worst_case_occurrence</span>, by <span class="op">=</span> <span class="st">'species'</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>species_scenario <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="va">species</span>, <span class="va">scenario</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
@@ -586,7 +584,7 @@ Orange-bellied parrot representation falls below the desired target.</p>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Time-step"</span>, y <span class="op">=</span> <span class="st">"Representation (number of cells)"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_cartesian.html" class="external-link">coord_cartesian</a></span><span class="op">(</span>xlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2030</span>, <span class="fl">2090</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>panel.grid <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_blank</a></span><span class="op">(</span><span class="op">)</span>,</span>
-<span>        legend.position <span class="op">=</span> <span class="st">'bottom'</span><span class="op">)</span><span class="op">+</span> </span>
+<span>        legend.position <span class="op">=</span> <span class="st">'bottom'</span><span class="op">)</span><span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>caption <span class="op">=</span> <span class="st">"* Robust up to 80% probability for some species"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="vic-cons-planning_files/figure-html/unnamed-chunk-18-1.png" alt="Line plots comparing the representation of the Orange-bellied parrot for non-robust, partially robust, and fully robust* solutions across different climate scenarios and time-steps." style="display: block; margin: auto;"></p>
 </div>
