@@ -89,21 +89,29 @@ species_details_subset$sum = unname(unlist(global_sums))
 
 # Write outputs to extdata -----
 write_raster_w_params <- function(raster, path) {
-  writeRaster(raster, path,
-              NAflag = 2, overwrite = TRUE, datatype = "INT1U",
-              gdal = c("COMPRESS=ZSTD", "NBITS=2", "TILED=YES", "ZSTD_LEVEL=9"))
+  writeRaster(
+    raster, path,
+    NAflag = 2, overwrite = TRUE, datatype = "INT1U",
+    gdal = c("COMPRESS=ZSTD", "NBITS=2", "TILED=YES", "ZSTD_LEVEL=9")
+  )
 }
 
 data_path <- "inst/extdata"
 
-writeRaster(cost, file.path(data_path, "vic_cost.tif"), overwrite=TRUE)
+writeRaster(cost, file.path(data_path, "vic_cost.tif"), overwrite = TRUE)
 
 write_raster_w_params(pa, file.path(data_path, "vic_pa.tif"))
 
 write_raster_w_params(species_subset, file.path(data_path, "vic_species.tif"))
 
-writeVector(study_area, file.path(data_path, "vic_study_area.shp"), overwrite=TRUE)
+writeVector(
+  study_area, file.path(data_path, "vic_study_area.shp"),
+  overwrite = TRUE
+)
 
 vic_cmip6 <- species_details_subset
 
-usethis::use_data(vic_cmip6, overwrite = TRUE)
+write.csv(
+  vic_cmip6, file.path(data_path, "vic_cmip5.csv"),
+  row.names = FALSE , quote = TRUE
+)

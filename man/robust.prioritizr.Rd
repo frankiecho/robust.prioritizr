@@ -13,32 +13,39 @@ This is particularly useful when working with data that is subject to
 change, such as species distribution models under climate change scenarios.
 }
 \details{
-The main functions provided by this package are:
-\itemize{
-\item \code{\link[=add_robust_min_set_objective]{add_robust_min_set_objective()}}
-\item \code{\link[=add_robust_min_shortfall_objective]{add_robust_min_shortfall_objective()}}
-\item \code{\link[=add_constant_robust_constraints]{add_constant_robust_constraints()}}
-\item \code{\link[=add_variable_robust_constraints]{add_variable_robust_constraints()}}
+This package contains several vignettes that are designed to
+showcase its functionality. To view them, please use the code
+\code{vignette("name", package = "robust.prioritizr")} where \code{"name"} is the
+name of the desired vignette (e.g., \code{"robust.prioritizr"}).
+
+\describe{
+
+\item{robust.prioritizr}{
+Brief introduction to the package.
 }
 
-For more information on using this package, see the vignettes:
-\code{vignette("robust.prioritizr", package = "robust.prioritizr")}
+\item{climate-sdm}{
+Example using simulated data from a species distribution model.
+}
+
+\item{vic-cons-planning}{
+Example using Victoria, Australia.
+}
+
+}
 }
 \seealso{
 Useful links:
 \itemize{
-  \item \url{https://github.com/frankiecho/robust.prioritizr}
-  \item \url{https://frankiecho.github.io/robust.prioritizr/}
-  \item Report bugs at \url{https://github.com/frankiecho/robust.prioritizr/issues}
+\item Package website (\url{https://frankiecho.github.io/robust.prioritizr/})
+\item Source code repository (\url{https://github.com/frankiecho/robust.prioritizr})
+\item Report bugs (\url{https://github.com/frankiecho/robust.prioritizr/issues})
 }
-
 }
 \author{
-\strong{Maintainer}: Frankie Cho \email{frankie.cho@qut.edu.au} (\href{https://orcid.org/0000-0003-1369-4980}{ORCID}) [copyright holder]
-
 Authors:
 \itemize{
-  \item Jeffrey O Hanson \email{jeffrey.hanson@uqconnect.edu.au} (\href{https://orcid.org/0000-0002-4716-6134}{ORCID})
+\item Frankie Cho \email{frankie.cho@qut.edu.au} (\href{https://orcid.org/0000-0003-1369-4980}{ORCID})
+\item Jeffrey O Hanson \email{jeffrey.hanson@uqconnect.edu.au} (\href{https://orcid.org/0000-0002-4716-6134}{ORCID})
 }
-
 }

@@ -3,29 +3,30 @@ NULL
 
 #' Add variable robust constraints
 #'
-#' Add robust constraints to a conservation problem to ensure that
-#' the priority areas are robust to uncertainty. In particular, this
-#' function is useful when the confidence level is different for
-#' different features. For example, this function may be especially
+#' Add robust constraints to a conservation problem to specify that
+#' the solution should ideally aim for different levels of robustness for each
+#' feature group.
+#' For example, this function may be especially
 #' useful when it is important to ensure that a prioritization is
 #' highly robust to uncertainty in the spatial distribution of threatened
 #' species, and only moderately robust to uncertainty in the spatial
 #' distribution of widespread species.
 #'
+#' @inheritParams add_robust_min_set_objective
+#'
+#' @param data [tibble::tibble()] data frame containing information on the
+#' feature groups and confidence level associated with each group.
+#'  Defaults to 1, corresponding to a maximally robust solution.
+#  See the Data format section for further information on this parameter.
+#'
 #' @inherit add_constant_robust_constraints details
-#'
-#' @param x [prioritizr::problem()] object.
-#'
-#' @param data [tibble::tibble()] data frame containing information the feature
-#' groupings and their desired confidence level. See the Data format
-#' section for details. Also, see the Examples section for example usage.
 #'
 #' @section Data format:
 #' The `data` argument must be a [tibble::tibble()] data frame that has
-#' information on the feature groupings and their confidence levels.
+#' information on the feature groups and their confidence levels.
 #' Here, each row corresponds to a different feature group and
 #' columns contain information about the groups.
-#' In particular, it has the following columns.
+#' In particular, `data` must have the following columns.
 #' \describe{
 #' \item{features}{
 #' A `list` column with the names of the features that belong to each group.
@@ -35,25 +36,20 @@ NULL
 #' \item{conf_level}{
 #' A `numeric` column with values that describe the confidence level
 #' associated with each feature group (ranging between 0 and 1).
-#'  For example, a value of zero corresponds
-#'  to a low confidence level, and so the optimization process will not
-#'  constrained by any constraints in that particular group.
-#'  Alternatively, a value of of one corresponds to a high level of robustness,
-#'  and so the optimization process will be highly constrained to be
-#'  robust against uncertainty for that particular group.
+#' See the Details section for information on `conf_level` values.
 #' }
 #' }
 #'
 #' @inheritSection add_constant_robust_constraints Data requirements
 #'
-#' @seealso
-#' See [robust_objectives] for an overview of all functions for adding
-#' robust objectives.
 #'
-#' @inherit add_constant_robust_constraints seealso return references
+#' @inherit add_constant_robust_constraints return seealso
+#'
+#' @family constraints
 #'
 #' @examples
 #' \dontrun{
+#' # Load packages
 #' library(prioritizr)
 #' library(terra)
 #' library(tibble)
@@ -62,27 +58,32 @@ NULL
 #' pu <- get_sim_pu_raster()
 #'
 #' # Get feature data
-#' features <- replicate(2, get_sim_features())
-#' features <- rast(features)
-#' names(features) <- paste0("feature_", rep(1:5, 2), "_scenario_", rep(1:2, each = 5))
-#' relative_budget <- as.numeric(global(pu, 'sum', na.rm = T)) * 0.1
+#' features <- get_sim_features()
 #'
-#' # Get the groups
-#' groups <- rep(paste0("feature_", 1:5), 2)
+#' # Define the feature group data
+#' # Here, we will assign the first 2 features to the group A, and the
+#' # remaining features to the group B
+#' groups <- c(rep("A", 2), rep("B", nlyr(features) - 2))
 #'
-#' # Add variable robust constraints, specifying different confidence levels for each feature
-#' variable_constraints <- tibble(
+#' # Next, we will use this information to create a data frame containing
+#' # the feature groups and specifying a confidence level of 0.95 for group A,
+#' # and a confidence level of 0.5 for group B
+#' constraint_data <- tibble(
 #'   features = split(names(features), groups),
-#'   conf_level = c(1, 0.8, 0.6, 0.6, 0.5)
+#'   conf_level = c(0.95, 0.5)
 #' )
 #'
-#' # Set up prioritizr problem
-#' p <- problem(pu, features) %>%
-#'   add_variable_robust_constraints(data = variable_constraints) %>%
-#'   add_robust_min_set_objective() %>%
-#'   add_relative_targets(0.1) %>%
-#'   add_binary_decisions() %>%
-#'   add_default_solver()
+#' # Display constraint data
+#' print(constraint_data)
+#'
+#' # Build problem
+#' p <-
+#'   problem(pu, features) |>
+#'   add_robust_min_set_objective() |>
+#'   add_variable_robust_constraints(data = constraint_data) |>
+#'   add_relative_targets(0.1) |>
+#'   add_binary_decisions() |>
+#'   add_default_solver(verbose = FALSE)
 #'
 #' # Solve the problem
 #' soln <- solve(p)
@@ -90,7 +91,6 @@ NULL
 #' # Plot the solution
 #' plot(soln)
 #' }
-#'
 #' @name add_variable_robust_constraints
 NULL
 
@@ -107,8 +107,11 @@ add_variable_robust_constraints <- function(x, data) {
     assertthat::has_name(data, "conf_level"),
     is.list(data$features),
     is.numeric(data$conf_level),
-    assertthat::noNA(data$conf_level)
+    all_finite(data$conf_level),
+    all(data$conf_level >= 0),
+    all(data$conf_level <= 1)
   )
+
   # additional validation for feature groupings
   assert(
     all(vapply(data$features, is.character, logical(1))),
@@ -121,7 +124,7 @@ add_variable_robust_constraints <- function(x, data) {
   )
   assert(
     all(
-      unlist(data$features, recursive = TRUE, use.names = TRUE) %in%
+      unlist(data$features, recursive = TRUE, use.names = FALSE) %in%
       prioritizr::feature_names(x)
     ),
     msg = c(
@@ -144,6 +147,8 @@ add_variable_robust_constraints <- function(x, data) {
       )
     )
   )
+
+
 
   # add constraints
   x$add_constraint(

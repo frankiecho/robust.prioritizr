@@ -6,7 +6,7 @@ authors:
     href: https://jeffrey-hanson.com
 template:
   bootstrap: 5
-  math_method: mathjax
+  math-rendering: katex
   params:
     bootswatch: flatly
 home:
@@ -29,9 +29,32 @@ navbar:
         href: articles/robust.prioritizr.html
       - text: Example using simulated data from a species distribution model
         href: articles/climate-sdm.html
-      - text: 'Example: Robust Conservation Planning in Victoria, Australia'
+      - text: Example using Victoria, Australia
         href: articles/vic-cons-planning.html
     news:
       text: News
       href: news/index.html
-
+reference:
+  - title: Overview
+    desc: Overview of the package.
+    contents:
+      - robust.prioritizr
+  - title: Robust objectives
+    desc: Functions for adding a robust objective to a problem.
+    contents:
+      - robust_objectives
+      - has_concept("objectives")
+  - title: Robust constraints
+    desc: Functions for adding a robust constraints to a problem.
+    contents:
+      - robust_constraints
+      - has_concept("constraints")
+  - title: Data
+    desc:  Example datasets distributed with the package.
+    contents:
+      - data
+      - get_vic_study_area
+      - get_vic_cost
+      - get_vic_pa
+      - get_vic_species
+      - get_vic_species_metadata

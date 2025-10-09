@@ -3,7 +3,7 @@ title: "Example using simulated data from a species distribution model"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Example using simulated data from a species distribution model}
-  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEngine{knitr::rmarkdown_notangle}
   %\VignetteEncoding{UTF-8}
 ---
 
@@ -11,8 +11,8 @@ vignette: >
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  fig.width=8, 
-  fig.height=6,
+  fig.width = 8,
+  fig.height = 6,
   fig.retina = TRUE
 )
 ```
@@ -40,6 +40,9 @@ knitr::opts_chunk$set(
 ```
 
 ```{r, include = FALSE}
+# load developmental version of package
+devtools::load_all()
+
 # set up print method
 print <- function(x, ...) {
   if (!interactive() && inherits(x, "ConservationProblem")) {
@@ -138,7 +141,7 @@ ab_draw_pois <- function(t, p, beta) {
 beta_species_1 <- beta_coefs(18.5, 1000, -.3, -.005, 10)
 beta_species_2 <- beta_coefs(20, 1000, -.1, -.0001, 8)
 
-# Define functions for species 1 and 2, controlling mu for their optimal temperature and precipitation, 
+# Define functions for species 1 and 2, controlling mu for their optimal temperature and precipitation,
 # and sigma for the range it can survive in, Ntrials for scaling the absolute number of occurrences
 exp_ab_1 <- function(t, p,...) ab_function(t, p, beta_species_1,...)
 exp_ab_2 <- function(t, p, ...) ab_function(t, p, beta_species_2,...)
@@ -240,11 +243,11 @@ abundance_rast <- c(
   rast(ssp5_rcp85_ab_2)
 )
 
-names(abundance_rast) <- c('ssp1_rcp26_ab_1', 
+names(abundance_rast) <- c('ssp1_rcp26_ab_1',
                        'ssp2_rcp45_ab_1',
                        'ssp4_rcp60_ab_1',
                        'ssp5_rcp85_ab_1',
-                       'ssp1_rcp26_ab_2', 
+                       'ssp1_rcp26_ab_2',
                        'ssp2_rcp45_ab_2',
                        'ssp4_rcp60_ab_2',
                        'ssp5_rcp85_ab_2')
@@ -352,7 +355,7 @@ Specification of alternative predictions of abundance the same species is achiev
 We can extract the relevant groupings from the names of the raster object that we have specified, depending on the specific formatting of the names. These groupings are then supplied to `add_*_robust_constraints` .
 
 ```{r}
-# Recall that the abundance raster is ordered by scenario, then by species, 
+# Recall that the abundance raster is ordered by scenario, then by species,
 # i.e. species_1_scenario_1, species_1_scenario_2 etc.
 scenario_matrix <- str_split_fixed(names(abundance_rast), pattern = '_', n = 4)
 groups <- paste0("species_", scenario_matrix[,4]) # Extract the index in the fourth position
@@ -495,18 +498,18 @@ ssp5_rcp85_ab_2 <- replicate(n_replicates, ab_draw_pois(temp_ssp5_rcp85, prec_ss
 To fit this into Robust Prioritizr, we bring these replicates into 1 single multilayer raster.
 
 ```{r}
-species_1_realizations <- c(rast(ssp1_rcp26_ab_1), 
-                            rast(ssp2_rcp45_ab_1), 
-                            rast(ssp4_rcp60_ab_1), 
+species_1_realizations <- c(rast(ssp1_rcp26_ab_1),
+                            rast(ssp2_rcp45_ab_1),
+                            rast(ssp4_rcp60_ab_1),
                             rast(ssp5_rcp85_ab_1))
 names(species_1_realizations) <- c(paste0("s1_ssp1_rcp26_r", 1:n_replicates),
                                    paste0("s1_ssp2_rcp45_r", 1:n_replicates),
                                    paste0("s1_ssp4_rcp60_r", 1:n_replicates),
                                    paste0("s1_ssp5_rcp85_r", 1:n_replicates))
 
-species_2_realizations <- c(rast(ssp1_rcp26_ab_2), 
-                            rast(ssp2_rcp45_ab_2), 
-                            rast(ssp4_rcp60_ab_2), 
+species_2_realizations <- c(rast(ssp1_rcp26_ab_2),
+                            rast(ssp2_rcp45_ab_2),
+                            rast(ssp4_rcp60_ab_2),
                             rast(ssp5_rcp85_ab_2))
 names(species_2_realizations) <- c(paste0("s2_ssp1_rcp26_r", 1:n_replicates),
                                    paste0("s2_ssp2_rcp45_r", 1:n_replicates),
@@ -535,11 +538,11 @@ Fortunately, a solution can be found. We can see that the target is met across a
 
 ```{r, fig.alt="Feature representation across data replicates"}
 eval_soln_uncertain <- function(soln, return_df = FALSE) {
-  dist <- values(soln * abundance_uncertainty) %>% 
-    unname %>% 
+  dist <- values(soln * abundance_uncertainty) %>%
+    unname %>%
     apply(2, sum, na.rm = T)
-  df <- data.frame(groups = groups_uncertainty, value = dist) %>% 
-    mutate(target_met = if_else(value >= target, 'Target met', 'Target not met')) 
+  df <- data.frame(groups = groups_uncertainty, value = dist) %>%
+    mutate(target_met = if_else(value >= target, 'Target met', 'Target not met'))
   if (return_df) return(df)
   df %>%
     ggplot(aes(x = value, fill = target_met)) +
