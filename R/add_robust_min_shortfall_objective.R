@@ -80,7 +80,7 @@
 #'   \quad \forall j \in J \\
 #' y_j \geq v_{jk} \quad \forall j \in J, k \in K \\
 #' 0 \leq y_j \leq 1 \quad \forall j \in J
-#'}{
+#' }{
 #' Minimize sum_j^J wj * yj
 #' subject to sum_i^I (xi * ci) <= B
 #' Pr_k \{ sum_i^I (xi * rij) + (tj * vjk) >= tj \} >= a, for all j in J

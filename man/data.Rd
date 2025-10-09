@@ -34,7 +34,7 @@ This is a conservation planning dataset for Victoria, Australia
 that can be used to generate robust prioritizations.
 This dataset was derived from Archibald \emph{et al.} (2024),
 Department of Climate Change, Energy, the Environment and Water (2024),
-Global Administrative Areas (2024), and Williams \emph{et al.} (2009).
+Global Administrative Areas (2024), and Williams \emph{et al.} (2020).
 For an example of using this dataset, please refer to the
 the Example using Victoria, Australia vignette
 (\code{vignette("vic-cons-planning", package = "robust.prioritizr")}).
@@ -90,7 +90,7 @@ Cells contain binary values indicating if the species is predicted to be
 present or absent within the cell.
 }
 
-\item{\code{vic_species_metadata()}}{
+\item{\code{get_vic_species_metadata()}}{
 A \code{\link[tibble:tibble]{tibble::tibble()}} data frame containing information on the species'
 spatial distribution data (i.e., \code{get_vic_species()}).
 Here, each row of the \code{dadta.frame}

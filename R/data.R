@@ -4,7 +4,7 @@
 #' that can be used to generate robust prioritizations.
 #' This dataset was derived from Archibald *et al.* (2024),
 #' Department of Climate Change, Energy, the Environment and Water (2024),
-#' Global Administrative Areas (2024), and Williams *et al.* (2009).
+#' Global Administrative Areas (2024), and Williams *et al.* (2020).
 #' For an example of using this dataset, please refer to the
 #' the Example using Victoria, Australia vignette
 #' (\code{vignette("vic-cons-planning", package = "robust.prioritizr")}).
@@ -60,7 +60,7 @@
 #' present or absent within the cell.
 #' }
 #'
-#' \item{`vic_species_metadata()`}{
+#' \item{`get_vic_species_metadata()`}{
 #' A [tibble::tibble()] data frame containing information on the species'
 #' spatial distribution data (i.e., `get_vic_species()`).
 #' Here, each row of the `dadta.frame`

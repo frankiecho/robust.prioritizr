@@ -42,6 +42,9 @@ conditional value-at-risk constraint method may yield faster solve times.
 This is because the conditional value-at-risk constraint method
 is capable of preserving the convexity of an optimization problem,
 and uses continuous (instead of binary) auxiliary variables.
+Also note that the conditional value-at-risk constraint method may
+produce in infeasible solution errors, and such cases the chance
+chance constraint programming method should be used instead.
 As such, the chance constraint programming method may be
 more useful for facilitating stakeholder involvement, and the
 conditional value-at-risk constraint method may be more useful for
@@ -128,9 +131,9 @@ The conditional value-at-risk constraint method presents a tighter
 formulation than the chance constraint programming method
 (Rockafellar and Uryasev 2000).
 As such, this method is able to better approximate the non-linear
-probabilistic constraints and, in turn, tends to yield
-solutions that are more robust to uncertainty than the chance
-constraint programming method.
+probabilistic constraints and, in turn, could potentially yield
+solutions that are more robust to uncertainty and less cost-efficient
+than the chance constraint programming method.
 To describe this method, let \eqn{\eta_j}{ej} denote
 a continuous auxiliary variable for each feature group \eqn{j}{j},
 and \eqn{s_{jk}}{sjk} a continuous auxiliary variable for each feature
