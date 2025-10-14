@@ -9,40 +9,55 @@ add_variable_robust_constraints(x, data)
 \arguments{
 \item{x}{\code{\link[prioritizr:problem]{prioritizr::problem()}} object.}
 
-\item{data}{\code{\link[tibble:tibble]{tibble::tibble()}} data frame containing information the feature
-groupings and their desired confidence level. See the Data format
-section for details. Also, see the Examples section for example usage.}
+\item{data}{\code{\link[tibble:tibble]{tibble::tibble()}} data frame containing information on the
+feature groups and confidence level associated with each group.
+Defaults to 1, corresponding to a maximally robust solution.}
 }
 \value{
 An updated \code{\link[prioritizr:problem]{prioritizr::problem()}} object with the constraint added
 to it.
 }
 \description{
-Add robust constraints to a conservation problem to ensure that
-the priority areas are robust to uncertainty. In particular, this
-function is useful when the confidence level is different for
-different features. For example, this function may be especially
+Add robust constraints to a conservation problem to allow
+the solution's level of robustness to uncertainty to differ across
+feature groups.
+For example, this function may be especially
 useful when it is important to ensure that a prioritization is
 highly robust to uncertainty in the spatial distribution of threatened
 species, and only moderately robust to uncertainty in the spatial
 distribution of widespread species.
 }
 \details{
-The robust/ chance constraints ensures that the proportion of constraints that are held
-is greater than a specified \code{conf_level}. If \code{conf_level = 1},
-all constraints within the feature group must be held, meaning that the solution is fully
-robust to uncertainty. Lowering the \code{conf_level} to less thanuys
-1 allows a certain percentage of the constraints for each feature group to be
-violated, enabling the algorithm to search of solutions with better objective values, while
-keeping the percentage of constraints violated less than \code{1 - conf_level}.
+The robust constraints are used to generate solutions that are robust to
+uncertainty. In particular, \code{conf_level} controls how
+important it is for a solution to be robust to uncertainty.
+To help explain how these constraints operate, we will consider
+the minimum set formulation of the reserve selection problem
+(per \code{\link[prioritizr:add_min_set_objective]{prioritizr::add_min_set_objective()}}.
+If \code{conf_level = 1}, then the solution must be maximally robust to
+uncertainty and this means that the solution must meet all of the targets
+for the features associated with each feature group.
+Although such a solution would be highly robust to uncertainty,
+it may not be especially useful because this it might have
+especially high costs (in other words, setting a high \code{conf_level}
+may result in a solution with a poor objective value).
+By lowering \code{conf_level}, this means that the solution must only meet
+certain percentage of the targets associated with each feature group.
+For example, if \code{conf_level = 0.95}, then the solution must meet, at least,
+95\% of the targets for the features associated with each feature group.
+Alternatively, if \code{conf_level = 0.5}, then the solution must meet, at least,
+half of the targets for the features associated with each feature group.
+Finally, if \code{conf_level = 0}, then the solution does not need
+to meet any of the targets for the features associated with each
+feature group. As such, it is not recommended to use \code{conf_level = 0}.
 }
 \section{Data format}{
 
 The \code{data} argument must be a \code{\link[tibble:tibble]{tibble::tibble()}} data frame that has
-information on the feature groupings and their confidence levels.
+information on the feature groups and their confidence levels.
 Here, each row corresponds to a different feature group and
 columns contain information about the groups.
-In particular, it has the following columns.
+In particular, \code{data} must have the following columns.
 \describe{
 \item{features}{
 A \code{list} column with the names of the features that belong to each group.
@@ -52,12 +67,7 @@ group, then they should be stored in the same element of this column.
 \item{conf_level}{
 A \code{numeric} column with values that describe the confidence level
 associated with each feature group (ranging between 0 and 1).
-For example, a value of zero corresponds
-to a low confidence level, and so the optimization process will not
-constrained by any constraints in that particular group.
-Alternatively, a value of of one corresponds to a high level of robustness,
-and so the optimization process will be highly constrained to be
-robust against uncertainty for that particular group.
+See the Details section for information on \code{conf_level} values.
 }
 }
 }
@@ -68,7 +78,7 @@ The robust constraints require that you have multiple alternative
 realizations for each biodiversity element of interest (e.g.,
 species, ecosystems, ecosystem services). For example, we might have 5
 species of interest. By applying different spatial modeling techniques,
-we might have 10 different models for each of the 5 different species.
+we might have 10 different models for each of the 5 different species
 We can use these models to generate 10 alternative realizations
 for each of the 5 species (yielding 50 alternative realizations in total).
 To use these data, we would input these 50 alternative realizations
@@ -80,6 +90,7 @@ groupings parameter).
 
 \examples{
 \dontrun{
+# Load packages
 library(prioritizr)
 library(terra)
 library(tibble)
@@ -88,27 +99,32 @@ library(tibble)
 pu <- get_sim_pu_raster()
 
 # Get feature data
-features <- replicate(2, get_sim_features())
-features <- rast(features)
-names(features) <- paste0("feature_", rep(1:5, 2), "_scenario_", rep(1:2, each = 5))
-relative_budget <- as.numeric(global(pu, 'sum', na.rm = T)) * 0.1
+features <- get_sim_features()
 
-# Get the groups
-groups <- rep(paste0("feature_", 1:5), 2)
+# Define the feature group data
+# Here, we will assign the first 2 features to the group A, and the
+# remaining features to the group B
+groups <- c(rep("A", 2), rep("B", nlyr(features) - 2))
 
-# Add variable robust constraints, specifying different confidence levels for each feature
-variable_constraints <- tibble(
+# Next, we will use this information to create a data frame containing
+# the feature groups and specifying a confidence level of 0.95 for group A,
+# and a confidence level of 0.5 for group B
+constraint_data <- tibble(
   features = split(names(features), groups),
-  conf_level = c(1, 0.8, 0.6, 0.6, 0.5)
+  conf_level = c(0.95, 0.5)
 )
 
-# Set up prioritizr problem
-p <- problem(pu, features) \%>\%
-  add_variable_robust_constraints(data = variable_constraints) \%>\%
-  add_robust_min_set_objective() \%>\%
-  add_relative_targets(0.1) \%>\%
-  add_binary_decisions() \%>\%
-  add_default_solver()
+# Display constraint data
+print(constraint_data)
+
+# Build problem
+p <-
+  problem(pu, features) |>
+  add_robust_min_set_objective() |>
+  add_variable_robust_constraints(data = constraint_data) |>
+  add_relative_targets(0.1) |>
+  add_binary_decisions() |>
+  add_default_solver(verbose = FALSE)
 
 # Solve the problem
 soln <- solve(p)
@@ -116,12 +132,9 @@ soln <- solve(p)
 # Plot the solution
 plot(soln)
 }
-
-}
-\references{
-Charnes, A., & Cooper, W. W. (1959). Chance-constrained programming. Management Science, 6(1), 73–79.
 }
 \seealso{
-See \link{robust_objectives} for an overview of all functions for adding
-robust objectives.
+Other functions for adding robust constraints:
+\code{\link{add_constant_robust_constraints}()}
 }
+\concept{constraints}

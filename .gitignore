@@ -26,6 +26,7 @@ examples.log
 !inst/doc/.gitkeep
 
 # devtools files
+docs
 doc/*
 Meta/*
 /doc/

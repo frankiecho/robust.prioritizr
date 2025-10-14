@@ -15,33 +15,45 @@ In particular, \code{groups} is used to specify a group name for each feature
 and features with the same group name will be grouped together.
 For example, if some of the features correspond to alternative predictions
 for the same species under different scenarios, then these features should
-have the same grouping name.}
+have the same group name.}
 
 \item{conf_level}{\code{numeric} value describing the level of robustness
-required for the prioritization (ranging between 0 and 1). For instance, a value
-of 0.95 guarantees that at least 95\% of the constraints will met for each
-feature group. A value of 1 ensures full robustness, i.e., all constraints
-are met. A value of 0 will cause none of the constraints to be applied,
-and is thus not recommended.}
+required for the solution (ranging between 0 and 1).
+Defaults to 1, corresponding to a maximally robust solution.
+See the Details section for more information on this parameter.}
 }
 \value{
 An updated \code{\link[prioritizr:problem]{prioritizr::problem()}} object with the constraint added
 to it.
 }
 \description{
-Add robust or probabilistic constraints to a conservation problem to ensure that
-the priority areas are robust to uncertainty up to a certain confidence level. In particular, this
-function is useful when the confidence level that the constraint is held
-is constant across all features.
+Add robust constraints to a conservation problem to specify that
+the solution should have the same minimum level of robustness for each
+feature group.
 }
 \details{
-The robust/ chance constraints ensures that the proportion of constraints that are held
-is greater than a specified \code{conf_level}. If \code{conf_level = 1},
-all constraints within the feature group must be held, meaning that the solution is fully
-robust to uncertainty. Lowering the \code{conf_level} to less thanuys
-1 allows a certain percentage of the constraints for each feature group to be
-violated, enabling the algorithm to search of solutions with better objective values, while
-keeping the percentage of constraints violated less than \code{1 - conf_level}.
+The robust constraints are used to generate solutions that are robust to
+uncertainty. In particular, \code{conf_level} controls how
+important it is for a solution to be robust to uncertainty.
+To help explain how these constraints operate, we will consider
+the minimum set formulation of the reserve selection problem
+(per \code{\link[prioritizr:add_min_set_objective]{prioritizr::add_min_set_objective()}}.
+If \code{conf_level = 1}, then the solution must be maximally robust to
+uncertainty and this means that the solution must meet all of the targets
+for the features associated with each feature group.
+Although such a solution would be highly robust to uncertainty,
+it may not be especially useful because this it might have
+especially high costs (in other words, setting a high \code{conf_level}
+may result in a solution with a poor objective value).
+By lowering \code{conf_level}, this means that the solution must only meet
+certain percentage of the targets associated with each feature group.
+For example, if \code{conf_level = 0.95}, then the solution must meet, at least,
+95\% of the targets for the features associated with each feature group.
+Alternatively, if \code{conf_level = 0.5}, then the solution must meet, at least,
+half of the targets for the features associated with each feature group.
+Finally, if \code{conf_level = 0}, then the solution does not need
+to meet any of the targets for the features associated with each
+feature group. As such, it is not recommended to use \code{conf_level = 0}.
 }
 \section{Data requirements}{
 
@@ -49,7 +61,7 @@ The robust constraints require that you have multiple alternative
 realizations for each biodiversity element of interest (e.g.,
 species, ecosystems, ecosystem services). For example, we might have 5
 species of interest. By applying different spatial modeling techniques,
-we might have 10 different models for each of the 5 different species.
+we might have 10 different models for each of the 5 different species
 We can use these models to generate 10 alternative realizations
 for each of the 5 species (yielding 50 alternative realizations in total).
 To use these data, we would input these 50 alternative realizations
@@ -61,6 +73,7 @@ groupings parameter).
 
 \examples{
 \dontrun{
+# Load packages
 library(prioritizr)
 library(terra)
 
@@ -68,21 +81,21 @@ library(terra)
 pu <- get_sim_pu_raster()
 
 # Get feature data
-features <- replicate(2, get_sim_features())
-features <- rast(features)
-names(features) <- paste0("feature_", rep(1:5, 2), "_scenario_", rep(1:2, each = 5))
-relative_budget <- as.numeric(global(pu, 'sum', na.rm = T)) * 0.1
+features <- get_sim_features()
 
-# Get the groups
-groups <- rep(paste0("feature_", 1:5), 2)
+# Define the feature groups,
+# Here, we will assign the first 2 features to the group A, and
+# the remaining features to the group B
+groups <- c(rep("A", 2), rep("B", nlyr(features) - 2))
 
-# Set up prioritizr problem
-p <- problem(pu, features) \%>\%
-  add_constant_robust_constraints(groups = groups) \%>\%
-  add_robust_min_set_objective() \%>\%
-  add_relative_targets(0.1) \%>\%
-  add_binary_decisions() \%>\%
-  add_default_solver()
+# Build problem
+p <-
+  problem(pu, features) |>
+  add_robust_min_set_objective() |>
+  add_constant_robust_constraints(groups = groups, conf_level = 0.9) |>
+  add_relative_targets(0.1) |>
+  add_binary_decisions() |>
+  add_default_solver(verbose = FALSE)
 
 # Solve the problem
 soln <- solve(p)
@@ -92,10 +105,11 @@ plot(soln)
 }
 
 }
-\references{
-Charnes, A., & Cooper, W. W. (1959). Chance-constrained programming. Management Science, 6(1), 73–79.
-}
 \seealso{
-See \link{robust_objectives} for an overview of all functions for adding
-robust objectives.
+See \link{robust_constraints} for an overview of all functions for adding
+robust constraints.
+
+Other functions for adding robust constraints:
+\code{\link{add_variable_robust_constraints}()}
 }
+\concept{constraints}

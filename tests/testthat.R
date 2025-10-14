@@ -20,4 +20,3 @@ if (!is_skip) {
   ## check tests
   test_check("robust.prioritizr", reporter = reporter)
 }
-

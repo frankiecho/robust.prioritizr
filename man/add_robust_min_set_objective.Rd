@@ -9,91 +9,169 @@ add_robust_min_set_objective(x, method = "chance")
 \arguments{
 \item{x}{\code{\link[prioritizr:problem]{prioritizr::problem()}} object.}
 
-\item{method}{the probabilistic constraint formulation method, either \code{chance} (default) or \code{cvar} (conditional value-at-risk). See details.}
+\item{method}{\code{character} value with the name of the probabilistic
+constraint formulation method. Available options include the (\code{"chance"})
+chance constraint programming method (Charnes and Cooper 1959) or (\code{"cvar"})
+or the conditional value-at-risk method (Rockafellar and Uryasev 2000),
+Defaults to \code{"chance"}. See the Details section for further information
+on these methods.}
 }
 \value{
 An updated \code{\link[prioritizr:problem]{prioritizr::problem()}} object with the objective added
 to it.
 }
 \description{
-Set the objective of a conservation planning problem to minimize the cost of the solution while ensuring that all targets are met robustly across all realizations of data.
+Add an objective to a conservation planning problem that minimizes the cost
+of the solution while ensuring that the solution is robust to uncertainty for
+each feature group.
 }
 \details{
-The robust minimum set objective seeks to find the set of planning units at a minimum cost such that the targets are met across all realizations of data.
+The robust minimum set objective seeks to find the set of planning units at
+a minimum cost such that the solution meets the targets in a robust manner for each
+feature group. Two methods are provided for formulating
+the optimization problem as a mixed integer linear programming problem.
+These methods are the chance constraint programming method
+(\code{method = "chance"}) and conditional value-at-risk method
+(\code{method = "cvar"}). In particular, the chance constraint programming
+method is associated a more intuitive interpretation for the
+confidence level parameter (i.e.,
+specified per \code{conf_level} with \code{\link[=add_constant_robust_constraints]{add_constant_robust_constraints()}} or
+\code{\link[=add_variable_robust_constraints]{add_variable_robust_constraints()}}). Whereas, the
+conditional value-at-risk constraint method may yield faster solve times.
+This is because the conditional value-at-risk constraint method
+preserves the convexity of an optimization problem,
+and uses continuous (instead of binary) auxiliary variables.
+Also note that the conditional value-at-risk constraint method may
+produce an infeasible solution for problems that are feasible with
+the chance constraint with the same \code{conf_level}. In such cases the chance
+chance constraint programming method should be used instead.
+As such, the chance constraint programming method may be
+more useful for facilitating stakeholder involvement for small-scale
+planning exercises, and the
+conditional value-at-risk constraint method may be more useful for
+large-scale applications.
 }
 \section{Mathematical formulation}{
 
 This objective can be expressed
 mathematically for a set of planning units (\eqn{I}{I} indexed by
-\eqn{i}{i}), a set of features (\eqn{J}{J} indexed by \eqn{j}{j}), and
-a set of realizations (\eqn{K} indexed by \eqn{k}) as:
+\eqn{i}{i}), a set of feature groups (\eqn{J}{J} indexed by \eqn{j}{j}), and
+a set of features associated with each feature group
+(\eqn{K} indexed by \eqn{k}). Let \eqn{c_i}{ci} denote the cost of
+planning unit \eqn{i}{i}, \eqn{r_{ijk}}{rijk} the amount of feature
+\eqn{k}{k} associated with planning unit \eqn{i}{i} for feature group
+\eqn{j}{j}, \eqn{T_j}{Tj} the target for each feature group
+\eqn{j}{j}, and \eqn{\alpha}{a} the confidence level for uncertainty
+(specified per \code{conf_level} with \code{\link[=add_constant_robust_constraints]{add_constant_robust_constraints()}} or
+\code{\link[=add_variable_robust_constraints]{add_variable_robust_constraints()}}).
+Additionally, to describe the decision variables,
+let \eqn{x_i}{xi} denote the status of the planning unit \eqn{i}{i}
+(e.g., specifying whether
+planning unit \eqn{i}{i} has been selected or not with binary values).
+Given this terminology, the robust minimum set formulation of the reserve
+selection problem is formulated as follows.
 
-\deqn{\mathit{Minimize} \space \sum_{i = 1}^{I} x_i c_i \\
+\deqn{
+\mathit{Minimize} \space \sum_{i = 1}^{I} x_i c_i \\
 \mathit{subject \space to} \\
-\Pr_k \{ \sum_{i = 1}^{I} x_i r_{ijk} \geq T_{j} \} \geq \alpha \space \forall \space j \in J}{Minimize sum_i^I (xi * ci) subject to sum_i^I (xi * rij) >= Tj for all
-j in J}
-
-Here, \eqn{x_i}{xi} is the decision variable (e.g.,
-specifying whether planning unit \eqn{i}{i} has been selected (1) or not
-(0)), \eqn{c_i}{ci} is the cost of planning unit \eqn{i}{i},
-\eqn{r_{ijk}}{rijk} is the amount of feature \eqn{j}{j} in planning unit
-\eqn{i}{i} under realization \eqn{k}, and \eqn{T_{j}}{Tj} is the target for feature \eqn{j}{j}
-under realization \eqn{k}{k}. The probabilistic constraint ensures that the proportion of constraints that
-are held are greater than the confidence level \code{conf_level} specified in \verb{add_*_robust_constraints}.
-In other words, if \eqn{\alpha=1}{\alpha=1}, then the constraint is held across all of \eqn{k}{k}. The
-first term is the objective function and the second is the set of
-constraints. In words this says find the set of planning units that meets
-all the representation targets across all realizations while minimizing the overall cost.
-
-If \eqn{\alpha}{\alpha} is 1, then the probabilistic constraint simplifies to
-the following constraint:
-\deqn{
-\sum_{i = 1}^{I} x_i r_{ijk} \geq T_{j} \quad \forall \space j \in J, \space k \in K
-}{}
-
-If \eqn{\alpha}{\alpha} is less than 1, the probabilistic constraint is formulated using either a Chance Constraint
-Programming approach (\code{method = "chance"}), or a Conditional Value-at-Risk
-\code{method = 'cvar'} approach.
-
-For the Chance Constraint approach, the probabilistic constraint is parameterised using a "big-M" formulation,
-which replaces the constraint as follows:
-\deqn{
-\sum_{i = 1}^{I} x_i r_{ijk} + T_j m_{jk} \geq T_{j} \quad \forall \space j \in J, \space k \in K \\
-\sum_{k = 1}^{K_j} m_{jk} / K_j \leq 1 - \alpha \quad \forall \space j \in J\\
-m \in \{0, 1\}
+\Pr_k \{ \sum_{i = 1}^{I} x_i r_{ijk} \geq T_j \}
+\geq \alpha \quad \forall \space j \in J
+}{
+Minimize sum_i^I (xi * ci)
+subject to Pr_k \{ sum_i^I  (xi * rij) >= Tj \} >= a, for all j in J
 }
 
-where \eqn{m}{m} is a binary discrete variables indicating whether the constraint has been held or not, and
-\eqn{K_j}{K_j} is the number of realizations for the feature \eqn{j}{j}. This formulation effectively
-uses the variable \eqn{m}{m} to allow for the constraint to be violated, and
-counts the number of times the constraint has been violated. The proportion of constraint violations that
-count is then constrained to be less than \eqn{1 - \alpha}{1 - \alpha}. This
-allows for a more intuitive interpretation of the confidence level parameter, but
-adds \eqn{J \times K} number of binary variables to the problem can significantly increase solve times.
-See Charnes and Cooper (1959) for more details about this original formulation.
+Here, the objective function (first equation) is to minimize the total
+cost of the solution. The probabilistic constraints (second equation)
+specify that the solution must achieve a particular probability threshold
+(based on \eqn{\alpha}{a}) for meeting the targets of the features
+associated with each feature group.
+For example, if \eqn{\alpha=1}{a=1}, then each and every target associated
+with each feature group must be met.
+Alternatively, if \eqn{\alpha=0.5}{a=0.5}, then the
+solution must have a 50\% chance of meeting the targets associated
+with each feature group.
+Approximation methods are used to linearize them so that the optimization
+problem can be solved with mixed integer programming exact algorithm solvers.
 
-In contrast, the Conditional Value-at-Risk constraint is a tighter formulation than the Chance Constraint,
-as in, the proportion of constraints that are held will usually be much higher than \eqn{\alpha}{\alpha}.
-It avoids having to add discrete binary variables to the problem and can sometimes yield
-lower solve times. It replaces the probabilistic constraint with the constraints below:
+The chance constraint programming method uses a "big-M" formulation
+to linearize the probabilistic constraints (Charnes and Cooper 1959).
+To describe this method, let \eqn{m_{jk}}{mjk} denote a binary
+auxiliary variable for each feature \eqn{k}{k} associated with each
+feature group \eqn{j}{j}. Also, let \eqn{K_j}{Kj} denote a
+pre-computed value describing the number of
+features associated with each feature group \eqn{j}{j}.
+Given this terminology, the method involves replacing the probabilistic
+constraints with the following linear constraints.
+
 \deqn{
-\sum_{i = 1}^{I} x_i r_{ijk} - \eta_j + s_{jk} \geq 0 \quad \forall \space j \in J, \space k \in K \\
-\eta_j - \frac{1}{(1-\alpha) K_j} \sum_{k=1}^{K_j} s_{jk} \geq T_j \quad  \forall \space j \in J \\
+\sum_{i = 1}^{I} x_i r_{ijk} + T_j m_{jk} \geq T_{j} \quad
+  \forall \space j \in J, \space k \in K \\
+\sum_{k = 1}^{K_j} \frac{m_{jk}}{K_j} \leq 1 - \alpha \quad
+  \forall \space j \in J \\
+m_{jk} \in \{0, 1\} \quad
+  \forall \space j \in J, \space k \in K
+}{
+sum_i^I xi rijk + Tj mjk >= Tj, for all j in J, k in K
+sum_{k = 1}^{Kj} mjk / Kj <= 1 - a, for all j in J
+mjk in \{0, 1\}, for all j in J, k in K
+}
+
+Here, the solution is allowed to fail to meet the targets
+for the features, and the auxiliary variable \eqn{m_{jk}}{mjk} is
+used to calculate the proportion of features that do not have their targets
+met for each feature group. For a given feature group, the
+proportion of features that do not have their target met is
+constrained to be less than \eqn{1 - \alpha}{1 - a}.
+This method allows for an intuitive interpretation of the confidence level
+parameter. Yet this method also adds \eqn{J \times K}{J * K} binary
+variables to the problem and, as such, may present long solve times for
+problems with many other decision variables and constraints.
+
+The conditional value-at-risk constraint method presents a tighter
+formulation than the chance constraint programming method
+(Rockafellar and Uryasev 2000).
+As such, this method is able to better approximate the
+probabilistic constraints and, in turn, could potentially yield
+solutions that are more robust to uncertainty and less cost-efficient
+than the chance constraint programming method.
+To describe this method, let \eqn{\eta_j}{ej} denote
+a continuous auxiliary variable for each feature group \eqn{j}{j},
+and \eqn{s_{jk}}{sjk} a continuous auxiliary variable for each feature
+\eqn{k}{k} associated with each feature group \eqn{j}{j}.
+Given this terminology, the method involves replacing the probabilistic
+constraints with the following linear constraints.
+
+\deqn{
+\sum_{i = 1}^{I} x_i r_{ijk} - \eta_j + s_{jk} \geq 0 \quad
+  \forall \space j \in J, \space k \in K \\
+\eta_j - \frac{1}{(1 - \alpha) \times K_j} \sum_{k=1}^{K_j} s_{jk} \geq T_j
+  \quad \forall \space j \in J \\
 s_{jk} \geq 0 \quad \forall \space j \in J, \space k \in K \\
 \eta_j \in \mathbb{R}  \quad  \forall \space j \in J
+}{
+\sum_i^I xi rijk - ej + sjk >= 0, for all j in J, k in K
+ej - (1 / ((1 - a) * K_j)) sum_k^Kj sjk >= Tj for all j in J
+sjk >= 0, for all j in J, k in K
+ej in R, forall j in J
 }
-where \eqn{\eta}{\eta} and \eqn{s}{s} are auxiliary variables introduced to represent the "tail" of the
-distribution of the uncertain quantity \eqn{\sum_{i = 1}^{I} x_i r_{ijk}}. In other words, it ensures
-that the average of the values of \eqn{\sum_{i = 1}^{I} x_i r_{ijk}} that fall below the \eqn{(1-\alpha)}{1-\alpha}
-quantile of the distribution is greater than \eqn{T_j}{T_j}. Using this constraint preserves the
-convexity of the problem (if other constraints were convex) and adds \eqn{J\times K+J}{J\times K+J} number of continuous
-variables to the problem. Though some users find it complicates the interpretation of
-the \code{conf_level} parameter. See Rockafellar and Uryasev (2000) for more details about this formulation.
+
+Here, the continuous auxiliary variables are used to represent the "tail" of
+the distribution of the uncertain quantity
+(i.e., \eqn{\sum_{i=1}^{I} x_i r_{ijk}}{sum_i^I xi rijk}).
+In other words, it ensures
+that the average of amount of each feature held by the solution for
+a particular feature group that falls below a particular
+quantile (i.e., \eqn{(1 - \alpha)}{1 - a}) is greater than the
+target for the feature group (i.e., \eqn{T_j}{Tj}).
+Although this method does not provide an easily intuitive interpretation of
+the confidence level parameter, it only adds \eqn{J \times K + J}{J * K + J}
+continuous variables to the problem.
 }
 
 \examples{
 \dontrun{
-# load packages
+# Load packages
 library(prioritizr)
 library(terra)
 
@@ -101,39 +179,42 @@ library(terra)
 pu <- get_sim_pu_raster()
 
 # Get feature data
-features <- replicate(2, get_sim_features())
-features <- rast(features)
-names(features) <- paste0("feature_", rep(1:5, 2),
-"_scenario_", rep(1:2, each = 5))
+features <- get_sim_features()
 
-# 5 features, 2 scenarios
-groups <- rep(paste0("feature_", 1:5), 2)
+# Define the feature groups,
+# Here, we will assign the first 2 features to the group A, and
+# the remaining features to the group B
+groups <- c(rep("A", 2), rep("B", nlyr(features) - 2))
 
-# Set up problem
-p <- problem(pu, features) \%>\%
-  add_constant_robust_constraints(groups = groups) \%>\%
-  add_robust_min_set_objective(method = "cvar") \%>\%
-  add_binary_decisions() \%>\%
-  add_relative_targets(0.1) \%>\%
-  add_default_solver()
+# Build problem with chance constraint programming method
+p <-
+  problem(pu, features) |>
+  add_robust_min_set_objective(method = "cvar") |>
+  add_constant_robust_constraints(groups = groups, conf_level = 0.9) |>
+  add_binary_decisions() |>
+  add_relative_targets(0.1) |>
+  add_default_solver(verbose = FALSE)
 
-# Solve problem
+# Solve the problem
 soln <- solve(p)
-plot(soln)
 
+# Plot the solution
+plot(soln)
 }
 
 }
 \references{
-Charnes, A., & Cooper, W. W. (1959). Chance-Constrained Programming. Management Science, 6(1), 73-79.
+Charnes A & Cooper WW (1959) Chance-constrained programming.
+\emph{Management Science}, 6(1), 73--79.
 
-Rockafellar, R. T., & Uryasev, S. (2000). Optimization of Conditional Value-at-Risk. Journal of Risk, 2(3), 21-42.
+Rockafellar RT & Uryasev S (2000) Optimization of conditional value-at-risk.
+\emph{Journal of Risk}, 2(3), 21--42.
 }
 \seealso{
 See \link{robust_objectives} for an overview of all functions for adding
 robust objectives.
 
-Other robust_objectives: 
+Other functions for adding robust objectives:
 \code{\link{add_robust_min_shortfall_objective}()}
 }
-\concept{robust_objectives}
+\concept{objectives}

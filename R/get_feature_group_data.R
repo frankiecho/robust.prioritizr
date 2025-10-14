@@ -36,7 +36,7 @@ get_feature_group_data <- function(x) {
   group_feature_names <- unlist(
     data$features, recursive = TRUE, use.names = FALSE
   )
-  target_feature_names <- x$feature_names()[x$targets$output()$feature]
+  target_feature_names <- x$feature_names()[x$feature_targets()$feature]
   idx <- match(target_feature_names, group_feature_names)
   assert(
     assertthat::noNA(idx),
