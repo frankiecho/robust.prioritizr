@@ -147,7 +147,8 @@ bool rcpp_apply_robust_cvar_constraints(
     if (beta_val <= 0.0 || K_j <= 0.0) {
       Rcpp::stop("Invalid beta_level (%.4f) or feature_group_cardinality (%.0f) for group %d. Check your input data.", beta_val, K_j, j);
     }
-    coeff_s_sum[j] = -1.0 / (beta_val * K_j);
+
+    coeff_s_sum[j] = -1.0 / beta_val * K_j;
   }
 
   // Add coefficient for `eta_j`: `+1.0`
