@@ -28,7 +28,7 @@ to it.
 }
 \description{
 Add robust constraints to a conservation problem to specify that
-the solution should ideally aim for the same level of robustness for each
+the solution should have the same minimum level of robustness for each
 feature group.
 }
 \details{

@@ -22,14 +22,13 @@ to it.
 }
 \description{
 Add an objective to a conservation planning problem that minimizes the cost
-of the solution while ensuring that the targets for each feature group are
-met in a manner that is robust to uncertainty.
+of the solution while ensuring that the solution is robust to uncertainty for
+each feature group.
 }
 \details{
 The robust minimum set objective seeks to find the set of planning units at
-a minimum cost such that the targets are in a robust manner for each
-feature group. Since the probabilistic calculations that underpin this
-objective are non-linear, two methods are provided for formulating
+a minimum cost such that the solution meets the targets in a robust manner for each
+feature group. Two methods are provided for formulating
 the optimization problem as a mixed integer linear programming problem.
 These methods are the chance constraint programming method
 (\code{method = "chance"}) and conditional value-at-risk method
@@ -40,15 +39,17 @@ specified per \code{conf_level} with \code{\link[=add_constant_robust_constraint
 \code{\link[=add_variable_robust_constraints]{add_variable_robust_constraints()}}). Whereas, the
 conditional value-at-risk constraint method may yield faster solve times.
 This is because the conditional value-at-risk constraint method
-is capable of preserving the convexity of an optimization problem,
+preserves the convexity of an optimization problem,
 and uses continuous (instead of binary) auxiliary variables.
 Also note that the conditional value-at-risk constraint method may
-produce in infeasible solution errors, and such cases the chance
+produce an infeasible solution for problems that are feasible with
+the chance constraint with the same \code{conf_level}. In such cases the chance
 chance constraint programming method should be used instead.
 As such, the chance constraint programming method may be
-more useful for facilitating stakeholder involvement, and the
+more useful for facilitating stakeholder involvement for small-scale
+planning exercises, and the
 conditional value-at-risk constraint method may be more useful for
-large-scale planning exercises.
+large-scale applications.
 }
 \section{Mathematical formulation}{
 
@@ -90,9 +91,8 @@ with each feature group must be met.
 Alternatively, if \eqn{\alpha=0.5}{a=0.5}, then the
 solution must have a 50\% chance of meeting the targets associated
 with each feature group.
-Since the probabilistic constraints are non-linear, approximation methods
-are used to linearize them so that the optimization problem can be solved
-with mixed integer programming exact algorithm solvers.
+Approximation methods are used to linearize them so that the optimization
+problem can be solved with mixed integer programming exact algorithm solvers.
 
 The chance constraint programming method uses a "big-M" formulation
 to linearize the probabilistic constraints (Charnes and Cooper 1959).
@@ -125,12 +125,13 @@ proportion of features that do not have their target met is
 constrained to be less than \eqn{1 - \alpha}{1 - a}.
 This method allows for an intuitive interpretation of the confidence level
 parameter. Yet this method also adds \eqn{J \times K}{J * K} binary
-variables to the problem and, as such, may present long solve times.
+variables to the problem and, as such, may present long solve times for
+problems with many other decision variables and constraints.
 
 The conditional value-at-risk constraint method presents a tighter
 formulation than the chance constraint programming method
 (Rockafellar and Uryasev 2000).
-As such, this method is able to better approximate the non-linear
+As such, this method is able to better approximate the
 probabilistic constraints and, in turn, could potentially yield
 solutions that are more robust to uncertainty and less cost-efficient
 than the chance constraint programming method.

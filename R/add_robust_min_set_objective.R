@@ -78,9 +78,8 @@
 #' Alternatively, if \eqn{\alpha=0.5}{a=0.5}, then the
 #' solution must have a 50% chance of meeting the targets associated
 #' with each feature group.
-#' Since the probabilistic constraints are non-linear, approximation methods
-#' are used to linearize them so that the optimization problem can be solved
-#' with mixed integer programming exact algorithm solvers.
+#' Approximation methods are used to linearize them so that the optimization
+#' problem can be solved with mixed integer programming exact algorithm solvers.
 #'
 #' The chance constraint programming method uses a "big-M" formulation
 #' to linearize the probabilistic constraints (Charnes and Cooper 1959).
@@ -113,12 +112,13 @@
 #' constrained to be less than \eqn{1 - \alpha}{1 - a}.
 #' This method allows for an intuitive interpretation of the confidence level
 #' parameter. Yet this method also adds \eqn{J \times K}{J * K} binary
-#' variables to the problem and, as such, may present long solve times.
+#' variables to the problem and, as such, may present long solve times for
+#' problems with many other decision variables and constraints.
 #'
 #' The conditional value-at-risk constraint method presents a tighter
 #' formulation than the chance constraint programming method
 #' (Rockafellar and Uryasev 2000).
-#' As such, this method is able to better approximate the non-linear
+#' As such, this method is able to better approximate the
 #' probabilistic constraints and, in turn, could potentially yield
 #' solutions that are more robust to uncertainty and less cost-efficient
 #' than the chance constraint programming method.
