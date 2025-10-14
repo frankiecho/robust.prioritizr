@@ -27,11 +27,7 @@ vigns:
 	rm -f vignettes/*.R
 	rm -f doc/*.html
 	rm -f doc/*.Rmd
-	rm -f inst/doc/*.html
-	rm -f inst/doc/*.Rmd
 	R --slave -e "options(rmarkdown.html_vignette.check_title = FALSE);devtools::build_vignettes()"
-	cp -R doc inst/
-	touch inst/doc/.gitkeep
 
 purl_vigns:
 	R --slave -e "lapply(dir('vignettes', '^.*\\\\.Rmd$$'), function(x) knitr::purl(file.path('vignettes', x), gsub('.Rmd', '.R', x, fixed = TRUE)))"
@@ -46,17 +42,11 @@ check_vigns:
 	rm -f Rplots.pdf
 
 quicksite:
-	cp docs/favicon.ico /tmp
-	cp docs/logo.png /tmp
 	R --slave -e "options(rmarkdown.html_vignette.check_title = FALSE);pkgdown::build_site(run_dont_run = TRUE, lazy = TRUE)"
-	cp -R doc inst/
 
 site:
-	cp docs/favicon.ico /tmp
-	cp docs/logo.png /tmp
 	R --slave -e "pkgdown::clean_site()"
 	R --slave -e "options(rmarkdown.html_vignette.check_title = FALSE);pkgdown::build_site(run_dont_run = TRUE, lazy = FALSE)"
-	cp -R doc inst/
 
 test:
 	R --slave -e "devtools::test()" > test.log 2>&1
@@ -65,36 +55,24 @@ test:
 quickcheck:
 	echo "\n===== R CMD CHECK =====\n" > check.log 2>&1
 	R --slave -e "devtools::check(build_args = '--no-build-vignettes', args = '--no-build-vignettes', run_dont_test = TRUE, vignettes = FALSE)" >> check.log 2>&1
-	cp -R doc inst/
-	touch inst/doc/.gitkeep
 
 check:
 	echo "\n===== R CMD CHECK =====\n" > check.log 2>&1
 	R --slave -e "devtools::check(remote = TRUE, build_args = '--no-build-vignettes', args = '--no-build-vignettes', run_dont_test = TRUE, vignettes = FALSE)" >> check.log 2>&1
-	cp -R doc inst/
-	touch inst/doc/.gitkeep
 
 gpcheck:
 	echo "\n===== GOOD PRACTICE =====\n" > gp.log 2>&1
 	R --slave -e "goodpractice::gp('.')" >> gp.log 2>&1
-	cp -R doc inst/
-	touch inst/doc/.gitkeep
 
 checkascran:
 	echo "\n===== R CMD CHECK =====\n" > check.log 2>&1
 	R --slave -e "devtools::check(remote = TRUE, build_args = '--no-build-vignettes', args = '--no-build-vignettes', vignettes = FALSE)" >> check.log 2>&1
-	cp -R doc inst/
-	touch inst/doc/.gitkeep
 
 wbcheck:
 	R --slave -e "devtools::check_win_devel()"
-	cp -R doc inst/
-	touch inst/doc/.gitkeep
 
 jhwbcheck:
 	R --slave -e "devtools::check_win_devel(email = 'jeffrey.hanson@uqconnect.edu.au')"
-	cp -R doc inst/
-	touch inst/doc/.gitkeep
 
 solarischeck:
 	R --slave -e "rhub::check(platform = 'solaris-x86-patched', email = 'jeffrey.hanson@uqconnect.edu.au', show_status = FALSE)"
@@ -110,8 +88,6 @@ urlcheck:
 
 build:
 	R --slave -e "devtools::build()"
-	cp -R doc inst/
-	touch inst/doc/.gitkeep
 
 install:
 	R --slave -e "devtools::install_local(force = TRUE)"

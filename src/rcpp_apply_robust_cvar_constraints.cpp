@@ -38,11 +38,11 @@ bool rcpp_apply_robust_cvar_constraints(
 
   // Derive `T_j`, the CVaR target for each group `j`.
   // This will be the RHS of the main CVaR constraint.
-  // Using the minimum of the original T_jk values within each group.
-  Rcpp::NumericVector cvar_main_targets_T_j(n_groups, std::numeric_limits<double>::infinity());
+  // Using the maximum of the original T_jk values within each group.
+  Rcpp::NumericVector cvar_main_targets_T_j(n_groups, 0.0);
   for (std::size_t k_idx = 0; k_idx < n_realizations; ++k_idx) {
     std::size_t group_idx = static_cast<std::size_t>(feature_group_ids[k_idx]);
-    cvar_main_targets_T_j[group_idx] = std::min(cvar_main_targets_T_j[group_idx], T_jk_original_values[k_idx]);
+    cvar_main_targets_T_j[group_idx] = std::max(cvar_main_targets_T_j[group_idx], T_jk_original_values[k_idx]);
   }
 
   // Derive `beta_levels` (tail probability, $\beta$) from `conf_levels` (confidence level, $1-\alpha$).
@@ -147,6 +147,7 @@ bool rcpp_apply_robust_cvar_constraints(
     if (beta_val <= 0.0 || K_j <= 0.0) {
       Rcpp::stop("Invalid beta_level (%.4f) or feature_group_cardinality (%.0f) for group %d. Check your input data.", beta_val, K_j, j);
     }
+
     coeff_s_sum[j] = -1.0 / (beta_val * K_j);
   }
 

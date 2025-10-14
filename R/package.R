@@ -8,15 +8,37 @@
 #' change, such as species distribution models under climate change scenarios.
 #'
 #' @details
-#' The main functions provided by this package are:
+#' This package contains several vignettes that are designed to
+#' showcase its functionality. To view them, please use the code
+#' `vignette("name", package = "robust.prioritizr")` where `"name"` is the
+#' name of the desired vignette (e.g., `"robust.prioritizr"`).
 #'
-#' - [add_robust_min_set_objective()]
-#' - [add_robust_min_shortfall_objective()]
-#' - [add_constant_robust_constraints()]
-#' - [add_variable_robust_constraints()]
+#' \describe{
 #'
-#' For more information on using this package, see the vignettes:
-#' `vignette("robust.prioritizr", package = "robust.prioritizr")`
+#' \item{robust.prioritizr}{
+#' Brief introduction to the package.
+#' }
+#'
+#' \item{climate-sdm}{
+#' Example using simulated data from a species distribution model.
+#' }
+#'
+#' \item{vic-cons-planning}{
+#' Example using Victoria, Australia.
+#' }
+#'
+#' }
+#'
+#' @seealso
+#' Useful links:
+#' * Package website (<https://frankiecho.github.io/robust.prioritizr/>)
+#' * Source code repository (<https://github.com/frankiecho/robust.prioritizr>)
+#' * Report bugs (<https://github.com/frankiecho/robust.prioritizr/issues>)
+#'
+#' @author
+#'  Authors:
+#' * Frankie Cho \email{frankie.cho@qut.edu.au} ([ORCID](https://orcid.org/0000-0003-1369-4980))
+#' * Jeffrey O Hanson \email{jeffrey.hanson@uqconnect.edu.au} ([ORCID](https://orcid.org/0000-0002-4716-6134))
 #'
 #' @name robust.prioritizr
 #' @docType package
