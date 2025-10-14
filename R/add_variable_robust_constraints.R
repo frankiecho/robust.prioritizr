@@ -3,9 +3,9 @@ NULL
 
 #' Add variable robust constraints
 #'
-#' Add robust constraints to a conservation problem to specify that
-#' the solution should ideally aim for different levels of robustness for each
-#' feature group.
+#' Add robust constraints to a conservation problem to allow
+#' the solution's level of robustness to uncertainty to differ across
+#' feature groups.
 #' For example, this function may be especially
 #' useful when it is important to ensure that a prioritization is
 #' highly robust to uncertainty in the spatial distribution of threatened

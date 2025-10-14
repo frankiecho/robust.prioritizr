@@ -1,9 +1,9 @@
 #' Add robust minimum shortfall objective
 #'
 #' Add an objective to a conservation planning problem that minimizes the
-#' representation shortfalls for each feature group in a manner that is robust
-#' to uncertainty, whilst ensuring that the total cost of the solution
-#' does not exceed a budget.
+#' representation shortfalls for each feature group using the worst case shortfall
+#' or a quantile of the shortfall distribution,
+#' whilst ensuring that the total cost of the solution does not exceed a budget.
 #'
 #' @inheritParams add_robust_min_set_objective
 #'
@@ -28,8 +28,12 @@
 #' reducing the representation shortfalls shortfalls to zero,
 #' by getting as close as possible to reaching all of the targets
 #' for the features associated with each of the feature groups.
-#' Since the probabilistic calculations that underpin this objective are
-#' non-linear, the chance constraint programming method
+#' In the robust minimum shortfall formulation, the algorithm attempts to minimize
+#' the maximum shortfall within the feature group. Relaxations of the problem allow
+#' the user to choose to instead minimize a quantile of the shortfall distribution
+#' (`method = 'chance'`), or the average of the shortfall values that exceed a specified
+#' quantile (`method = 'cvar'`).
+#' The chance constraint programming method
 #' (Charnes and Cooper 1959) is used to formulate the optimization problem as a
 #' mixed integer linear programming problem. With this method, the
 #' confidence level parameter (i.e.,
@@ -42,7 +46,7 @@
 #' feature associated with the feature group -- the largest target
 #' shortfall for the associated features is used to calculate the
 #' representation shortfall for the feature group.
-#' Additionally, if `conf_level = 0.5` for a feature group, then the
+#' If `conf_level = 0.5` for a feature group, then the
 #' 50th quantile is used and this means that the median target shortfall
 #' for the features associated with the group is used to represent the
 #' representation shortfall for the feature group.
@@ -149,11 +153,12 @@
 #' target shortfalls for the associated features. Specifically, this
 #' subset based on a particular number of the smallest target shortfall
 #' variables based on \eqn{\alpha}{a}. For example, if a feature group is
-#' associated with 30 features and \eqn{\alpha=0.3}{a=0.3}, then the
+#' associated with 40 features and \eqn{\alpha=0.75}{a=0.75}, then the
 #' representation shortfall for the feature group is calculated by identifying
-#' which 10 of these 30 features have the smallest target shortfall variables,
-#' and then calculating the maximum value of these 10 target shortfall
-#' variables. As such, the chance constraint programming method provides
+#' which 10 of these 40 features have the largest target shortfall variables,
+#' and the shortfall variable used in the optimization process
+#' is the minimum of these large shortfall values.
+#' As such, the chance constraint programming method provides
 #' an intuitive approximation of the probabilistic constraints.
 #'
 #' @references

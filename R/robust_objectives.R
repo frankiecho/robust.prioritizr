@@ -25,7 +25,7 @@ NULL
 #' Add an objective to a conservation planning problem to minimize the cost
 #' of the solution while ensuring that the targets for each feature group are
 #' met in a manner that is robust to uncertainty.
-#' This function provides a statistically robust alternative to
+#' This function provides a robust alternative to
 #' [prioritizr::add_min_set_objective()].
 #' }
 #'
@@ -34,7 +34,7 @@ NULL
 #' target shortfalls for each feature group in a manner that is robust
 #' to uncertainty, whilst ensuring that the total cost of the solution
 #' does not exceed a budget.
-#' This function provides a statistically robust alternative to
+#' This function provides a robust alternative to
 #' [prioritizr::add_min_shortfall_objective()].
 #' }
 #'
