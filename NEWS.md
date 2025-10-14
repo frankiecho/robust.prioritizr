@@ -1,3 +1,5 @@
+# robust.prioritizr 1.0.0
+
 # robust.prioritizr 0.1.0.0
 
 - First stable release
