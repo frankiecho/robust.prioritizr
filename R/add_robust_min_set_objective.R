@@ -1,8 +1,8 @@
 #' Add robust minimum set objective
 #'
 #' Add an objective to a conservation planning problem that minimizes the cost
-#' of the solution while ensuring that the targets for each feature group are
-#' met in a manner that is robust to uncertainty.
+#' of the solution while ensuring that the solution is robust to uncertainty for
+#' each feature group.
 #'
 #' @param x [prioritizr::problem()] object.
 #'
@@ -15,9 +15,8 @@
 #'
 #' @details
 #' The robust minimum set objective seeks to find the set of planning units at
-#' a minimum cost such that the targets are in a robust manner for each
-#' feature group. Since the probabilistic calculations that underpin this
-#' objective are non-linear, two methods are provided for formulating
+#' a minimum cost such that the solution meets the targets in a robust manner for each
+#' feature group. Two methods are provided for formulating
 #' the optimization problem as a mixed integer linear programming problem.
 #' These methods are the chance constraint programming method
 #' (`method = "chance"`) and conditional value-at-risk method
@@ -28,15 +27,17 @@
 #' [add_variable_robust_constraints()]). Whereas, the
 #' conditional value-at-risk constraint method may yield faster solve times.
 #' This is because the conditional value-at-risk constraint method
-#' is capable of preserving the convexity of an optimization problem,
+#' preserves the convexity of an optimization problem,
 #' and uses continuous (instead of binary) auxiliary variables.
 #' Also note that the conditional value-at-risk constraint method may
-#' produce in infeasible solution errors, and such cases the chance
+#' produce an infeasible solution for problems that are feasible with
+#' the chance constraint with the same `conf_level`. In such cases the chance
 #' chance constraint programming method should be used instead.
 #' As such, the chance constraint programming method may be
-#' more useful for facilitating stakeholder involvement, and the
+#' more useful for facilitating stakeholder involvement for small-scale
+#' planning exercises, and the
 #' conditional value-at-risk constraint method may be more useful for
-#' large-scale planning exercises.
+#' large-scale applications.
 #'
 #' @section Mathematical formulation:
 #' This objective can be expressed

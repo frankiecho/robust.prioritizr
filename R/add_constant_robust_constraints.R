@@ -4,7 +4,7 @@ NULL
 #' Add constant robust constraints
 #'
 #' Add robust constraints to a conservation problem to specify that
-#' the solution should ideally aim for the same level of robustness for each
+#' the solution should have the same minimum level of robustness for each
 #' feature group.
 #'
 #' @param groups `character` vector indicating which features
