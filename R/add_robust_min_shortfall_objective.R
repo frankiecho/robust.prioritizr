@@ -221,7 +221,7 @@ add_robust_min_shortfall_objective <- function(x, budget) {
   x$add_objective(
     R6::R6Class(
       "RobustMinimumShortfallObjective",
-      inherit = prioritizr::Objective,
+      inherit = Objective,
       public = list(
         name = "robust minimum shortfall objective",
         data = list(budget = budget),

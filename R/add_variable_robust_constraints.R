@@ -154,7 +154,7 @@ add_variable_robust_constraints <- function(x, data) {
   x$add_constraint(
     R6::R6Class(
       "RobustConstraint",
-      inherit = prioritizr::Constraint,
+      inherit = Constraint,
       public = list(
         name = ifelse(
           identical(length(unique(data$conf_level)), 1L),

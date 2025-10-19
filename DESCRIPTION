@@ -38,6 +38,8 @@ VignetteBuilder: knitr
 LazyData: true
 Imports:
     utils,
+    methods,
+    Matrix (>= 1.3-0),
     Rcpp (>= 1.0.7),
     R6 (>= 2.5.1),
     rlang (>= 1.0.6),
@@ -68,11 +70,17 @@ Collate:
     'get_feature_group_data.R'
     'has_robust_constraints.R'
     'package.R'
+    'prioritizr_ConservationModifier-class.R'
+    'prioritizr_Constraint-class.R'
+    'prioritizr_Objective-class.R'
+    'prioritizr_all_binary.R'
     'prioritizr_all_finite.R'
+    'prioritizr_as_Matrix.R'
     'prioritizr_assertions.R'
     'prioritizr_assertions_class.R'
     'prioritizr_assertions_misc.R'
     'prioritizr_assertions_vector.R'
+    'prioritizr_repr.R'
     'robust_constraints.R'
     'robust_objectives.R'
 Roxygen: list(markdown = TRUE)
@@ -87,5 +95,3 @@ Config/Needs/website:
     tidyterra,
     dplyr,
     piggyback
-Remotes:
-    prioritizr/prioritizr@new-targets

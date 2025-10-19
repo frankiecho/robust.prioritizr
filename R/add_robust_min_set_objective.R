@@ -226,7 +226,7 @@ add_robust_min_set_objective <- function(x, method = "chance") {
   x$add_objective(
     R6::R6Class(
       "RobustMinimumSetObjective",
-      inherit = prioritizr::Objective,
+      inherit = Objective,
       public = list(
         name = "robust minimum set objective",
         calculate = function(x) {
