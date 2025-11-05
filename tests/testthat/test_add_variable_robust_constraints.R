@@ -83,21 +83,8 @@ test_that("invalid arguments", {
   sim_pu_raster <- prioritizr::get_sim_pu_raster()
   sim_features <- prioritizr::get_sim_features()
 
-  # define parameters for prioritization
-  x <- rep_len(c("a", "b"), terra::nlyr(sim_features))
-  targets <- matrix(NA, ncol = 2, nrow = 5)
-  targets[, 1] <- 0.1
-  targets[, 2] <- 0.05
-  conf_level <- 0.6
-
   # initialize problem
-  p <- prioritizr::problem(
-    sim_pu_raster[[rep(1, 2)]],
-    prioritizr::zones(
-      z1 = sim_features, z2 = sim_features,
-      feature_names = names(sim_features)
-    )
-  )
+  p <- prioritizr::problem(sim_pu_raster, sim_features)
 
   # run tests
   ## data is not a data.frame
@@ -141,19 +128,19 @@ test_that("invalid arguments", {
     ),
     "contain only the names of features"
   )
-  ## some groups do not contain at least two features
+  ## feature assigned to multiple groups
   expect_error(
     add_variable_robust_constraints(
       p,
       tibble::tibble(
         features = list(
-          names(sim_features)[1:3],
-          names(sim_features)[4]
+          names(sim_features)[1:2],
+          names(sim_features)[2:3]
         ),
         conf_level = c(0.2, 0.5)
       )
     ),
-    "must have at least 2 feature names"
+    "same feature to multiple groups."
   )
   ## conf_level not specified
   expect_error(
@@ -180,7 +167,7 @@ test_that("invalid arguments", {
         conf_level = c(0.5, 1.2)
       )
     ),
-    "conf_level <= 1"
+    "between 0 and 1"
   )
   ## conf_level is less than 0
   expect_error(
@@ -194,6 +181,49 @@ test_that("invalid arguments", {
         conf_level = c(0.5, -1.2)
       )
     ),
-    "conf_level >= 0"
+    "between 0 and 1"
+  )
+})
+
+test_that("messages", {
+  # import data
+  sim_pu_raster <- prioritizr::get_sim_pu_raster()
+  sim_features <- prioritizr::get_sim_features()
+
+  # define feature groupings
+  x <- rep_len(c("a", "b"), terra::nlyr(sim_features))
+
+  # initialize problem
+  p <- prioritizr::problem(sim_pu_raster, sim_features)
+
+  # run tests
+  ## single group contains a single feature
+  expect_message(
+    add_variable_robust_constraints(
+      p,
+      tibble::tibble(
+        features = list(
+          names(sim_features)[1:3],
+          names(sim_features)[4]
+        ),
+        conf_level = c(0.2, 0.5)
+      )
+    ),
+    "contains a single feature"
+  )
+  ## multiple groups contain a single feature
+  expect_message(
+    add_variable_robust_constraints(
+      p,
+      tibble::tibble(
+        features = list(
+          names(sim_features)[1:3],
+          names(sim_features)[4],
+          names(sim_features)[5]
+        ),
+        conf_level = c(0.2, 0.5, 0.1)
+      )
+    ),
+    "contain a single feature"
   )
 })

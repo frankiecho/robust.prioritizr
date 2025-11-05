@@ -28,12 +28,9 @@
 #' reducing the representation shortfalls shortfalls to zero,
 #' by getting as close as possible to reaching all of the targets
 #' for the features associated with each of the feature groups.
-#' In the robust minimum shortfall formulation, the algorithm attempts to minimize
-#' the maximum shortfall within the feature group. Relaxations of the problem allow
-#' the user to choose to instead minimize a quantile of the shortfall distribution
-#' (`method = 'chance'`), or the average of the shortfall values that exceed a specified
-#' quantile (`method = 'cvar'`).
-#' The chance constraint programming method
+#' In the robust minimum shortfall formulation, the algorithm attempts to
+#' minimize the maximum shortfall within the feature group.
+#' In particular, the chance constraint programming method
 #' (Charnes and Cooper 1959) is used to formulate the optimization problem as a
 #' mixed integer linear programming problem. With this method, the
 #' confidence level parameter (i.e.,
@@ -57,11 +54,12 @@
 #' \eqn{i}{i}), a set of feature groups (\eqn{J}{J} indexed by \eqn{j}{j}), and
 #' a set of features associated with each feature group
 #' (\eqn{K} indexed by \eqn{k}). Let \eqn{c_i}{ci} denote the cost of
-#' planning unit \eqn{i}{i}, \eqn{r_{ijk}}{rijk} the amount of feature
+#' planning unit \eqn{i}{i}, \eqn{R_{ijk}}{Rijk} the amount of feature
 #' \eqn{k}{k} associated with planning unit \eqn{i}{i} for feature group
-#' \eqn{j}{j}, \eqn{T_j}{Tj} the target for each feature group
-#' \eqn{j}{j}, \eqn{w_j}{wj} the weight for each feature group
-#' \eqn{j}{j}, and \eqn{\alpha}{a} the confidence level for uncertainty
+#' \eqn{j}{j}, \eqn{T_{jk}}{Tjk} the target for each feature \eqn{k} in each
+#' feature group \eqn{j}, \eqn{W_{jk}}{Wjk} the weight for
+#' each feature \eqn{k} in each feature group \eqn{j}, and \eqn{\alpha}{a} the
+#' confidence level for uncertainty
 #' (specified per `conf_level` with [add_constant_robust_constraints()] or
 #' [add_variable_robust_constraints()]).
 #' Additionally, to describe the decision variables,
@@ -76,24 +74,28 @@
 #' reserve selection problem is formulated as follows.
 #'
 #' \deqn{
-#' \mathit{Minimize} \space \sum_{j = 1}^{J} w_j \times y_j \\
+#' \mathit{Minimize} \space \sum_{j = 1}^{J} y_j \times
+#' \frac{\sum_{k = 1}^{K} W_{jk}}{K} \\
 #' \mathit{subject \space to} \\
 #' \sum_{i = 1}^{I} x_i c_i \leq B \\
-#' \Pr_ k\{\sum_{i = 1}^{I} ( x_i \times r_{ijk} ) +
-#'   ( T_{j} \times v_{jk} ) \geq T_j \} \geq \alpha
+#' \Pr_ k\{\sum_{i = 1}^{I} ( x_i \times R_{ijk} ) +
+#'   ( T_{jk} \times v_{jk} ) \geq T_{jk} \} \geq \alpha
 #'   \quad \forall j \in J \\
 #' y_j \geq v_{jk} \quad \forall j \in J, k \in K \\
 #' 0 \leq y_j \leq 1 \quad \forall j \in J
 #' }{
-#' Minimize sum_j^J wj * yj
+#' Minimize sum_j^J (yj * (sum_k^K Wjk / K))
 #' subject to sum_i^I (xi * ci) <= B
-#' Pr_k \{ sum_i^I (xi * rij) + (tj * vjk) >= tj \} >= a, for all j in J
+#' Pr_k \{ sum_i^I (xi * Rijk) + (Tjk * vjk) >= Tjk \} >= a, for all j in J
 #' y_j >= vjk, for all j in J, k \in K
 #' 0 <= y_j <= 1, for all j in J
 #' }
 #'
 #' Here, the objective function (first equation) is to minimize the
 #' weighted sum of the representation shortfalls for each feature group.
+#' In particular, the representation shortfall for a given feature group
+#' is weighted according to the average weight value of the features
+#' associated with the feature group.
 #' The budget constraints (second equation) ensure that the
 #' solution does not exceed the budget.
 #' The probabilistic constraints (third equation) specify that
@@ -128,7 +130,7 @@
 #'
 #' The chance constraint programming method is used to linearize the
 #' probabilistic constraints (Charnes and Cooper 1959). To describe this
-#' method, let \eqn{m_{jk}}{mjk} denote a binary
+#' method, let \eqn{M_{jk}}{Mjk} denote a binary
 #' auxiliary variable for each feature \eqn{k}{k} associated with
 #' feature group \eqn{j}{j}. Also \eqn{K_j}{Kj} denote a
 #' pre-computed value describing the number of
@@ -137,15 +139,16 @@
 #' constraints with the following linear constraints.
 #'
 #' \deqn{
-#' \sum_{i = 1}^{I} x_i r_{ijk} + T_j y_j + T_j m_{jk} \geq T_{j} \quad
+#' \sum_{i = 1}^{I} (x_i \times R_{ijk}) + (T_{jk} \times y_j) +
+#'   (T_{jk} \times M_{jk}) \geq T_{jk} \quad
 #'   \forall \space j \in J, \space k \in K \\
-#' \sum_{k = 1}^{K_j} \frac{m_{jk}}{K_j} \leq 1 - \alpha \quad
+#' \sum_{k = 1}^{K_j} \frac{M_{jk}}{K_j} \leq 1 - \alpha \quad
 #'   \forall \space j \in J\\
-#' m_{jk} \in \{0, 1\}
+#' M_{jk} \in \{0, 1\}
 #' }{
-#' sum_i^I xi rijk + Tj yj + Tj mjk >= Tj, for all j in J, k in K
-#' sum_k^Kj mjk / Kj <= 1 - a, for all j in J
-#' mjk in \{0, 1\}
+#' sum_i^I xi * Rijk + Tjk * yj + Tjk * Mjk >= Tjk, for all j in J, k in K
+#' sum_k^Kj Mjk / Kj <= 1 - a, for all j in J
+#' Mjk in \{0, 1\}
 #' }
 #'
 #' Here, the solution calculates the representation shortfall variable
@@ -225,14 +228,10 @@ add_robust_min_shortfall_objective <- function(x, budget) {
       public = list(
         name = "robust minimum shortfall objective",
         data = list(budget = budget),
-        default_weights = function(x) {
-          assert(
-            inherits(x, "ConservationProblem"),
-            .internal = TRUE
-          )
-          w <- 1 / x$feature_targets()$value
-          w[!is.finite(w)] <- 0 # replace 1/0 = Inf, with zeros
-          w
+        has_targets = TRUE,
+        has_weights = TRUE,
+        default_weight = function() {
+          1
         },
         calculate = function(x) {
           # assert argument is valid
@@ -242,28 +241,57 @@ add_robust_min_shortfall_objective <- function(x, budget) {
           # return success
           invisible(TRUE)
         },
-        apply = function(x, y) {
+        apply = function(x, y, weights) {
           # assert valid arguments
           assertthat::assert_that(
             inherits(x, "OptimizationProblem"),
-            inherits(y, "ConservationProblem")
+            inherits(y, "ConservationProblem"),
+            is.numeric(weights)
           )
           # get feature groupings
           d <- get_feature_group_data(y)
-          # determine if probability constraints are needed
-          is_prob_needed <- any(d$conf_level != 1)
-          # TODO: additional checks to see whether or not probability constraints are really needed
+          # check if each feature group is assocated with features
+          # that have multiple different weight values
+          group_has_multiple_weight_values <- vapply(
+            unique(d$ids),
+            FUN.VALUE = integer(1),
+            function(x) length(unique(weights[d$ids == x]))
+          ) > 1.5
+          # if there are some features that have a different weight
+          # in the same group, then display a message
+          if (isTRUE(any(group_has_multiple_weight_values))) {
+            cli::cli_inform(
+              c(
+                "i" = paste(
+                  "{.arg problem} has {sum(group_has_multiple_weight_values)}",
+                  "feature group{?s} with multiple distinct weight values."
+                ),
+                "i" = paste(
+                  "{cli::qty(group_has_multiple_weight_values)} ",
+                  "The overall weight{?s} for {?this/these} group{?s} will be",
+                  "calculated as the average weight value for the features",
+                  "associated with {?this/each} group."
+                )
+              )
+            )
+          }
           # apply the objective
-
           invisible(
             rcpp_apply_robust_min_shortfall_objective(
               x$ptr,
               y$feature_targets(),
               y$planning_unit_costs(),
               self$get_data("budget"),
-              d$ids
+              d$ids,
+              weights
             )
           )
+          # check if probability constraints need to be added
+          group_cardinality <- as.data.frame(table(d$ids))[[2]]
+          is_prob_needed <- !any(
+            d$conf_level > (1 - (group_cardinality - 1) / group_cardinality)
+          )
+          # if probability constraints do need to be added, then add them
           if (isTRUE(is_prob_needed)) {
             invisible(
               rcpp_apply_robust_probability_constraints(

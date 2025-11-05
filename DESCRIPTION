@@ -38,15 +38,17 @@ VignetteBuilder: knitr
 LazyData: true
 Imports:
     utils,
+    parallel,
     Rcpp (>= 1.0.7),
     R6 (>= 2.5.1),
-    rlang (>= 1.0.6),
+    rlang (>= 1.1.0),
     cli (>= 3.6.0),
     assertthat (>= 0.2.0),
-    prioritizr (>= 8.0.6),
     terra (>= 1.8.54),
     sf (>= 1.0-12),
-    tibble (>= 2.0.0)
+    tibble (>= 2.0.0),
+    units (>= 0.8.7),
+    prioritizr (>= 8.1.0)
 Suggests:
     testthat (>= 3.1.0),
     knitr (>= 1.50),
@@ -67,12 +69,14 @@ Collate:
     'data.R'
     'get_feature_group_data.R'
     'has_robust_constraints.R'
+    'import-standalone-all_finite.R'
+    'import-standalone-all_proportion.R'
+    'import-standalone-assertions_class.R'
+    'import-standalone-assertions_functions.R'
+    'import-standalone-assertions_handlers.R'
+    'import-standalone-assertions_misc.R'
+    'import-standalone-assertions_vector.R'
     'package.R'
-    'prioritizr_all_finite.R'
-    'prioritizr_assertions.R'
-    'prioritizr_assertions_class.R'
-    'prioritizr_assertions_misc.R'
-    'prioritizr_assertions_vector.R'
     'robust_constraints.R'
     'robust_objectives.R'
 Roxygen: list(markdown = TRUE)

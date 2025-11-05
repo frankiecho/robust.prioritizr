@@ -108,8 +108,7 @@ add_variable_robust_constraints <- function(x, data) {
     is.list(data$features),
     is.numeric(data$conf_level),
     all_finite(data$conf_level),
-    all(data$conf_level >= 0),
-    all(data$conf_level <= 1)
+    all_proportion(data$conf_level)
   )
 
   # additional validation for feature groupings
@@ -139,16 +138,38 @@ add_variable_robust_constraints <- function(x, data) {
     )
   )
   assert(
-    all(lengths(data$features) >= 2),
+    identical(
+      anyDuplicated(
+        unlist(data$features, recursive = FALSE, use.names = FALSE)
+      ),
+      0L
+    ),
     msg = c(
       "!" = paste(
-        "Each group in {.arg data$features} must have at least 2",
-        "feature names."
+        "{.arg data$features} must not assign the same feature to",
+        "multiple groups."
       )
     )
   )
 
-
+  # if at least one feature group only has a single feature,
+  # then display message
+  n_group_with_one_feature <- sum(lengths(data$features) == 1L)
+  if (isTRUE(n_group_with_one_feature > 0.5)) {
+    cli::cli_inform(
+      c(
+        "i" = paste(
+          "{.arg data$features} specifies that {n_group_with_one_feature}",
+          "feature group{?s} {?contains/contain} a single feature."
+        ),
+        "i" = paste(
+          "{cli::qty(n_group_with_one_feature)}",
+          "As such, the robust optimization procedures cannot",
+          "account for uncertainty in {?this/these} feature group{?s}."
+        )
+      )
+    )
+  }
 
   # add constraints
   x$add_constraint(

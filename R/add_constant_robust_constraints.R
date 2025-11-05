@@ -131,19 +131,34 @@ add_constant_robust_constraints <- function(x, groups, conf_level = 1) {
       "x" = "{.arg groups} has {length(groups)} value{?s}."
     )
   )
-  assert(
-    all(as.data.frame(table(groups))[[2]] > 1),
-    msg = c(
-      "!" = "Each group in {.arg groups} must have at least two features."
+
+  # if at least one feature group only has a single feature,
+  # then display message
+  n_group_with_one_feature <- sum(as.data.frame(table(groups))[[2]] == 1L)
+  if (isTRUE(n_group_with_one_feature > 0.5)) {
+    cli::cli_inform(
+      c(
+        "i" = paste(
+          "{.arg groups} specifies that {n_group_with_one_feature} feature",
+          "group{?s} {?contains/contain} a single feature."
+        ),
+        "i" = paste(
+          "{cli::qty(n_group_with_one_feature)}",
+          "As such, the robust optimization procedures cannot",
+          "account for uncertainty in {?this/these} feature group{?s}."
+        )
+      )
     )
-  )
+  }
 
   # add constraints to problem
-  add_variable_robust_constraints(
-    x,
-    data = tibble::tibble(
-      features = split(prioritizr::feature_names(x), groups)[unique(groups)],
-      conf_level = conf_level
+  suppressMessages(
+    add_variable_robust_constraints(
+      x,
+      data = tibble::tibble(
+        features = split(prioritizr::feature_names(x), groups)[unique(groups)],
+        conf_level = conf_level
+      )
     )
   )
 }
