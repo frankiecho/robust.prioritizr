@@ -231,7 +231,7 @@ add_robust_min_shortfall_objective <- function(x, budget) {
         has_targets = TRUE,
         has_weights = TRUE,
         default_weight = function() {
-          1
+          1 # nocov
         },
         calculate = function(x) {
           # assert argument is valid
