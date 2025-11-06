@@ -33,7 +33,7 @@ bool rcpp_apply_robust_min_shortfall_objective(
     A_extra_nrow = *(ptr->_A_i.rbegin()) - n_targets + 1;
   }
 
-  // declare constants
+  // Declare constants
   const std::size_t n_groups = *std::max_element(
     feature_group_ids.begin(), feature_group_ids.end()
   ) + 1;

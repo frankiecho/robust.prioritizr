@@ -272,7 +272,8 @@ add_robust_min_shortfall_objective <- function(x, budget) {
                   "calculated as the average weight value for the features",
                   "associated with {?this/each} group."
                 )
-              )
+              ),
+              call = NULL
             )
           }
           # apply the objective

@@ -1,4 +1,4 @@
-test_that("compile (single zone, conf_level < 1)", {
+test_that("compile (single zone, compressed formulation, conf_level < 1)", {
   # import data
   sim_pu_raster <- prioritizr::get_sim_pu_raster()
   sim_features <- prioritizr::get_sim_features()
@@ -47,6 +47,67 @@ test_that("compile (single zone, conf_level < 1)", {
   expect_equal(
     group_cardinality * (1 - conf_level),
     o$rhs()[12:13]
+  )
+})
+
+test_that("compile (single zone, expanded formulation, conf_level < 1)", {
+  # import data
+  sim_pu_raster <- prioritizr::get_sim_pu_raster()
+  sim_features <- prioritizr::get_sim_features()
+
+  # define feature groupings
+  x <- rep_len(c("a", "b"), terra::nlyr(sim_features))
+
+  # define conf level
+  conf_level <- 0.1
+
+  # build problem
+  p <-
+    prioritizr::problem(sim_pu_raster, sim_features) |>
+    add_robust_min_shortfall_objective(budget = 1) |>
+    add_constant_robust_constraints(groups = x, conf_level = conf_level) |>
+    prioritizr::add_absolute_targets(0.1) |>
+    prioritizr::add_binary_decisions()
+
+  # compile problem
+  o <- prioritizr::compile(p, compressed_formulation = FALSE)
+
+  # compute values for tests
+  group_cardinality <- c(unname(table(x)))
+  A_row_sum <- rowSums(as.matrix(o$A()))
+
+  # run tests
+  expect_s3_class(o, "OptimizationProblem")
+  expect_snapshot(as.list(o))
+  ## expect obj to have default weights of 1 for each feature group
+  expect_equal(
+    o$obj(),
+    c(
+      rep(0, p$number_of_planning_units()),
+      rep(0, p$number_of_planning_units() * p$number_of_features()),
+      rep(0, p$number_of_features()),
+      rep(1, length(unique(x))),
+      rep(0, p$number_of_features())
+    )
+  )
+  ## expect total number of constraints to be equal to:
+  ## (number of planning units * number of features) +
+  ## (number of features * 2) + number of feature groups + 1
+  expect_length(
+    o$rhs(),
+    (p$number_of_planning_units() * p$number_of_features()) +
+      (length(x) * 2) + length(unique(x)) + 1
+  )
+  ## expect the row sums of the A matrix for the chance constraints
+  ## to be equal to the cardinality of the group
+  expect_equal(
+    group_cardinality,
+    tail(A_row_sum, 2)
+  )
+  ## expect the confidence level to be reflected in the RHS
+  expect_equal(
+    group_cardinality * (1 - conf_level),
+    tail(o$rhs(), 2)
   )
 })
 
@@ -176,7 +237,7 @@ test_that("solve (single zone)", {
 
 test_that("compile (multiple zones, single budget)", {
   # import data
-  sim_pu_raster <- prioritizr::get_sim_pu_raster()
+  sim_zones_pu_raster <- prioritizr::get_sim_zones_pu_raster()
   sim_features <- prioritizr::get_sim_features()
 
   # define parameters for prioritization
@@ -188,7 +249,7 @@ test_that("compile (multiple zones, single budget)", {
   # build problem
   p <-
     prioritizr::problem(
-      sim_pu_raster[[rep(1, 3)]],
+      sim_zones_pu_raster,
       prioritizr::zones(sim_features, sim_features, sim_features)
     ) |>
     add_robust_min_shortfall_objective(budget = budget) |>
@@ -292,5 +353,30 @@ test_that("invalid arguments", {
   expect_error(
     add_robust_min_shortfall_objective(p, budget = c(0.1, 0.2)),
     "budget"
+  )
+})
+
+test_that("warnings", {
+  # import data
+  sim_pu_raster <- prioritizr::get_sim_pu_raster()
+  sim_features <- prioritizr::get_sim_features()
+
+  # define feature groupings and weights
+  x <- rep_len(c("a", "b"), terra::nlyr(sim_features))
+  weights <- runif(length(x))
+
+  # build problem
+  p <-
+    prioritizr::problem(sim_pu_raster, sim_features) |>
+    add_robust_min_shortfall_objective(budget = 1) |>
+    prioritizr::add_feature_weights(weights) |>
+    add_constant_robust_constraints(groups = x, conf_level = conf_level) |>
+    prioritizr::add_absolute_targets(0.1) |>
+    prioritizr::add_binary_decisions()
+
+  # run tests
+  expect_message(
+    prioritizr::compile(p),
+    "multiple distinct weight values"
   )
 })
