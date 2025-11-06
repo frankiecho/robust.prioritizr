@@ -241,9 +241,8 @@ test_that("compile (multiple zones, single budget)", {
   sim_features <- prioritizr::get_sim_features()
 
   # define parameters for prioritization
-  budget <- as.numeric(
-    terra::global(sim_pu_raster, "sum", na.rm = TRUE)
-  ) * 0.1
+  budget <-
+    terra::global(sim_zones_pu_raster[[1]], "sum", na.rm = TRUE)[[1]] * 0.1
   x <- rep_len(c("a", "b"), terra::nlyr(sim_features))
 
   # build problem
@@ -370,7 +369,7 @@ test_that("warnings", {
     prioritizr::problem(sim_pu_raster, sim_features) |>
     add_robust_min_shortfall_objective(budget = 1) |>
     prioritizr::add_feature_weights(weights) |>
-    add_constant_robust_constraints(groups = x, conf_level = conf_level) |>
+    add_constant_robust_constraints(groups = x, conf_level = 0.1) |>
     prioritizr::add_absolute_targets(0.1) |>
     prioritizr::add_binary_decisions()
 
