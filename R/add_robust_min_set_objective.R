@@ -237,12 +237,18 @@ add_robust_min_set_objective <- function(x, method = "chance") {
           # return success
           invisible(TRUE)
         },
-        apply = function(x, y) {
+        apply = function(x, y, weights = NULL) {
+          # Temporary fix for feature weights issue (GitHub #22)
+          # Weights are currently ignored for robust objectives
+          if (!is.null(weights)) {
+            cli::cli_alert_warning(
+              "Feature weights are not yet supported for robust objectives and will be ignored."
+            )
+          }
           # assert valid arguments
-          assert(
+          assertthat::assert_that(
             inherits(x, "OptimizationProblem"),
-            inherits(y, "ConservationProblem"),
-            .internal = TRUE
+            inherits(y, "ConservationProblem")
           )
           # get feature grouping data
           d <- get_feature_group_data(y)

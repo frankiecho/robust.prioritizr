@@ -242,7 +242,14 @@ add_robust_min_shortfall_objective <- function(x, budget) {
           # return success
           invisible(TRUE)
         },
-        apply = function(x, y) {
+        apply = function(x, y, weights = NULL) {
+          # Temporary fix for feature weights issue (GitHub #22)
+          # Weights are currently ignored for robust objectives
+          if (!is.null(weights)) {
+            cli::cli_alert_warning(
+              "Feature weights are not yet supported for robust objectives and will be ignored."
+            )
+          }
           # assert valid arguments
           assertthat::assert_that(
             inherits(x, "OptimizationProblem"),
