@@ -13,6 +13,7 @@
 #' for the entire solution or (ii) a `numeric` vector to specify
 #' a separate budget for each management zone.
 #'
+#'
 #' @details
 #' The robust minimum shortfall objective seeks to find the set of planning
 #' units that minimizes the representation shortfall for each feature group,
@@ -209,7 +210,7 @@
 #'
 #' @name add_robust_min_shortfall_objective
 #' @export
-add_robust_min_shortfall_objective <- function(x, budget) {
+add_robust_min_shortfall_objective <- function(x, budget, target_trans = NULL) {
   # assert arguments are valid
   assert_required(x)
   assert_required(budget)
@@ -276,11 +277,15 @@ add_robust_min_shortfall_objective <- function(x, budget) {
               call = NULL
             )
           }
+
+          # Calculate the target
+          targets <- get_constant_group_targets(y, target_trans)
+
           # apply the objective
           invisible(
             rcpp_apply_robust_min_shortfall_objective(
               x$ptr,
-              y$feature_targets(),
+              targets,
               y$planning_unit_costs(),
               self$get_data("budget"),
               d$ids,
@@ -297,7 +302,7 @@ add_robust_min_shortfall_objective <- function(x, budget) {
             invisible(
               rcpp_apply_robust_probability_constraints(
                 x$ptr,
-                y$feature_targets(),
+                targets,
                 d$ids,
                 d$conf_level
               )

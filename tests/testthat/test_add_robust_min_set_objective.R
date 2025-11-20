@@ -97,7 +97,7 @@ test_that("solve (single zone, conf_level < 1, method = chance)", {
   # build problem
   p <-
     prioritizr::problem(sim_pu_raster, sim_features) |>
-    add_robust_min_set_objective(method = "chance") |>
+    add_robust_min_set_objective(method = "chance", target_trans = "none") |>
     prioritizr::add_absolute_targets(5) |>
     add_constant_robust_constraints(groups = x, conf_level = conf_level) |>
     prioritizr::add_binary_decisions() |>
@@ -195,7 +195,7 @@ test_that("compile (multiple zones, conf_level = 1, method = chance)", {
   # build problem
   p <-
     prioritizr::problem(sim_pu_raster, sim_zones) |>
-    add_robust_min_set_objective(method = "chance") |>
+    add_robust_min_set_objective(method = "chance", target_trans = "none") |>
     add_constant_robust_constraints(groups = x, conf_level = 1) |>
     prioritizr::add_relative_targets(matrix(0.1, ncol = 3, nrow = 5)) |>
     prioritizr::add_binary_decisions()
@@ -234,7 +234,7 @@ test_that("solve (multiple zones, conf_level = 1, method = chance)", {
   # build problem
   p <-
     prioritizr::problem(sim_pu_raster, sim_zones) |>
-    add_robust_min_set_objective(method = "chance") |>
+    add_robust_min_set_objective(method = "chance", target_trans = "none") |>
     prioritizr::add_relative_targets(matrix(0.1, ncol = 3, nrow = 5)) |>
     prioritizr::add_binary_decisions() |>
     add_constant_robust_constraints(groups = x, conf_level = 1) |>

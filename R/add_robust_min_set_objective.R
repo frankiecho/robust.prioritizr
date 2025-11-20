@@ -12,6 +12,11 @@
 #' or the conditional value-at-risk method (Rockafellar and Uryasev 2000),
 #' Defaults to `"chance"`. See the Details section for further information
 #' on these methods.
+#' @param target_trans `character` value specifying the way which targets are
+#' transformed within a feature group if the targets vary within a group. Available
+#' options include `"none"` (no transformation), `"mean"` (average), `"min"` (minimum
+#' value, i.e., smallest target value within the group) or
+#' `"max"` (maximum, take the largest target value within the group).
 #'
 #' @details
 #' The robust minimum set objective seeks to find the set of planning units at
@@ -208,7 +213,7 @@
 #'
 #' @name add_robust_min_set_objective
 #' @export
-add_robust_min_set_objective <- function(x, method = "chance") {
+add_robust_min_set_objective <- function(x, method = "chance", target_trans = NULL) {
   # assert argument is valid
   assert_required(x)
   assert_required(method)
@@ -249,6 +254,7 @@ add_robust_min_set_objective <- function(x, method = "chance") {
           )
           # get feature grouping data
           d <- get_feature_group_data(y)
+          targets <- get_constant_group_targets(y, target_trans)
           # apply objective
           invisible(
             rcpp_apply_robust_min_set_objective(

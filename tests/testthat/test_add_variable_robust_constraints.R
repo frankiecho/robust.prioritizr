@@ -55,7 +55,7 @@ test_that("solve (single zone, conf_level < 1, method = chance)", {
   # build problem
   p <-
     prioritizr::problem(sim_pu_raster, sim_features) |>
-    add_robust_min_set_objective(method = "chance") |>
+    add_robust_min_set_objective(method = "chance", target_trans = "max") |>
     prioritizr::add_relative_targets(0.1) |>
     add_variable_robust_constraints(x) |>
     prioritizr::add_binary_decisions() |>
