@@ -38,6 +38,20 @@ NULL
 #' associated with each feature group (ranging between 0 and 1).
 #' See the Details section for information on `conf_level` values.
 #' }
+#' \item{target_trans}{
+#' A `character` column with values that specify the method for
+#' transforming and standardizing target thresholds for each feature group.
+#' Available options include computing the (`"mean"`) average,
+#' (`"min"`) minimum, or (`"max"`) maximum target threshold for each
+#' feature group. Additionally, (`"none"`) can be specified to ensure that the
+#' target thresholds considered during optimization are based on exactly the
+#' same values as specified when building the problem---even though different
+#' features in the same group may have different targets.
+#' This column is option and if not provided then the target values
+#' will be transformed based on the average value for each
+#' feature group (similar to `"mean"`) and a message indicating this behavior is
+#' displayed.
+#' }
 #' }
 #'
 #' @inheritSection add_constant_robust_constraints Data requirements
@@ -109,6 +123,21 @@ add_variable_robust_constraints <- function(x, data) {
     is.numeric(data$conf_level),
     all_finite(data$conf_level),
     all_proportion(data$conf_level)
+  )
+  if (!assertthat::has_name(data, "target_trans")) {
+    # set default if missing
+    data$target_trans <- NA_character_ # nocov
+  }
+  if (is.atomic(data$target_trans) && all(is.na(data$target_trans))) {
+    # coerce non-character NA values to character NA values
+    data$target_trans <- NA_character_ # nocov
+  }
+  assert(
+    is.character(data$target_trans),
+    all_match_of(
+      data$target_trans,
+      c("none", "mean", "min", "max", NA_character_)
+    )
   )
 
   # additional validation for feature groupings

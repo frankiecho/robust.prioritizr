@@ -67,7 +67,6 @@ Collate:
     'add_robust_min_shortfall_objective.R'
     'add_variable_robust_constraints.R'
     'data.R'
-    'get_constant_group_targets.R'
     'get_feature_group_data.R'
     'has_robust_constraints.R'
     'import-standalone-all_finite.R'
@@ -80,8 +79,9 @@ Collate:
     'package.R'
     'robust_constraints.R'
     'robust_objectives.R'
+    'transform_targets.R'
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.2
+RoxygenNote: 7.3.3
 Config/testthat/edition: 3
 Config/Needs/website:
     tibble,

@@ -4,7 +4,7 @@
 \alias{add_robust_min_set_objective}
 \title{Add robust minimum set objective}
 \usage{
-add_robust_min_set_objective(x, method = "chance", target_trans = NULL)
+add_robust_min_set_objective(x, method = "chance")
 }
 \arguments{
 \item{x}{\code{\link[prioritizr:problem]{prioritizr::problem()}} object.}
@@ -15,12 +15,6 @@ chance constraint programming method (Charnes and Cooper 1959) or (\code{"cvar"}
 or the conditional value-at-risk method (Rockafellar and Uryasev 2000),
 Defaults to \code{"chance"}. See the Details section for further information
 on these methods.}
-
-\item{target_trans}{\code{character} value specifying the way which targets are
-transformed within a feature group if the targets vary within a group. Available
-options include \code{"none"} (no transformation), \code{"mean"} (average), \code{"min"} (minimum
-value, i.e., smallest target value within the group) or
-\code{"max"} (maximum, take the largest target value within the group).}
 }
 \value{
 An updated \code{\link[prioritizr:problem]{prioritizr::problem()}} object with the objective added
