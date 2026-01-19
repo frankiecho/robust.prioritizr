@@ -17,8 +17,9 @@ NULL
 #' groupings.
 #'
 #' @return
-#' A `list` containing the (`$ids`) `integer` group identifiers for each feature
-#' and (`$confidence_level`) `numeric` confidence_level for each group.
+#' A `list` containing the (`$ids`) `integer` group identifiers for each
+#' feature, (`$confidence_level`) `numeric` confidence_level for each group,
+#' and ($target_trans`) `character` method for transforming targets.
 #'
 #' @noRd
 get_feature_group_data <- function(x) {
@@ -46,5 +47,9 @@ get_feature_group_data <- function(x) {
   feature_groupings <- group_ids[idx]
 
   # return result
-  list(ids = feature_groupings, conf_level = data$conf_level)
+  list(
+    ids = feature_groupings,
+    conf_level = data$conf_level,
+    target_trans = data$target_trans
+  )
 }

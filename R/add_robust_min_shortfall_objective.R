@@ -1,8 +1,8 @@
 #' Add robust minimum shortfall objective
 #'
 #' Add an objective to a conservation planning problem that minimizes the
-#' representation shortfalls for each feature group using the worst case shortfall
-#' or a quantile of the shortfall distribution,
+#' representation shortfalls for each feature group using the worst case
+#' shortfall or a quantile of the shortfall distribution,
 #' whilst ensuring that the total cost of the solution does not exceed a budget.
 #'
 #' @inheritParams add_robust_min_set_objective
@@ -210,7 +210,7 @@
 #'
 #' @name add_robust_min_shortfall_objective
 #' @export
-add_robust_min_shortfall_objective <- function(x, budget, target_trans = NULL) {
+add_robust_min_shortfall_objective <- function(x, budget) {
   # assert arguments are valid
   assert_required(x)
   assert_required(budget)
@@ -251,7 +251,8 @@ add_robust_min_shortfall_objective <- function(x, budget, target_trans = NULL) {
           )
           # get feature groupings
           d <- get_feature_group_data(y)
-          # check if each feature group is assocated with features
+          targets <- transform_targets(y$feature_targets(), d)
+          # check if each feature group is associated with features
           # that have multiple different weight values
           group_has_multiple_weight_values <- vapply(
             unique(d$ids),
@@ -277,10 +278,6 @@ add_robust_min_shortfall_objective <- function(x, budget, target_trans = NULL) {
               call = NULL
             )
           }
-
-          # Calculate the target
-          targets <- get_constant_group_targets(y, target_trans)
-
           # apply the objective
           invisible(
             rcpp_apply_robust_min_shortfall_objective(
