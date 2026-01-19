@@ -13,8 +13,8 @@ NULL
 #' robust constraints.
 #'
 #' @seealso
-#' See [robust_constraints] for an overview of the functions that can be used
-#' to specify feature groupings.
+#' The [add_constant_robust_constraints()] function is used to specify feature
+#' groupings.
 #'
 #' @return
 #' A `list` containing the (`$ids`) `integer` group identifiers for each
