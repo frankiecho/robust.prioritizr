@@ -22,7 +22,7 @@ required for the solution (ranging between 0 and 1).
 Defaults to 1, corresponding to a maximally robust solution.
 See the Details section for more information on this parameter.}
 
-\item{target_trans}{\code{character} value specifying the method for
+\item{target_trans}{\code{character} value or vector of values specifying the method(s) for
 transforming and standardizing target thresholds for features
 that belong to the same feature group.
 Available options include computing the (\code{"mean"}) average,
@@ -33,7 +33,11 @@ same values as specified when building the problem---even though different
 features in the same group may have different targets.
 Defaults to \code{NA} such that the average value is computed
 (similar to \code{target_trans = "mean"}) and
-a message indicating this behavior is displayed.}
+a message indicating this behavior is displayed.
+If it is a vector, then it must specify the transformation methods in a vector,
+such as \code{c('min', 'max')} in case there are two feature groups and we want the
+first target to be taken at the minimum and the second to be taken at the maximum.
+The vector length must equal the length of \code{groups}.}
 }
 \value{
 An updated \code{\link[prioritizr:problem]{prioritizr::problem()}} object with the constraint added
