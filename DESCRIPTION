@@ -92,5 +92,3 @@ Config/Needs/website:
     tidyterra,
     dplyr,
     piggyback
-Remotes:
-    prioritizr/prioritizr@new-targets
