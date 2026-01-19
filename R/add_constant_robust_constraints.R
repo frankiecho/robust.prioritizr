@@ -20,8 +20,8 @@ NULL
 #'  Defaults to 1, corresponding to a maximally robust solution.
 #'  See the Details section for more information on this parameter.
 #'
-#' @param target_trans `character` value or vector of values specifying the method(s) for
-#' transforming and standardizing target thresholds for features
+#' @param target_trans `character` value or vector of values specifying the
+#' method(s) for transforming and standardizing target thresholds for features
 #' that belong to the same feature group.
 #' Available options include computing the (`"mean"`) average,
 #' (`"min"`) minimum, or (`"max"`) maximum target threshold for each
@@ -32,10 +32,11 @@ NULL
 #' Defaults to `NA` such that the average value is computed
 #' (similar to `target_trans = "mean"`) and
 #' a message indicating this behavior is displayed.
-#' If it is a vector, then it must specify the transformation methods in a vector,
-#' such as `c('min', 'max')` in case there are two feature groups and we want the
-#' first target to be taken at the minimum and the second to be taken at the maximum.
-#' The vector length must equal the length of `groups`.
+#' If `target_trans` is a vector, then it must specify a transformation method
+#' for each feature group. For example, `c('min', 'max')` could be used to
+#' to specify that the target for the first feature group is calculated based
+#' on minimum value and the target for the second feature group is calculated
+#' based on the maximum value.
 #'
 #' @inheritParams add_robust_min_set_objective
 #'

@@ -161,7 +161,12 @@ p <-
 
 # Solve the problem
 soln <- solve(p)
+```
 
+    ## ℹ The targets for these groups are transformed based on the `mean()` target
+    ## value.
+
+``` r
 # Preview solution
 print(soln)
 ```
