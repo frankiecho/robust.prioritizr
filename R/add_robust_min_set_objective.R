@@ -259,7 +259,7 @@ add_robust_min_set_objective <- function(x, method = "chance", target_trans = NU
           invisible(
             rcpp_apply_robust_min_set_objective(
               x$ptr,
-              y$feature_targets(),
+              targets,
               y$planning_unit_costs(),
               d$ids
             )
@@ -270,7 +270,7 @@ add_robust_min_set_objective <- function(x, method = "chance", target_trans = NU
               invisible(
                 rcpp_apply_robust_cvar_constraints(
                   x$ptr,
-                  y$feature_targets(),
+                  targets,
                   d$ids,
                   d$conf_level
                 )
@@ -279,7 +279,7 @@ add_robust_min_set_objective <- function(x, method = "chance", target_trans = NU
               invisible(
                 rcpp_apply_robust_probability_constraints(
                   x$ptr,
-                  y$feature_targets(),
+                  targets,
                   d$ids,
                   d$conf_level
                 )
