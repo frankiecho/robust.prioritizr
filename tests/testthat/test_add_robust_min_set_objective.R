@@ -80,7 +80,6 @@ test_that("solve (single zone, conf_level < 1, method = chance)", {
   # define skip cases
   skip_on_cran()
   skip_if_not_installed("highs")
-  skip_if_not_installed("terra")
 
   # import data
   sim_pu_raster <- prioritizr::get_sim_pu_raster()
@@ -118,7 +117,6 @@ test_that("compile (single zone, conf_level < 1, method = cvar)", {
   # define skip cases
   skip_on_cran()
   skip_if_not_installed("highs")
-  skip_if_not_installed("terra")
 
   # import data
   sim_pu_raster <- prioritizr::get_sim_pu_raster()
@@ -150,7 +148,6 @@ test_that("solve (single zone, conf_level < 1, method = cvar)", {
   # define skip cases
   skip_on_cran()
   skip_if_not_installed("highs")
-  skip_if_not_installed("terra")
 
   # import data
   sim_pu_raster <- prioritizr::get_sim_pu_raster()
@@ -183,9 +180,6 @@ test_that("solve (single zone, conf_level < 1, method = cvar)", {
 })
 
 test_that("compile (multiple zones, conf_level = 1, method = chance)", {
-  # define skip cases
-  skip_if_not_installed("terra")
-
   # create data with 3 zones and 5 features
   grid_raster <- terra::rast(matrix(rep(1, 25), nrow = 5))
   sim_pu_raster <- grid_raster[[rep(1, 3)]] * seq_len(3)
@@ -222,7 +216,6 @@ test_that("solve (multiple zones, conf_level = 1, method = chance)", {
   # define skip cases
   skip_on_cran()
   skip_if_not_installed("highs")
-  skip_if_not_installed("terra")
 
   # import data
   sim_pu_raster <- terra::rast(list(
@@ -260,9 +253,6 @@ test_that("solve (multiple zones, conf_level = 1, method = chance)", {
 })
 
 test_that("invalid arguments", {
-  # define skip cases
-  skip_if_not_installed("terra")
-
   # import data
   sim_pu_raster <- prioritizr::get_sim_pu_raster()
   sim_features <- prioritizr::get_sim_features()
