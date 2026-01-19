@@ -6,7 +6,7 @@
 #' Department of Climate Change, Energy, the Environment and Water (2024),
 #' Global Administrative Areas (2024), and Williams *et al.* (2020).
 #' For an example of using this dataset, please refer to the
-#' the Example using Victoria, Australia vignette
+#' the *Example using Victoria, Australia* vignette
 #' (\code{vignette("vic-cons-planning", package = "robust.prioritizr")}).
 #'
 #' @details
