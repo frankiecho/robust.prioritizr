@@ -13,7 +13,7 @@ NULL
 #' robust constraints.
 #'
 #' @seealso
-#' The [add_robust_constraints()] function is used to specify feature
+#' The [add_constant_robust_constraints()] function is used to specify feature
 #' groupings.
 #'
 #' @return
