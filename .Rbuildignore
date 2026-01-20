@@ -31,3 +31,4 @@ codecov.yml
 ^pkgdown$
 .vscode
 ^LICENSE\.md$
+^CRAN-SUBMISSION$
