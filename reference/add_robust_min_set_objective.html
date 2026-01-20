@@ -78,8 +78,8 @@ to it.</p>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>The robust minimum set objective seeks to find the set of planning units at
-a minimum cost such that the solution meets the targets in a robust manner for each
-feature group. Two methods are provided for formulating
+a minimum cost such that the solution meets the targets in a robust manner
+for each feature group. Two methods are provided for formulating
 the optimization problem as a mixed integer linear programming problem.
 These methods are the chance constraint programming method
 (<code>method = "chance"</code>) and conditional value-at-risk method
@@ -111,10 +111,11 @@ mathematically for a set of planning units (\(I\) indexed by
 \(i\)), a set of feature groups (\(J\) indexed by \(j\)), and
 a set of features associated with each feature group
 (\(K\) indexed by \(k\)). Let \(c_i\) denote the cost of
-planning unit \(i\), \(r_{ijk}\) the amount of feature
+planning unit \(i\), \(R_{ijk}\) the amount of feature
 \(k\) associated with planning unit \(i\) for feature group
-\(j\), \(T_j\) the target for each feature group
-\(j\), and \(\alpha\) the confidence level for uncertainty
+\(j\), \(T_{jk}\) the target for each feature \(k\) in each
+feature group \(j\),
+and \(\alpha\) the confidence level for uncertainty
 (specified per <code>conf_level</code> with <code><a href="add_constant_robust_constraints.html">add_constant_robust_constraints()</a></code> or
 <code><a href="add_variable_robust_constraints.html">add_variable_robust_constraints()</a></code>).
 Additionally, to describe the decision variables,
@@ -126,7 +127,7 @@ selection problem is formulated as follows.</p>
 <p>$$
 \mathit{Minimize} \space \sum_{i = 1}^{I} x_i c_i \\
 \mathit{subject \space to} \\
-\Pr_k \{ \sum_{i = 1}^{I} x_i r_{ijk} \geq T_j \}
+\Pr_k \{ \sum_{i = 1}^{I} x_i R_{ijk} \geq T_j \}
 \geq \alpha \quad \forall \space j \in J
 $$</p>
 <p>Here, the objective function (first equation) is to minimize the total
@@ -143,7 +144,7 @@ Approximation methods are used to linearize them so that the optimization
 problem can be solved with mixed integer programming exact algorithm solvers.</p>
 <p>The chance constraint programming method uses a "big-M" formulation
 to linearize the probabilistic constraints (Charnes and Cooper 1959).
-To describe this method, let \(m_{jk}\) denote a binary
+To describe this method, let \(M_{jk}\) denote a binary
 auxiliary variable for each feature \(k\) associated with each
 feature group \(j\). Also, let \(K_j\) denote a
 pre-computed value describing the number of
@@ -151,15 +152,15 @@ features associated with each feature group \(j\).
 Given this terminology, the method involves replacing the probabilistic
 constraints with the following linear constraints.</p>
 <p>$$
-\sum_{i = 1}^{I} x_i r_{ijk} + T_j m_{jk} \geq T_{j} \quad
-  \forall \space j \in J, \space k \in K \\
-\sum_{k = 1}^{K_j} \frac{m_{jk}}{K_j} \leq 1 - \alpha \quad
+\sum_{i = 1}^{I} (x_i \times R_{ijk}) + (T_{jk} \times M_{jk})
+  \geq T_{jk} \quad \forall \space j \in J, \space k \in K \\
+\sum_{k = 1}^{K_j} \frac{M_{jk}}{K_j} \leq 1 - \alpha \quad
   \forall \space j \in J \\
-m_{jk} \in \{0, 1\} \quad
+M_{jk} \in \{0, 1\} \quad
   \forall \space j \in J, \space k \in K
 $$</p>
 <p>Here, the solution is allowed to fail to meet the targets
-for the features, and the auxiliary variable \(m_{jk}\) is
+for the features, and the auxiliary variable \(M_{jk}\) is
 used to calculate the proportion of features that do not have their targets
 met for each feature group. For a given feature group, the
 proportion of features that do not have their target met is
@@ -177,16 +178,16 @@ solutions that are more robust to uncertainty and less cost-efficient
 than the chance constraint programming method.
 To describe this method, let \(\eta_j\) denote
 a continuous auxiliary variable for each feature group \(j\),
-and \(s_{jk}\) a continuous auxiliary variable for each feature
+and \(S_{jk}\) a continuous auxiliary variable for each feature
 \(k\) associated with each feature group \(j\).
 Given this terminology, the method involves replacing the probabilistic
 constraints with the following linear constraints.</p>
 <p>$$
-\sum_{i = 1}^{I} x_i r_{ijk} - \eta_j + s_{jk} \geq 0 \quad
+\sum_{i = 1}^{I} (x_i \times R_{ijk}) - \eta_j + S_{jk} \geq 0 \quad
   \forall \space j \in J, \space k \in K \\
-\eta_j - \frac{1}{(1 - \alpha) \times K_j} \sum_{k=1}^{K_j} s_{jk} \geq T_j
-  \quad \forall \space j \in J \\
-s_{jk} \geq 0 \quad \forall \space j \in J, \space k \in K \\
+\eta_j - \frac{1}{(1 - \alpha) \times K_j} \sum_{k=1}^{K_j} S_{jk}
+  \geq T_{jk}\quad \forall \space j \in J \\
+S_{jk} \geq 0 \quad \forall \space j \in J, \space k \in K \\
 \eta_j \in \mathbb{R}  \quad  \forall \space j \in J
 $$</p>
 <p>Here, the continuous auxiliary variables are used to represent the "tail" of
@@ -196,7 +197,7 @@ In other words, it ensures
 that the average of amount of each feature held by the solution for
 a particular feature group that falls below a particular
 quantile (i.e., \((1 - \alpha)\)) is greater than the
-target for the feature group (i.e., \(T_j\)).
+target the feature (i.e., \(T_{jk}\)).
 Although this method does not provide an easily intuitive interpretation of
 the confidence level parameter, it only adds \(J \times K + J\)
 continuous variables to the problem.</p>
@@ -213,7 +214,7 @@ continuous variables to the problem.</p>
     <div class="dont-index"><p>See <a href="robust_objectives.html">robust_objectives</a> for an overview of all functions for adding
 robust objectives.</p>
 <p>Other functions for adding robust objectives:
-<code><a href="add_robust_min_shortfall_objective.html">add_robust_min_shortfall_objective</a>()</code></p></div>
+<code><a href="add_robust_min_shortfall_objective.html">add_robust_min_shortfall_objective()</a></code></p></div>
     </div>
 
     <div class="section level2">
@@ -261,7 +262,7 @@ robust objectives.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer></div>

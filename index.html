@@ -72,7 +72,7 @@
 </h1>
 <!-- badges: start -->
 
-<p>The <em>robust.prioritizr R</em> package provides robust optimization techniques for systematic conservation prioritization. This is important because conservation prioritizations typically only consider the most likely outcome associated with a conservation action (e.g., establishing a protected area will safeguard a threatened species population) and fail to consider other outcomes and their consequences for meeting conservation objectives. By extending the <em>prioritizr R</em> package, this package can be used to generate conservation prioritizations that account of uncertainty in the climate change scenario projections, species distribution models, ecosystem service models, and measurement errors. In particular, prioritizations can be generated to be fully robust to uncertainty by minimizing (or maximizing) objectives under the worst possible outcome. Since reducing the associated with achieving conservation objectives may sacrifice other objectives (e.g., minimizing protected area implementation costs), prioritizations can also be generated to be partially robust based on a specified confidence level parameter. Partially robust prioritizations can be generated based on the chance constrained programming problem (Charnes &amp; Cooper 1959, <a href="doi:10.1287/mnsc.6.1.73" class="uri">doi:10.1287/mnsc.6.1.73</a>) and the conditional value-at-risk problem (Rockafellar &amp; Uryasev 2000, <a href="doi:10.21314/JOR.2000.038" class="uri">doi:10.21314/JOR.2000.038</a>). For more information, please see the video below.</p>
+<p>The <em>robust.prioritizr R</em> package provides robust optimization techniques for systematic conservation prioritization. This is important because conservation prioritizations typically only consider the most likely prediction associated with a conservation action (e.g., establishing a protected area will safeguard a threatened species population) and fail to consider alternative predictions where the conservation prioritization could fail to meet its objectives. By extending the <em>prioritizr R</em> package, this package can be used to generate conservation prioritizations that account of uncertainty in the climate change scenario projections, species distribution models, ecosystem service models, and measurement errors. In particular, prioritizations can be generated to be fully robust to uncertainty by minimizing (or maximizing) objectives under the worst possible outcome. Since reducing the associated with achieving conservation objectives may sacrifice other objectives (e.g., minimizing protected area implementation costs), or make a feasible conservation problem infeasible, prioritizations can also be generated to be partially robust based on a specified confidence level parameter. Partially robust prioritizations can be generated based on the chance constrained programming problem (Charnes &amp; Cooper 1959, <a href="doi:10.1287/mnsc.6.1.73" class="uri">doi:10.1287/mnsc.6.1.73</a>) and the conditional value-at-risk problem (Rockafellar &amp; Uryasev 2000, <a href="doi:10.21314/JOR.2000.038" class="uri">doi:10.21314/JOR.2000.038</a>). For more information, please see the video below.</p>
 <div style="display: flex; justify-content: center;">
 <iframe style="aspect-ratio: 16 / 9; width: 100% !important;" src="https://www.youtube.com/embed/Xbok5fLMsY0?si=QxZRWjKvFCTDTvbT" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen>
 </iframe>
@@ -154,21 +154,23 @@
 <span>  <span class="fu"><a href="https://prioritizr.net/reference/add_default_solver.html" class="external-link">add_default_solver</a></span><span class="op">(</span>verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Solve the problem</span></span>
-<span><span class="va">soln</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/solve.html" class="external-link">solve</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Preview solution</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">soln</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb11"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="do">## class       : SpatRaster </span></span>
-<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a><span class="do">## size        : 10, 10, 1  (nrow, ncol, nlyr)</span></span>
-<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a><span class="do">## resolution  : 0.1, 0.1  (x, y)</span></span>
-<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a><span class="do">## extent      : 0, 1, 0, 1  (xmin, xmax, ymin, ymax)</span></span>
-<span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a><span class="do">## coord. ref. : Undefined Cartesian SRS </span></span>
-<span id="cb11-6"><a href="#cb11-6" tabindex="-1"></a><span class="do">## source(s)   : memory</span></span>
-<span id="cb11-7"><a href="#cb11-7" tabindex="-1"></a><span class="do">## varname     : sim_pu_raster </span></span>
-<span id="cb11-8"><a href="#cb11-8" tabindex="-1"></a><span class="do">## name        : layer </span></span>
-<span id="cb11-9"><a href="#cb11-9" tabindex="-1"></a><span class="do">## min value   :     0 </span></span>
-<span id="cb11-10"><a href="#cb11-10" tabindex="-1"></a><span class="do">## max value   :     1</span></span></code></pre></div>
+<span><span class="va">soln</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/solve.html" class="external-link">solve</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="do">## ℹ The targets for these groups are transformed based on the `mean()` target</span></span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a><span class="do">## value.</span></span></code></pre></div>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Preview solution</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">soln</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a><span class="do">## class       : SpatRaster </span></span>
+<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a><span class="do">## size        : 10, 10, 1  (nrow, ncol, nlyr)</span></span>
+<span id="cb13-3"><a href="#cb13-3" tabindex="-1"></a><span class="do">## resolution  : 0.1, 0.1  (x, y)</span></span>
+<span id="cb13-4"><a href="#cb13-4" tabindex="-1"></a><span class="do">## extent      : 0, 1, 0, 1  (xmin, xmax, ymin, ymax)</span></span>
+<span id="cb13-5"><a href="#cb13-5" tabindex="-1"></a><span class="do">## coord. ref. : Undefined Cartesian SRS </span></span>
+<span id="cb13-6"><a href="#cb13-6" tabindex="-1"></a><span class="do">## source(s)   : memory</span></span>
+<span id="cb13-7"><a href="#cb13-7" tabindex="-1"></a><span class="do">## varname     : sim_pu_raster </span></span>
+<span id="cb13-8"><a href="#cb13-8" tabindex="-1"></a><span class="do">## name        : layer </span></span>
+<span id="cb13-9"><a href="#cb13-9" tabindex="-1"></a><span class="do">## min value   :     0 </span></span>
+<span id="cb13-10"><a href="#cb13-10" tabindex="-1"></a><span class="do">## max value   :     1</span></span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Plot the solution</span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">soln</span>, main <span class="op">=</span> <span class="st">"Robust prioritization"</span>, axes <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-unnamed-chunk-5-1.png" width="500" style="display: block; margin: auto;"></p>
@@ -232,7 +234,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer>

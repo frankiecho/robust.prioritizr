@@ -50,7 +50,7 @@ feature group.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">add_constant_robust_constraints</span><span class="op">(</span><span class="va">x</span>, <span class="va">groups</span>, conf_level <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">add_constant_robust_constraints</span><span class="op">(</span><span class="va">x</span>, <span class="va">groups</span>, conf_level <span class="op">=</span> <span class="fl">1</span>, target_trans <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -76,6 +76,26 @@ have the same group name.</p></dd>
 required for the solution (ranging between 0 and 1).
 Defaults to 1, corresponding to a maximally robust solution.
 See the Details section for more information on this parameter.</p></dd>
+
+
+<dt id="arg-target-trans">target_trans<a class="anchor" aria-label="anchor" href="#arg-target-trans"></a></dt>
+<dd><p><code>character</code> value or vector of values specifying the
+method(s) for transforming and standardizing target thresholds for features
+that belong to the same feature group.
+Available options include computing the (<code>"mean"</code>) average,
+(<code>"min"</code>) minimum, or (<code>"max"</code>) maximum target threshold for each
+feature group. Additionally, (<code>"none"</code>) can be specified to ensure that the
+target thresholds considered during optimization are based on exactly the
+same values as specified when building the problem—even though different
+features in the same group may have different targets.
+Defaults to <code>NA</code> such that the average value is computed
+(similar to <code>target_trans = "mean"</code>) and
+a message indicating this behavior is displayed.
+If <code>target_trans</code> is a vector, then it must specify a transformation method
+for each feature group. For example, <code>c('min', 'max')</code> could be used to
+to specify that the target for the first feature group is calculated based
+on minimum value and the target for the second feature group is calculated
+based on the maximum value.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -130,7 +150,7 @@ groupings parameter).</p>
     <div class="dont-index"><p>See <a href="robust_constraints.html">robust_constraints</a> for an overview of all functions for adding
 robust constraints.</p>
 <p>Other functions for adding robust constraints:
-<code><a href="add_variable_robust_constraints.html">add_variable_robust_constraints</a>()</code></p></div>
+<code><a href="add_variable_robust_constraints.html">add_variable_robust_constraints()</a></code></p></div>
     </div>
 
     <div class="section level2">
@@ -178,7 +198,7 @@ robust constraints.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer></div>
