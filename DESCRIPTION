@@ -4,7 +4,7 @@ Title: Robust Systematic Conservation Prioritization
 Version: 1.0.0
 Authors@R:
     c(person(c('Frankie'), 'Cho',
-        email='frankie.cho@qut.edu.au', role = c('aut', 'cre', 'cph'),
+        email='frankie.cho@monash.edu', role = c('aut', 'cre', 'cph'),
         comment = c(ORCID = '0000-0003-1369-4980')),
       person(c('Jeffrey', 'O'), 'Hanson',
         email='jeffrey.hanson@uqconnect.edu.au', role = c('aut'),
