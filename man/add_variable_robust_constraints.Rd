@@ -69,6 +69,20 @@ A \code{numeric} column with values that describe the confidence level
 associated with each feature group (ranging between 0 and 1).
 See the Details section for information on \code{conf_level} values.
 }
+\item{target_trans}{
+A \code{character} column with values that specify the method for
+transforming and standardizing target thresholds for each feature group.
+Available options include computing the (\code{"mean"}) average,
+(\code{"min"}) minimum, or (\code{"max"}) maximum target threshold for each
+feature group. Additionally, (\code{"none"}) can be specified to ensure that the
+target thresholds considered during optimization are based on exactly the
+same values as specified when building the problem---even though different
+features in the same group may have different targets.
+This column is option and if not provided then the target values
+will be transformed based on the average value for each
+feature group (similar to \code{"mean"}) and a message indicating this behavior is
+displayed.
+}
 }
 }
 

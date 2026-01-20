@@ -16,24 +16,26 @@ status](https://www.r-pkg.org/badges/version/robust.prioritizr)](https://CRAN.R-
 The *robust.prioritizr R* package provides robust optimization
 techniques for systematic conservation prioritization. This is important
 because conservation prioritizations typically only consider the most
-likely outcome associated with a conservation action (e.g., establishing
-a protected area will safeguard a threatened species population) and
-fail to consider other outcomes and their consequences for meeting
-conservation objectives. By extending the *prioritizr R* package, this
-package can be used to generate conservation prioritizations that
-account of uncertainty in the climate change scenario projections,
-species distribution models, ecosystem service models, and measurement
-errors. In particular, prioritizations can be generated to be fully
-robust to uncertainty by minimizing (or maximizing) objectives under the
-worst possible outcome. Since reducing the associated with achieving
-conservation objectives may sacrifice other objectives (e.g., minimizing
-protected area implementation costs), prioritizations can also be
-generated to be partially robust based on a specified confidence level
-parameter. Partially robust prioritizations can be generated based on
-the chance constrained programming problem (Charnes & Cooper 1959,
-<doi:10.1287/mnsc.6.1.73>) and the conditional value-at-risk problem
-(Rockafellar & Uryasev 2000, <doi:10.21314/JOR.2000.038>). For more
-information, please see the video below.
+likely prediction associated with a conservation action (e.g.,
+establishing a protected area will safeguard a threatened species
+population) and fail to consider alternative predictions where the
+conservation prioritization could fail to meet its objectives. By
+extending the *prioritizr R* package, this package can be used to
+generate conservation prioritizations that account of uncertainty in the
+climate change scenario projections, species distribution models,
+ecosystem service models, and measurement errors. In particular,
+prioritizations can be generated to be fully robust to uncertainty by
+minimizing (or maximizing) objectives under the worst possible outcome.
+Since reducing the associated with achieving conservation objectives may
+sacrifice other objectives (e.g., minimizing protected area
+implementation costs), or make a feasible conservation problem
+infeasible, prioritizations can also be generated to be partially robust
+based on a specified confidence level parameter. Partially robust
+prioritizations can be generated based on the chance constrained
+programming problem (Charnes & Cooper 1959, <doi:10.1287/mnsc.6.1.73>)
+and the conditional value-at-risk problem (Rockafellar & Uryasev 2000,
+<doi:10.21314/JOR.2000.038>). For more information, please see the video
+below.
 
 <div style="display: flex; justify-content: center;">
 
@@ -159,7 +161,12 @@ p <-
 
 # Solve the problem
 soln <- solve(p)
+```
 
+    ## ℹ The targets for these groups are transformed based on the `mean()` target
+    ## value.
+
+``` r
 # Preview solution
 print(soln)
 ```

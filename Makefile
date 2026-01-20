@@ -100,4 +100,13 @@ examples_cran:
 	R --slave -e "devtools::run_examples();warnings()" > examples.log 2>&1
 	rm -f Rplots.pdf
 
-.PHONY: initc clean data docs readme contrib site test check checkwb build install man spellcheck examples purl_vigns check_vigns urlcheck fetch_prioritizr_internals
+fetch_prioritizr:
+	R --slave -e "usethis::use_standalone('prioritizr/prioritizr', 'standalone-assertions_class.R', ref = 'new-targets')"
+	R --slave -e "usethis::use_standalone('prioritizr/prioritizr', 'standalone-assertions_misc.R', ref = 'new-targets')"
+	R --slave -e "usethis::use_standalone('prioritizr/prioritizr', 'standalone-assertions_vector.R', ref = 'new-targets')"
+	R --slave -e "usethis::use_standalone('prioritizr/prioritizr', 'standalone-assertions_handlers.R', ref = 'new-targets')"
+	R --slave -e "usethis::use_standalone('prioritizr/prioritizr', 'standalone-assertions_functions.R', ref = 'new-targets')"
+	R --slave -e "usethis::use_standalone('prioritizr/prioritizr', 'standalone-all_proportion.R', ref = 'new-targets')"
+	R --slave -e "usethis::use_standalone('prioritizr/prioritizr', 'standalone-all_finite.R', ref = 'new-targets')"
+
+.PHONY: initc clean data docs readme contrib site test check checkwb build install man spellcheck examples purl_vigns check_vigns urlcheck fetch_prioritizr_internals fetch_prioritizr

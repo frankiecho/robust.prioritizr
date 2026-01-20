@@ -16,9 +16,6 @@ test_that("add_constant_robust_constraints()", {
 })
 
 test_that("add_variable_robust_constraints()", {
-  # define skip cases
-  skip_if_not_installed("terra")
-
   # import data
   sim_pu_raster <- prioritizr::get_sim_pu_raster()
   sim_features <- prioritizr::get_sim_features()

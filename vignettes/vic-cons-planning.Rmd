@@ -132,9 +132,11 @@ A key concept in `robust.prioritizr` is the `groups` argument. In a standard `pr
 
 The `groups` argument is a character vector that tells the solver which layers belong to the same feature. This allows the problem to apply a single, shared target to all scenarios for that feature. For this example, the group for each layer is simply the species name. Each group contains the indices of all of the data realizations of a particular species.
 
-For example, we see that each group (each species) contains 17 data realizations, comprising of all the climate scenarios and time-steps available for this analysis.
+For example, we see that each group (each species) contains a current timestep projection and16 data realizations, comprising of all the climate scenarios and time-steps available for this analysis. To ensure that the planning solution meets the target in the historic baseline for certain, and ensure that meets the target in future projections up to a certain probability, we separate projections for each feature into two groups - the historic baseline (with a "h\_" prefix) and the future groups.
 
 ```{r}
+species_details$species <- paste0(ifelse(species_details$proj == 'historic_baseline_1990', "h_", ""),
+                                  species_details$species)
 groups <- species_details$species
 table(groups)
 ```
@@ -149,7 +151,7 @@ When using a robust minimum set objective, it is crucial to set a target that is
 
 -   Relative targets: first, it calculates the "best-case" feature values in each group, by finding the realization in the group that has the highest summed feature value. Then, it calculates the relative target in absolute terms by multiplying the user-supplied target (e.g., 20%) in `add_relative_targets` with the "best-case" feature value. This ensures that the feature representation of the solution meets the relative target even in a "good" realization where the feature is abundant in the study area
 
--   Manual targets: manual targets must be specified for each realization of each feature. If different targets are specified for features in the same group, `robust.prioritizr` will take the maximum of the target. This means that manual targets should be consistent within the same group, otherwise it would yield unexpected behavior (particularly if the "sense" is altered to "\\<=").
+-   Manual targets: manual targets must be specified for each realization of each feature. If different targets are specified for features in the same group, `robust.prioritizr` will take the maximum of the target. This means that manual targets should be consistent within the same group, otherwise it would yield unexpected behavior (particularly if the "sense" is altered to "\\\<=").
 
 To figure out what useful relative targets to use, we can calculate the worst-case and best-case feature representations for each species by using the `global` function in `terra`, and then summarizes the best and worst-case values using `dplyr`. We can also find out what is the maximum relative target we can use in the problem to ensure that our problem is still feasible.
 
@@ -161,7 +163,9 @@ worst_case_occurrence <- species_details %>%
   select(-any_of("sum")) %>%
   left_join(global_sum_species, by = "name") %>%
   group_by(species) %>%
+  filter(!str_detect(species, "h_")) %>%
   summarise(worst_case = min(sum),
+            mean = mean(sum),
             pct_20 = max(sum[sum < quantile(sum, 0.2)]),
             cvar = mean(sum[sum < quantile(sum, 0.1)]),
             best_case = max(sum),
@@ -173,7 +177,7 @@ worst_case_occurrence %>%
   head()
 ```
 
-This shows that if we are interested in a fully robust solution, the maximum relative target that is achievable for this problem would be 0.0022, as in the worst-case scenario, the Snowy Mountains skink (*Liopholis guthega*) is only represented in 1 5km grid cell, out of 452 grid cells in its best-case scenario. This means that even if all the planning units are selected for conservation, in the worst-case high-emissions climate scenario the Snowy Mountains skink will only be represented in a very small area.
+This shows that if we are interested in a fully robust solution, the maximum relative target that is achievable for this problem would be 0.0045, as in the worst-case scenario, the Snowy Mountains skink (*Liopholis guthega*) is only represented in 1 5km grid cell, out of 452 grid cells in its best-case scenario. This means that even if all the planning units are selected for conservation, in the worst-case high-emissions climate scenario the Snowy Mountains skink will only be represented in a very small area.
 
 In this piece of code here we also lay the groundwork for alternative relative targets we can use by computing the 20th percentile of maximum species representation achievable. If we let the solution fall below the target for up to 20% of the outcomes, the maximum relative target that is achievable for the Snown Mountains skink would be near 0.073.
 
@@ -215,8 +219,8 @@ The workflow for a robust problem is similar to `prioritizr`, but with the addit
 -   `add_locked_in_constraints()`: Locks in existing protected areas.
 -   `add_default_solver()`: Selects the solver to use.
 
-```{r, fig.alt = "Map of Victoria, Australia, showing the robust conservation planning solution with a 1% target."}
-rt <- 0.0022
+```{r, fig.alt = "Map of Victoria, Australia, showing the robust conservation planning solution with a 0.45% target."}
+rt <- .0045
 rpv1 <- problem(cost, species) %>%
   add_relative_targets(rt) %>%
   add_constant_robust_constraints(groups = groups) %>%
@@ -227,7 +231,7 @@ rpv1 <- problem(cost, species) %>%
 rsv1 <- solve(rpv1)
 
 plot_planning_soln(rsv1) +
-  ggtitle("Robust Solution (Target = 1%)")
+  ggtitle("Robust Solution (Target = 0.45%)")
 
 ```
 
@@ -244,6 +248,7 @@ species_details %>%
   select(-any_of(contains('sum'))) %>%
   arrange(species, scenario, timestep) %>%
   left_join(feature_rep_r, by = "name") %>%
+  filter(!str_detect(species, "^h_")) %>%
   mutate(species_scenario = paste(species, scenario)) %>%
   ggplot(aes(x = timestep, y = sum, color = scenario, group = species_scenario)) +
   facet_wrap(vars(species), scales = "free_y") +
@@ -262,19 +267,18 @@ The plot shows the target is met in all cases. However, since the target was ver
 
 As the previous example shows, enforcing targets to be held robustly across all scenarios and timesteps can be unrealistic. This limits the maximum feasible target we can adopt for the planning solution. This also means that there are lots of room to improve the representation of other species. If the robustness of the target is relaxed – say instead of having to hold across all realizations, it only needs to hold at a certain probability – then there will be a lot more room to increase the target.
 
-Users can control the robustness of the solution through the `conf_level` parameter in `add_*_robust_constraints`, which specifies the proportion of the constraints that must be met in each group for the solution to be considered feasible. In this case, specifying 80% means that out of the 17 historic and future climate projections, the solution needs to meet the target in at least 13 (17 \\times 0.8) climate projections/ time-steps. In other words, the target can only be breached for 3 climate projections/ time-steps. By relaxing this target, we can pursue much more ambitious relative targets (0.07 protection), while ensuring that the solution is feasible and reasonably robust under most climate projections and time-steps.
+Users can control the robustness of the solution through the `conf_level` parameter in `add_*_robust_constraints`, which specifies the proportion of the constraints that must be met in each group for the solution to be considered feasible. In this case, specifying 75% means that out of the 16 historic and future climate projections, the solution needs to meet the target in at least 12 (16 \\times 0.75) climate projections/ time-steps. In other words, the target can only be breached for 4 climate projections/ time-steps. By relaxing this target, we can pursue much more ambitious relative targets (25% protection), while ensuring that the solution is feasible and reasonably robust under most climate projections and time-steps.
 
-```{r, fig.alt = "Side-by-side maps of Victoria, Australia, comparing the robust (1% target) and partially robust (7% target) conservation planning solutions."}
-rt2 <- 0.07
+```{r, fig.alt = "Side-by-side maps of Victoria, Australia, comparing the robust and partially robust conservation planning solutions."}
+rt2 <- 0.25
 
 rpv2 <- problem(cost, species) %>%
   add_relative_targets(rt2) %>%
-  robust.prioritizr::add_constant_robust_constraints(groups = groups,
-                                                     conf_level = 0.8) %>%
+  robust.prioritizr::add_constant_robust_constraints(groups = groups, conf_level = 0.75) %>%
   add_locked_in_constraints(pa) %>%
   add_binary_decisions() %>%
   robust.prioritizr::add_robust_min_set_objective(method = "chance") %>%
-  add_default_solver(verbose = F)
+  add_gurobi_solver(verbose = F)
 
 rsv2 <- solve(rpv2)
 
@@ -282,7 +286,7 @@ rs <- (plot_planning_soln(rsv1) +
   ggtitle("Robust (1% target)") +
     guides(color = 'none', fill = 'none')) +
   plot_planning_soln(rsv2) +
-  ggtitle("Partially Robust (7% target)") +
+  ggtitle("Partially Robust (20% target)") +
   plot_layout(guides = 'collect') &
   theme(legend.position = 'bottom')
 rs
@@ -290,13 +294,14 @@ rs
 
 ```{r, fig.alt = "Line plots showing the representation of each species in the partially robust solution, with a dashed horizontal line indicating the target."}
 feature_rep_r2 <- eval_feature_representation_summary(rpv2, rsv2)
-worst_case_occurrence$rt2 <- rt2*worst_case_occurrence$best_case
+worst_case_occurrence$rt2 <- rt2*worst_case_occurrence$mean
 rsv2_representation <- species_details %>%
   rename(feature = name) %>%
   arrange(species, scenario, timestep) %>%
   left_join(feature_rep_r2, by = "feature") %>%
   mutate(species_scenario = paste(species, scenario))
 rsv2_representation %>%
+  filter(!str_detect(species, "^h_")) %>%
   ggplot(aes(x = timestep, y = absolute_held, color = scenario, group = species_scenario)) +
   facet_wrap(vars(species), scales = "free_y") +
   geom_hline(data = worst_case_occurrence, aes(yintercept = rt2), linetype = 2) +
@@ -308,7 +313,7 @@ rsv2_representation %>%
         legend.position = 'bottom')
 ```
 
-We can also verify that indeed the relative targets are not breached for more than 20% of the climate projections/ time-steps. The planning solution limits the proportion where the target is breached to up to 18%, for even the most challenging species to conserve, such as the Snowy Mountains skink (*Liopholis guthega*).
+We can also verify that indeed the relative targets are not breached for more than 20% of the climate projections/ time-steps. The planning solution limits the proportion where the target is breached to up to 25% (4 climate scenarios/ timesteps), for even the most challenging species to conserve, such as the Snowy Mountains skink (*Liopholis guthega*).
 
 ```{r}
 rsv2_representation %>%
@@ -327,7 +332,7 @@ As we lower the confidence level for all species to aid the feasibility of the p
 
 In this example, we can use the `add_variable_robust_constraints` to flexibly specify which species we want the lowered confidence levels to apply, while ensuring the other species meets its targets robustly across all scenarios.
 
-```{r, fig.alt = "Three maps of Victoria, Australia, comparing the robust (1% target), partially robust (7% target), and fully robust* (7% target) conservation planning solutions."}
+```{r, fig.alt = "Three maps of Victoria, Australia, comparing the robust, partially robust, and fully robust* conservation planning solutions."}
 var_rob_cons <- tibble::tibble(
   features = split(names(species), groups)[unique(groups)],
   conf_level = 1
@@ -341,11 +346,11 @@ relax_cons_species <- c(
   "Sarcophilus_harrisii"
 )
 
-var_rob_cons$conf_level <- if_else(unique(groups) %in% relax_cons_species, 0.8, 1)
+var_rob_cons$conf_level <- if_else(unique(groups) %in% relax_cons_species, 0.75, 1)
 
 rpv3 <- problem(cost, species) %>%
   add_relative_targets(rt2) %>%
-  add_variable_robust_constraints(var_rob_cons) %>%
+  robust.prioritizr::add_variable_robust_constraints(var_rob_cons) %>%
   add_locked_in_constraints(pa) %>%
   add_binary_decisions() %>%
   robust.prioritizr::add_robust_min_set_objective(method = "chance") %>%
@@ -357,20 +362,20 @@ comb_plt <- (plot_planning_soln(rsv1) +
   ggtitle("Robust (1% target)") +
   guides(fill = 'none', color = 'none')) +
   plot_planning_soln(rsv2) +
-  ggtitle("Partially Robust (7% target)") +
+  ggtitle("Partially Robust (25% target)") +
   plot_planning_soln(rsv3) +
-  ggtitle("Fully Robust* (7% target)") +
+  ggtitle("Fully Robust* (25% target)") +
   plot_layout(guides = 'collect') &
   theme(legend.position = 'bottom')
 comb_plt +
-  labs(caption = "* Robust up to 80% probability for some species")
+  labs(caption = "* Robust up to 75% probability for some species")
 ```
 
 ## Comparison with a Non-Robust Solution
 
-For comparison, we solve a standard `prioritizr` problem using only the historical baseline data and a higher target. We apply the same 7% target to the problem, but only solve this using the historical baseline data.
+For comparison, we solve a standard `prioritizr` problem using only the historical baseline data and a higher target. We apply the same 25% target to the problem, but only solve this using the historical baseline data.
 
-```{r, fig.alt = "Side-by-side maps of Victoria, Australia, comparing the non-robust (7% target) and partially robust (7% target) conservation planning solutions."}
+```{r, fig.alt = "Side-by-side maps of Victoria, Australia, comparing the non-robust and partially robust conservation planning solutions."}
 is_historic_baseline <- species_details %>%
   filter(scenario == 'historic_baseline') %>%
   pull(id)
@@ -378,7 +383,7 @@ is_historic_baseline <- species_details %>%
 species_hb <- species[[is_historic_baseline]]
 
 pv1 <- problem(cost, species_hb) %>%
-  add_relative_targets(0.07) %>%
+  add_relative_targets(.25) %>%
   add_min_set_objective() %>%
   add_locked_in_constraints(pa) %>%
   add_default_solver(verbose = F)
@@ -386,10 +391,10 @@ pv1 <- problem(cost, species_hb) %>%
 sv1 <- solve(pv1)
 
 comb_plt <- (plot_planning_soln(sv1) +
-  ggtitle("Non-Robust (7% target)") +
+  ggtitle("Non-Robust (25% target)") +
   guides(fill = 'none', color = 'none')) +
   plot_planning_soln(rsv2) +
-  ggtitle("Partially Robust (7% target)") +
+  ggtitle("Partially Robust (25% target)") +
   plot_layout(guides = 'collect') &
   theme(legend.position = 'bottom')
 comb_plt
@@ -437,5 +442,5 @@ species_details %>%
   coord_cartesian(xlim = c(2030, 2090)) +
   theme(panel.grid = element_blank(),
         legend.position = 'bottom')+
-  labs(caption = "* Robust up to 80% probability for some species")
+  labs(caption = "* Robust up to 75% probability for some species")
 ```

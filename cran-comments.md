@@ -1,6 +1,6 @@
 Dear CRAN volunteers,
 
-Thank you for reviewing this submission. This is the first time that the robust.prioritizr package has been submitted to CRAN. Although CRAN checks have flagged some words in the DESCRIPTION as possibly misspelled words, I confirm that these are false positives and the words are spelled correctly. Additionally, please note that several of the examples of use `\dontrun{}` to ensure that the package checks do not take too to complete.
+Thank you for reviewing this submission. This is the first time that the robust.prioritizr package has been submitted to CRAN. Although CRAN checks have flagged some words in the DESCRIPTION as possibly misspelled words, I confirm that these are false positives and the words are spelled correctly. Additionally, please note that several examples use the `\dontrun{}` commands to ensure that the package checks complete within a short period of time.
 
 Cheers,
 
@@ -11,13 +11,13 @@ Frankie Cho
 0 errors | 0 warnings | 1 note
 
 * Possibly misspelled words in DESCRIPTION:
-    Charnes (24:58)
-    prioritizations (15:51, 21:60, 23:39)
-    Prioritizations (17:58)
-    Rockafellar (25:6)
-    Uryasev (25:20)
+  Charnes (28:45)
+  Rockafellar (30:6)
+  Uryasev (30:20)
+  prioritizations (14:18, 19:18, 21:52, 25:54, 27:33)
+  prioritizr (18:19)
 
-  **I confirm these words are spelled correctly. In particular, "prioritizatons" is a term of art used in systematic conservation planning, and "Charnes", "Rockafellar", and "Uryasev" are author names for citations.**
+  **I confirm these words are spelled correctly. In particular, "prioritizatons" is a term of art used in systematic conservation planning, prioritizr is the name of an R package available on CRAN, and "Charnes", "Rockafellar", and "Uryasev" are author names listed in citations.**
 
 ## Test environments
 

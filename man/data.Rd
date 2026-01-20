@@ -36,7 +36,7 @@ This dataset was derived from Archibald \emph{et al.} (2024),
 Department of Climate Change, Energy, the Environment and Water (2024),
 Global Administrative Areas (2024), and Williams \emph{et al.} (2020).
 For an example of using this dataset, please refer to the
-the Example using Victoria, Australia vignette
+the \emph{Example using Victoria, Australia} vignette
 (\code{vignette("vic-cons-planning", package = "robust.prioritizr")}).
 }
 \details{

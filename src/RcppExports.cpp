@@ -285,8 +285,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // rcpp_apply_robust_min_shortfall_objective
-bool rcpp_apply_robust_min_shortfall_objective(SEXP x, const Rcpp::List targets_list, const Rcpp::NumericMatrix costs, Rcpp::NumericVector budget, const Rcpp::IntegerVector feature_group_ids);
-RcppExport SEXP _robust_prioritizr_rcpp_apply_robust_min_shortfall_objective(SEXP xSEXP, SEXP targets_listSEXP, SEXP costsSEXP, SEXP budgetSEXP, SEXP feature_group_idsSEXP) {
+bool rcpp_apply_robust_min_shortfall_objective(SEXP x, const Rcpp::List targets_list, const Rcpp::NumericMatrix costs, Rcpp::NumericVector budget, const Rcpp::IntegerVector feature_group_ids, const Rcpp::NumericVector weights);
+RcppExport SEXP _robust_prioritizr_rcpp_apply_robust_min_shortfall_objective(SEXP xSEXP, SEXP targets_listSEXP, SEXP costsSEXP, SEXP budgetSEXP, SEXP feature_group_idsSEXP, SEXP weightsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -295,7 +295,8 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const Rcpp::NumericMatrix >::type costs(costsSEXP);
     Rcpp::traits::input_parameter< Rcpp::NumericVector >::type budget(budgetSEXP);
     Rcpp::traits::input_parameter< const Rcpp::IntegerVector >::type feature_group_ids(feature_group_idsSEXP);
-    rcpp_result_gen = Rcpp::wrap(rcpp_apply_robust_min_shortfall_objective(x, targets_list, costs, budget, feature_group_ids));
+    Rcpp::traits::input_parameter< const Rcpp::NumericVector >::type weights(weightsSEXP);
+    rcpp_result_gen = Rcpp::wrap(rcpp_apply_robust_min_shortfall_objective(x, targets_list, costs, budget, feature_group_ids, weights));
     return rcpp_result_gen;
 END_RCPP
 }

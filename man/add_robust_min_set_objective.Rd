@@ -27,8 +27,8 @@ each feature group.
 }
 \details{
 The robust minimum set objective seeks to find the set of planning units at
-a minimum cost such that the solution meets the targets in a robust manner for each
-feature group. Two methods are provided for formulating
+a minimum cost such that the solution meets the targets in a robust manner
+for each feature group. Two methods are provided for formulating
 the optimization problem as a mixed integer linear programming problem.
 These methods are the chance constraint programming method
 (\code{method = "chance"}) and conditional value-at-risk method
@@ -58,10 +58,11 @@ mathematically for a set of planning units (\eqn{I}{I} indexed by
 \eqn{i}{i}), a set of feature groups (\eqn{J}{J} indexed by \eqn{j}{j}), and
 a set of features associated with each feature group
 (\eqn{K} indexed by \eqn{k}). Let \eqn{c_i}{ci} denote the cost of
-planning unit \eqn{i}{i}, \eqn{r_{ijk}}{rijk} the amount of feature
+planning unit \eqn{i}{i}, \eqn{R_{ijk}}{Rijk} the amount of feature
 \eqn{k}{k} associated with planning unit \eqn{i}{i} for feature group
-\eqn{j}{j}, \eqn{T_j}{Tj} the target for each feature group
-\eqn{j}{j}, and \eqn{\alpha}{a} the confidence level for uncertainty
+\eqn{j}{j}, \eqn{T_{jk}}{Tjk} the target for each feature \eqn{k} in each
+feature group \eqn{j},
+and \eqn{\alpha}{a} the confidence level for uncertainty
 (specified per \code{conf_level} with \code{\link[=add_constant_robust_constraints]{add_constant_robust_constraints()}} or
 \code{\link[=add_variable_robust_constraints]{add_variable_robust_constraints()}}).
 Additionally, to describe the decision variables,
@@ -74,11 +75,11 @@ selection problem is formulated as follows.
 \deqn{
 \mathit{Minimize} \space \sum_{i = 1}^{I} x_i c_i \\
 \mathit{subject \space to} \\
-\Pr_k \{ \sum_{i = 1}^{I} x_i r_{ijk} \geq T_j \}
+\Pr_k \{ \sum_{i = 1}^{I} x_i R_{ijk} \geq T_j \}
 \geq \alpha \quad \forall \space j \in J
 }{
 Minimize sum_i^I (xi * ci)
-subject to Pr_k \{ sum_i^I  (xi * rij) >= Tj \} >= a, for all j in J
+subject to Pr_k \{ sum_i^I  (xi * Rijk) >= Tj \} >= a, for all j in J
 }
 
 Here, the objective function (first equation) is to minimize the total
@@ -96,7 +97,7 @@ problem can be solved with mixed integer programming exact algorithm solvers.
 
 The chance constraint programming method uses a "big-M" formulation
 to linearize the probabilistic constraints (Charnes and Cooper 1959).
-To describe this method, let \eqn{m_{jk}}{mjk} denote a binary
+To describe this method, let \eqn{M_{jk}}{Mjk} denote a binary
 auxiliary variable for each feature \eqn{k}{k} associated with each
 feature group \eqn{j}{j}. Also, let \eqn{K_j}{Kj} denote a
 pre-computed value describing the number of
@@ -105,20 +106,20 @@ Given this terminology, the method involves replacing the probabilistic
 constraints with the following linear constraints.
 
 \deqn{
-\sum_{i = 1}^{I} x_i r_{ijk} + T_j m_{jk} \geq T_{j} \quad
-  \forall \space j \in J, \space k \in K \\
-\sum_{k = 1}^{K_j} \frac{m_{jk}}{K_j} \leq 1 - \alpha \quad
+\sum_{i = 1}^{I} (x_i \times R_{ijk}) + (T_{jk} \times M_{jk})
+  \geq T_{jk} \quad \forall \space j \in J, \space k \in K \\
+\sum_{k = 1}^{K_j} \frac{M_{jk}}{K_j} \leq 1 - \alpha \quad
   \forall \space j \in J \\
-m_{jk} \in \{0, 1\} \quad
+M_{jk} \in \{0, 1\} \quad
   \forall \space j \in J, \space k \in K
 }{
-sum_i^I xi rijk + Tj mjk >= Tj, for all j in J, k in K
-sum_{k = 1}^{Kj} mjk / Kj <= 1 - a, for all j in J
-mjk in \{0, 1\}, for all j in J, k in K
+sum_i^I xi Rijk + Tjk Mjk >= Tjk, for all j in J, k in K
+sum_{k = 1}^{Kj} Mjk / Kj <= 1 - a, for all j in J
+Mjk in \{0, 1\}, for all j in J, k in K
 }
 
 Here, the solution is allowed to fail to meet the targets
-for the features, and the auxiliary variable \eqn{m_{jk}}{mjk} is
+for the features, and the auxiliary variable \eqn{M_{jk}}{Mjk} is
 used to calculate the proportion of features that do not have their targets
 met for each feature group. For a given feature group, the
 proportion of features that do not have their target met is
@@ -137,22 +138,22 @@ solutions that are more robust to uncertainty and less cost-efficient
 than the chance constraint programming method.
 To describe this method, let \eqn{\eta_j}{ej} denote
 a continuous auxiliary variable for each feature group \eqn{j}{j},
-and \eqn{s_{jk}}{sjk} a continuous auxiliary variable for each feature
+and \eqn{S_{jk}}{Sjk} a continuous auxiliary variable for each feature
 \eqn{k}{k} associated with each feature group \eqn{j}{j}.
 Given this terminology, the method involves replacing the probabilistic
 constraints with the following linear constraints.
 
 \deqn{
-\sum_{i = 1}^{I} x_i r_{ijk} - \eta_j + s_{jk} \geq 0 \quad
+\sum_{i = 1}^{I} (x_i \times R_{ijk}) - \eta_j + S_{jk} \geq 0 \quad
   \forall \space j \in J, \space k \in K \\
-\eta_j - \frac{1}{(1 - \alpha) \times K_j} \sum_{k=1}^{K_j} s_{jk} \geq T_j
-  \quad \forall \space j \in J \\
-s_{jk} \geq 0 \quad \forall \space j \in J, \space k \in K \\
+\eta_j - \frac{1}{(1 - \alpha) \times K_j} \sum_{k=1}^{K_j} S_{jk}
+  \geq T_{jk}\quad \forall \space j \in J \\
+S_{jk} \geq 0 \quad \forall \space j \in J, \space k \in K \\
 \eta_j \in \mathbb{R}  \quad  \forall \space j \in J
 }{
-\sum_i^I xi rijk - ej + sjk >= 0, for all j in J, k in K
-ej - (1 / ((1 - a) * K_j)) sum_k^Kj sjk >= Tj for all j in J
-sjk >= 0, for all j in J, k in K
+\sum_i^I xi Rijk - ej + Sjk >= 0, for all j in J, k in K
+ej - (1 / ((1 - a) * K_j)) sum_k^Kj Sjk >= Tjk for all j in J
+Sjk >= 0, for all j in J, k in K
 ej in R, forall j in J
 }
 
@@ -163,7 +164,7 @@ In other words, it ensures
 that the average of amount of each feature held by the solution for
 a particular feature group that falls below a particular
 quantile (i.e., \eqn{(1 - \alpha)}{1 - a}) is greater than the
-target for the feature group (i.e., \eqn{T_j}{Tj}).
+target the feature (i.e., \eqn{T_{jk}}{Tjk}).
 Although this method does not provide an easily intuitive interpretation of
 the confidence level parameter, it only adds \eqn{J \times K + J}{J * K + J}
 continuous variables to the problem.

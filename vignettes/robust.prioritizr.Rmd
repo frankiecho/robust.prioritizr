@@ -16,7 +16,7 @@ vignette: >
 
 ```{r, include = FALSE}
 # define dummy variables so that vignette passes package checks
-# TODO
+## not needed
 ```
 
 ```{r, include = FALSE}
@@ -52,7 +52,7 @@ print <- function(x, ...) {
 }
 ```
 
-```{r setup}
+```{r setup, message=FALSE}
 library(terra)
 library(prioritizr)
 library(robust.prioritizr)

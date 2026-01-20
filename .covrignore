@@ -1,2 +1,2 @@
-R/prioritizr*.R
+R/import-standalone-*.R
 R/zzz.R
