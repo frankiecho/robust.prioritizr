@@ -72,7 +72,7 @@
 </h1>
 <!-- badges: start -->
 
-<p>The <em>robust.prioritizr R</em> package provides robust optimization techniques for systematic conservation prioritization. This is important because conservation prioritizations typically only consider the most likely prediction associated with a conservation action (e.g., establishing a protected area will safeguard a threatened species population) and fail to consider alternative predictions where the conservation prioritization could fail to meet its objectives. By extending the <em>prioritizr R</em> package, this package can be used to generate conservation prioritizations that account of uncertainty in the climate change scenario projections, species distribution models, ecosystem service models, and measurement errors. In particular, prioritizations can be generated to be fully robust to uncertainty by minimizing (or maximizing) objectives under the worst possible outcome. Since reducing the associated with achieving conservation objectives may sacrifice other objectives (e.g., minimizing protected area implementation costs), or make a feasible conservation problem infeasible, prioritizations can also be generated to be partially robust based on a specified confidence level parameter. Partially robust prioritizations can be generated based on the chance constrained programming problem (Charnes &amp; Cooper 1959, <a href="doi:10.1287/mnsc.6.1.73" class="uri">doi:10.1287/mnsc.6.1.73</a>) and the conditional value-at-risk problem (Rockafellar &amp; Uryasev 2000, <a href="doi:10.21314/JOR.2000.038" class="uri">doi:10.21314/JOR.2000.038</a>). For more information, please see the video below.</p>
+<p>The ‘robust.prioritizr’ package provides robust optimization techniques for systematic conservation prioritization. This is important because conservation prioritizations typically only consider the most likely prediction associated with a conservation action (e.g., establishing a protected area will safeguard a threatened species population) and fail to consider alternative predictions where the conservation prioritization could fail to meet its objectives. By extending the ‘prioritizr’ package, this package can be used to generate conservation prioritizations that account of uncertainty in the climate change scenario projections, species distribution models, ecosystem service models, and measurement errors. In particular, prioritizations can be generated to be fully robust to uncertainty by minimizing (or maximizing) objectives under the worst possible outcome. Since reducing the associated with achieving conservation objectives may sacrifice other objectives (e.g., minimizing protected area implementation costs), or make a feasible conservation problem infeasible, prioritizations can also be generated to be partially robust based on a specified confidence level parameter. Partially robust prioritizations can be generated based on the chance constrained programming problem (Charnes &amp; Cooper 1959, <a href="doi:10.1287/mnsc.6.1.73" class="uri">doi:10.1287/mnsc.6.1.73</a>) and the conditional value-at-risk problem (Rockafellar &amp; Uryasev 2000, <a href="doi:10.21314/JOR.2000.038" class="uri">doi:10.21314/JOR.2000.038</a>). For more information, please see the video below.</p>
 <div style="display: flex; justify-content: center;">
 <iframe style="aspect-ratio: 16 / 9; width: 100% !important;" src="https://www.youtube.com/embed/Xbok5fLMsY0?si=QxZRWjKvFCTDTvbT" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen>
 </iframe>
@@ -155,8 +155,8 @@
 <span></span>
 <span><span class="co"># Solve the problem</span></span>
 <span><span class="va">soln</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/solve.html" class="external-link">solve</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb11"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="do">## ℹ The targets for these groups are transformed based on the `mean()` target</span></span>
-<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a><span class="do">## value.</span></span></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="do">## ℹ  The targets for these groups are transformed based on the `mean()` target</span></span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a><span class="do">##   value.</span></span></code></pre></div>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Preview solution</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">soln</span><span class="op">)</span></span></code></pre></div>
@@ -173,12 +173,12 @@
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Plot the solution</span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">soln</span>, main <span class="op">=</span> <span class="st">"Robust prioritization"</span>, axes <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
-<p><img src="reference/figures/README-unnamed-chunk-5-1.png" width="500" style="display: block; margin: auto;"></p>
+<p><img src="reference/figures/README-unnamed-chunk-5-1.png" alt="" width="500" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level2">
 <h2 id="getting-help">Getting help<a class="anchor" aria-label="anchor" href="#getting-help"></a>
 </h2>
-<p>If you have any questions about the <em>robust.prioritizr R</em> package or suggestions for improving it, please <a href="https://github.com/frankiecho/robust.prioritizr/issues" class="external-link">post an issue on the code repository</a>.</p>
+<p>If you have any questions about the ‘robust.prioritizr’ package or suggestions for improving it, please <a href="https://github.com/frankiecho/robust.prioritizr/issues" class="external-link">post an issue on the code repository</a>.</p>
 </div>
 </div>
 

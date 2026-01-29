@@ -206,7 +206,7 @@ increase the relative targets we use by relaxing the robustness of the
 problem, such that the representation of other species in the data can
 be increased.
 
-To visualise the planning solutions, we also define a helper function as
+To visualize the planning solutions, we also define a helper function as
 follows.
 
 ``` r

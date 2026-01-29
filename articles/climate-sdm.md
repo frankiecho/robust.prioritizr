@@ -9,16 +9,16 @@ uncertainties are ignored, the solution of the systematic conservation
 planning problems may fail to meet its targets.
 
 In this example we walk through how someone with a climate-sensitive
-species distribution model can harness the flexible interface of Robust
-Prioritizr to identify a conservation plan that is robust to
+species distribution model can harness the flexible interface of
+‘robust.prioritizr’ to identify a conservation plan that is robust to
 uncertainties emanating from both climate scenarios and the data
 modelling process.
 
-Robust Prioritizr is agnostic to the data generating process - users who
-only wish to apply it to their own model can go directly to the “Model
-Specification” section. Some familiarity with the Prioritizr framework
-for solving conservation planning problems is helpful but not necessary
-in understanding the vignette.
+‘robust.prioritizr’ is agnostic to the data generating process - users
+who only wish to apply it to their own model can go directly to the
+“Model Specification” section. Some familiarity with the ‘prioritizr’
+framework for solving conservation planning problems is helpful but not
+necessary in understanding the vignette.
 
 ## Data generating process
 
@@ -154,11 +154,11 @@ known as the Representative Concentration Pathways (RCPs) or the Shared
 Socioeconomic Pathways (SSPs) to describe future changes to climate,
 economic and social variables.
 
-In this simplified example, we demonstrate how Robust Prioritizr can be
-used to conduct systematic conservation planning when the analyst have
-predictions of future species ranges across multiple climate scenarios.
-In this hypothetical example, lets assume that the temperature and
-precipitation are going to change in the following ways:
+In this simplified example, we demonstrate how ‘robust.prioritizr’ can
+be used to conduct systematic conservation planning when the analyst
+have predictions of future species ranges across multiple climate
+scenarios. In this hypothetical example, lets assume that the
+temperature and precipitation are going to change in the following ways:
 
 1.  SSP1-RCP26: current (baseline) temperature and precipitation values
 2.  SSP2-RCP45: mild climate change, temperature increase by 1 degrees
@@ -168,7 +168,7 @@ precipitation are going to change in the following ways:
 4.  SSP5-RCP85: extreme climate change, temperature increase by 3
     degrees Celsius, precipitation reduces by 150mm on average
 
-Robust Prioritizr is agnostic to the scenarios that were fed into the
+‘robust.prioritizr’ is agnostic to the scenarios that were fed into the
 model, which means that the analyst is free to specify their own
 scenarios and names.
 
@@ -249,10 +249,11 @@ finding the minimum-set protected area network by selecting planning
 units for protecting two species and ensure that their targets are
 robust under climate change.
 
-There are many types of uncertainty an analyst can face. Robust
-Prioritizr is agnostic to the type of uncertainty that is specified,
-although it is generally useful to be clear on what types of uncertainty
-exists in a typical systematic conservation planning problem:
+There are many types of uncertainty an analyst can face.
+‘robust.prioritizr’ is agnostic to the type of uncertainty that is
+specified, although it is generally useful to be clear on what types of
+uncertainty exists in a typical systematic conservation planning
+problem:
 
 - Scenario Uncertainty: there are many plausible future scenarios to
   which features in a planning problem might be affected by
@@ -294,12 +295,12 @@ For simplicity, we do not specify additional constraints, such as
 connectivity constraints or boundary penalties, in this planning
 problem.
 
-## Solving with standard Prioritizr
+## Solving with standard ‘prioritizr’
 
-As a first pass, we can solve this problem in the traditional Prioritizr
-specification, using only one of the climate scenarios (SSP2-RCP4.5) for
-planning. The specification below solves the following conservation
-planning problem:
+As a first pass, we can solve this problem in the traditional
+‘prioritizr’ specification, using only one of the climate scenarios
+(SSP2-RCP4.5) for planning. The specification below solves the following
+conservation planning problem:
 
 \min \sum\_{i=1}^{I} x_i c_i
 
@@ -361,12 +362,12 @@ network falls below the target in scenarios other than the selected
 SSP2-RCP4.5. In particular, it represented almost none of Species 1
 under an extreme climate scenario.
 
-## Solving with Robust Prioritizr
+## Solving with ‘robust.prioritizr’
 
-Robust Prioritizr gives users a flexible interface to solve conservation
-planning problems that are robust to alternative climate scenarios and
-other sources of uncertainty. Using the modified minimum set objective,
-users can solve the following problem:
+‘robust.prioritizr’ gives users a flexible interface to solve
+conservation planning problems that are robust to alternative climate
+scenarios and other sources of uncertainty. Using the modified minimum
+set objective, users can solve the following problem:
 
 \min \sum\_{i=1}^{I} x_i c_i \text{subject to} \Pr_k \\ \sum\_{i=1}^I
 x_i r\_{ijk} \geq T_j \\ \geq \alpha \quad \forall \space j \in J x_i
@@ -382,11 +383,11 @@ most robust approach), then the solution must meet the species abundance
 targets across all realizations k and all species j.
 
 Specification of alternative predictions of abundance the same species
-is achieved through the `groups` argument of the call to Robust
-Prioritizr. This enables the user to pass in alternative specifications
-of the species abundance values in one raster in Prioritizr and tell the
-problem that these indeed represent the same species/ features across
-different realizations.
+is achieved through the `groups` argument of the call to
+‘robust.prioritizr’. This enables the user to pass in alternative
+specifications of the species abundance values in one raster in
+‘prioritizr’ and tell the problem that these indeed represent the same
+species/ features across different realizations.
 
 We can extract the relevant groupings from the names of the raster
 object that we have specified, depending on the specific formatting of
@@ -401,7 +402,7 @@ groups <- paste0("species_", scenario_matrix[,4]) # Extract the index in the fou
 groups
 ```
 
-Then, we can solve the problem using Robust Prioritizr, supplying the
+Then, we can solve the problem using ‘robust.prioritizr’, supplying the
 full raster containing all the abundance predictions across all climate
 scenarios and the groups argument. For now, we keep the confidence level
 to 1, ensuring that the targets are met for all species across all
@@ -441,11 +442,12 @@ every climate scenario.
 
 ## Why not just use the worst-case scenario?
 
-The reader is justified in questioning why Robust Prioritizr exists when
-there could be alternative simple data transformations that the analyst
-can use to alter the problem to make it appear more conservative. Here
-we consider three possible approaches and see why these generate a
-different and inferior solution compared to Robust Prioritizr:
+The reader is justified in questioning why ‘robust.prioritizr’ exists
+when there could be alternative simple data transformations that the
+analyst can use to alter the problem to make it appear more
+conservative. Here we consider three possible approaches and see why
+these generate a different and inferior solution compared to
+‘robust.prioritizr’:
 
 1.  Taking the most extreme climate scenario: the intuition being that
     if a protected area network meets its target under the most extreme
@@ -613,7 +615,7 @@ ssp5_rcp85_ab_1 <- replicate(n_replicates, ab_draw_pois(temp_ssp5_rcp85, prec_ss
 ssp5_rcp85_ab_2 <- replicate(n_replicates, ab_draw_pois(temp_ssp5_rcp85, prec_ssp5_rcp85, beta_species_dist_2))
 ```
 
-To fit this into Robust Prioritizr, we bring these replicates into 1
+To fit this into ‘robust.prioritizr’, we bring these replicates into 1
 single multilayer raster.
 
 ``` r
@@ -684,7 +686,7 @@ the solution.
 
 If we relax the confidence level a bit, we can allow for the target to
 not be met in some realizations of uncertainty. This allows the
-optimisation problem to search for a lower cost solution. For example,
+optimization problem to search for a lower cost solution. For example,
 we can specify the `conf_level=0.9`, which mandates that the solution
 meet the objective in at least 90% of the random realizations supplied
 to the problem.
