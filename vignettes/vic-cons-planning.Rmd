@@ -183,7 +183,7 @@ In this piece of code here we also lay the groundwork for alternative relative t
 
 After solving the initial problem, we will progress to explore how to increase the relative targets we use by relaxing the robustness of the problem, such that the representation of other species in the data can be increased.
 
-To visualise the planning solutions, we also define a helper function as follows.
+To visualize the planning solutions, we also define a helper function as follows.
 
 ```{r}
 # Function to plot a planning solution

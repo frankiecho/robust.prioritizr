@@ -1,3 +1,11 @@
+## Resubmission
+
+This is a resubmission. In this version I have:
+
+* Wrote package names, software names and API names in single quotes in title, description and vignettes, noting that it is case sensitive.
+
+* Confirmed that a 'man' folder containing documentation for my functions in .Rd format is available in the tarball generated when building the package locally.
+
 Dear CRAN volunteers,
 
 Thank you for reviewing this submission. This is the first time that the robust.prioritizr package has been submitted to CRAN. Although CRAN checks have flagged some words in the DESCRIPTION as possibly misspelled words, I confirm that these are false positives and the words are spelled correctly. Additionally, please note that several examples use the `\dontrun{}` commands to ensure that the package checks complete within a short period of time.
@@ -17,7 +25,7 @@ Frankie Cho
   prioritizations (14:18, 19:18, 21:52, 25:54, 27:33)
   prioritizr (18:19)
 
-  **I confirm these words are spelled correctly. In particular, "prioritizatons" is a term of art used in systematic conservation planning, prioritizr is the name of an R package available on CRAN, and "Charnes", "Rockafellar", and "Uryasev" are author names listed in citations.**
+  **I confirm these words are spelled correctly. In particular, "prioritizations" is a term of art used in systematic conservation planning, prioritizr is the name of an R package available on CRAN, and "Charnes", "Rockafellar", and "Uryasev" are author names listed in citations.**
 
 ## Test environments
 

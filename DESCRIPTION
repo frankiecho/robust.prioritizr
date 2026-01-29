@@ -16,7 +16,7 @@ Description:
     associated with a conservation action (e.g., establishing a protected area
     will safeguard a threatened species population) and fail to consider other
     outcomes and their consequences for meeting conservation objectives. By
-    extending the prioritizr package, this package can be used to generate
+    extending the 'prioritizr' package, this package can be used to generate
     conservation prioritizations that account of uncertainty in the climate
     change scenario projections, species distribution models, ecosystem service
     models, and measurement errors. In particular, prioritizations can be
