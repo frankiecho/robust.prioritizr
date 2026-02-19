@@ -44,7 +44,7 @@ knitr::opts_chunk$set(
 
 ```{r, include = FALSE}
 # load developmental version of package
-if (!is_check) {
+if (is_check) {
   devtools::load_all()
 }
 
