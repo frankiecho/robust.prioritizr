@@ -330,7 +330,7 @@ rpv2 <- problem(cost, species) %>%
   add_locked_in_constraints(pa) %>%
   add_binary_decisions() %>%
   robust.prioritizr::add_robust_min_set_objective(method = "chance") %>%
-  add_gurobi_solver(verbose = F)
+  add_default_solver(verbose = F)
 
 rsv2 <- solve(rpv2)
 

@@ -14,13 +14,13 @@ Source:
 [`DESCRIPTION`](https://github.com/frankiecho/robust.prioritizr/blob/master/DESCRIPTION)
 
 Cho F, Hanson JO (2026). *robust.prioritizr: Robust Systematic
-Conservation Prioritization*. R package version 1.0.0,
+Conservation Prioritization*. R package version 1.0.1,
 <https://github.com/frankiecho/robust.prioritizr>.
 
     @Manual{,
       title = {robust.prioritizr: Robust Systematic Conservation Prioritization},
       author = {Frankie Cho and Jeffrey O Hanson},
       year = {2026},
-      note = {R package version 1.0.0},
+      note = {R package version 1.0.1},
       url = {https://github.com/frankiecho/robust.prioritizr},
     }
