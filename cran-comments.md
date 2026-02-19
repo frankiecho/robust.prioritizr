@@ -2,9 +2,7 @@
 
 This is a resubmission. In this version I have:
 
-* Wrote package names, software names and API names in single quotes in title, description and vignettes, noting that it is case sensitive.
-
-* Confirmed that a 'man' folder containing documentation for my functions in .Rd format is available in the tarball generated when building the package locally.
+* I have confirmed that the "man" folder is contained within the tar ball of the submission by manually unzipping the tar ball, verifying the tar ball contains the man folder with the Rd files, and manually submitting the tar ball to CRAN through the web upload interface instead of using devtools. Please see [Github issue #31](https://github.com/frankiecho/robust.prioritizr/issues/31) if this issue still persists.
 
 Dear CRAN volunteers,
 

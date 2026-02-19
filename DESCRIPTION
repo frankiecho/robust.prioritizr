@@ -1,7 +1,7 @@
 Package: robust.prioritizr
 Type: Package
 Title: Robust Systematic Conservation Prioritization
-Version: 1.0.0
+Version: 1.0.1
 Authors@R:
     c(person(c('Frankie'), 'Cho',
         email='frankie.cho@monash.edu', role = c('aut', 'cre', 'cph'),
