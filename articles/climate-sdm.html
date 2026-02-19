@@ -200,6 +200,7 @@ its optimal temperature.</p>
 <span>  <span class="fu">labs</span><span class="op">(</span>y <span class="op">=</span> <span class="st">'Expected abundance'</span>, x <span class="op">=</span> <span class="st">'Temperature'</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">theme</span><span class="op">(</span>panel.grid <span class="op">=</span> <span class="fu">element_blank</span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">ggtitle</span><span class="op">(</span><span class="st">"Expected abundance of Species 1 and 2"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="climate-sdm_files/figure-html/unnamed-chunk-5-1.png" class="r-plt" alt="Line plot showing the expected abundance of Species 1 and Species 2 as a function of temperature." style="display: block; margin: auto;"></p>
 <p>In this simulated landscape, we see that the range of species 1 is
 much smaller compared to species 2, because it has a much narrower
 climatic range.</p>
@@ -211,6 +212,7 @@ climatic range.</p>
 <span><span class="va">baseline_rast</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/rast.html" class="external-link">rast</a></span><span class="op">(</span><span class="va">temp</span><span class="op">)</span>, <span class="fu"><a href="https://rspatial.github.io/terra/reference/rast.html" class="external-link">rast</a></span><span class="op">(</span><span class="va">prec</span><span class="op">)</span>, <span class="fu"><a href="https://rspatial.github.io/terra/reference/rast.html" class="external-link">rast</a></span><span class="op">(</span><span class="va">baseline_ab_1</span><span class="op">)</span>, <span class="fu"><a href="https://rspatial.github.io/terra/reference/rast.html" class="external-link">rast</a></span><span class="op">(</span><span class="va">baseline_ab_2</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">baseline_rast</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Temperature (C)"</span>, <span class="st">"Precipitation (mm)"</span>, <span class="st">"Abundance (Species 1)"</span>, <span class="st">"Abundance (Species 2)"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">baseline_rast</span><span class="op">)</span></span></code></pre></div>
+<p><img src="climate-sdm_files/figure-html/unnamed-chunk-6-1.png" class="r-plt" alt="Raster showing temperature, precipitation and abundance of the two species" style="display: block; margin: auto;"></p>
 <p>Under future climate change, the temperature and precipitation values
 are likely to change, resulting in a shift in the range of both species.
 The scenario modelling community uses a set of standardized scenarios
@@ -303,6 +305,7 @@ niches?</p>
 <span>                       <span class="st">'ssp5_rcp85_ab_2'</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">abundance_rast</span><span class="op">)</span></span></code></pre></div>
+<p><img src="climate-sdm_files/figure-html/unnamed-chunk-7-1.png" class="r-plt" alt="Species distributions under different scenarios" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level2">
 <h2 id="model-specification">Model specification<a class="anchor" aria-label="anchor" href="#model-specification"></a>
@@ -336,6 +339,7 @@ specified conservation cost. In the diagram below, we plot the abundance
 estimates across climate scenarios and its cost:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">abundance_rast</span>, <span class="va">costs_rast</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p><img src="climate-sdm_files/figure-html/unnamed-chunk-8-1.png" class="r-plt" alt="Species distributions under different scenarios and cost" style="display: block; margin: auto;"></p>
 <p>The solution identified must satisfy the following constraints:</p>
 <ol style="list-style-type: decimal">
 <li>The total summed abundance of Species 1 within the protected area
@@ -384,6 +388,7 @@ moment).</p>
 <span><span class="va">s1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/solve.html" class="external-link">solve</a></span><span class="op">(</span><span class="va">p1</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">s1</span><span class="op">)</span></span></code></pre></div>
+<p><img src="climate-sdm_files/figure-html/unnamed-chunk-9-1.png" class="r-plt" alt="Planning solution using standard prioritizr" style="display: block; margin: auto;"></p>
 <p>The challenge with this planning approach is that it does not account
 for other climates. As a result, the planning solution would fail to
 reach the targets in other climate scenarios, particularly under the
@@ -405,6 +410,7 @@ extreme climate scenario SSP5-RCP8.5.</p>
 <span>    <span class="fu">theme</span><span class="op">(</span>panel.grid <span class="op">=</span> <span class="fu">element_blank</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span><span class="fu">plot_solution_eval</span><span class="op">(</span><span class="va">s1</span><span class="op">)</span></span></code></pre></div>
+<p><img src="climate-sdm_files/figure-html/unnamed-chunk-10-1.png" class="r-plt" alt="Evaluation of species representation across scenarios" style="display: block; margin: auto;"></p>
 <p>The planning solution identified is not robust to alternative climate
 scenarios, as the abundance levels within the identified protected area
 network falls below the target in scenarios other than the selected
@@ -444,7 +450,9 @@ the names. These groupings are then supplied to
 <span><span class="co"># i.e. species_1_scenario_1, species_1_scenario_2 etc.</span></span>
 <span><span class="va">scenario_matrix</span> <span class="op">&lt;-</span> <span class="fu">str_split_fixed</span><span class="op">(</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">abundance_rast</span><span class="op">)</span>, pattern <span class="op">=</span> <span class="st">'_'</span>, n <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span>
 <span><span class="va">groups</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"species_"</span>, <span class="va">scenario_matrix</span><span class="op">[</span>,<span class="fl">4</span><span class="op">]</span><span class="op">)</span> <span class="co"># Extract the index in the fourth position</span></span>
-<span><span class="va">groups</span></span></code></pre></div>
+<span><span class="va">groups</span></span>
+<span><span class="co">#&gt; [1] "species_1" "species_1" "species_1" "species_1" "species_2" "species_2"</span></span>
+<span><span class="co">#&gt; [7] "species_2" "species_2"</span></span></code></pre></div>
 <p>Then, we can solve the problem using ‘robust.prioritizr’, supplying
 the full raster containing all the abundance predictions across all
 climate scenarios and the groups argument. For now, we keep the
@@ -465,6 +473,7 @@ invoking <code>add_robust_min_set_objective</code>.</p>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">s1_combined</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'Non-robust'</span>, <span class="st">'Robust'</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">s1_combined</span><span class="op">)</span></span></code></pre></div>
+<p><img src="climate-sdm_files/figure-html/unnamed-chunk-12-1.png" class="r-plt" alt="Planning solution of the non-robust and robust approaches" style="display: block; margin: auto;"></p>
 <p>The robust solution identified a lot more planning units compared to
 the non-robust solution. This is likely because a lot more planning
 units are needed to ensure that the species ranges are covered across
@@ -473,6 +482,7 @@ multiple plausible climate scenarios.</p>
 across all of the specified climate scenarios:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">plot_solution_eval</span><span class="op">(</span><span class="va">rs1</span><span class="op">)</span></span></code></pre></div>
+<p><img src="climate-sdm_files/figure-html/unnamed-chunk-13-1.png" class="r-plt" alt="Evaluation of feature representation of the robust approach" style="display: block; margin: auto;"></p>
 <p>The total abundance in the robust PA network now exceeds the targets
 in every climate scenario.</p>
 </div>
@@ -516,6 +526,7 @@ scenario.</p>
 <span><span class="va">s2a</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/solve.html" class="external-link">solve</a></span><span class="op">(</span><span class="va">p2a</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">plot_solution_eval</span><span class="op">(</span><span class="va">s2a</span><span class="op">)</span></span></code></pre></div>
+<p><img src="climate-sdm_files/figure-html/unnamed-chunk-14-1.png" class="r-plt" alt="Evaluation of feature representation of the solution of taking the most extreme climate scenario" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level3">
 <h3 id="adding-a-buffer-to-the-target">Adding a buffer to the target<a class="anchor" aria-label="anchor" href="#adding-a-buffer-to-the-target"></a>
@@ -539,6 +550,7 @@ not solve the problem.</p>
 <span><span class="va">s2b</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/solve.html" class="external-link">solve</a></span><span class="op">(</span><span class="va">p2b</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">plot_solution_eval</span><span class="op">(</span><span class="va">s2b</span><span class="op">)</span></span></code></pre></div>
+<p><img src="climate-sdm_files/figure-html/unnamed-chunk-15-1.png" class="r-plt" alt="Feature representation of solution of adding a buffer to the target" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level3">
 <h3 id="taking-the-minimum-value-across-scenarios">Taking the minimum value across scenarios<a class="anchor" aria-label="anchor" href="#taking-the-minimum-value-across-scenarios"></a>
@@ -558,6 +570,7 @@ minimum of the abundance estimates across climate scenarios:</p>
 <span>                   <span class="va">abundance_rast</span><span class="op">[[</span><span class="fl">8</span><span class="op">]</span><span class="op">]</span> <span class="op">&gt;</span> <span class="fl">0</span>,</span>
 <span>                   <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">abundance_rast</span><span class="op">[[</span><span class="fl">5</span><span class="op">:</span><span class="fl">8</span><span class="op">]</span><span class="op">]</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">abundance_min_2</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p><img src="climate-sdm_files/figure-html/unnamed-chunk-16-1.png" class="r-plt" alt="Map of species 2 under different climate scenarios" style="display: block; margin: auto;"></p>
 <p>In this case, we see that there are still some overlap in species
 ranges across climate scenarios. If we use the minimum to represent the
 abundance for species 2, we can solve the problem, but still see that
@@ -574,6 +587,7 @@ to higher costs).</p>
 <span>  <span class="fu"><a href="https://prioritizr.net/reference/add_default_solver.html" class="external-link">add_default_solver</a></span><span class="op">(</span>verbose <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></span>
 <span><span class="va">s2c</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/solve.html" class="external-link">solve</a></span><span class="op">(</span><span class="va">p2c</span><span class="op">)</span></span>
 <span><span class="fu">plot_solution_eval</span><span class="op">(</span><span class="va">s2c</span><span class="op">)</span></span></code></pre></div>
+<p><img src="climate-sdm_files/figure-html/unnamed-chunk-17-1.png" class="r-plt" alt="Feature representation of taking the minimum value out of scenarios" style="display: block; margin: auto;"></p>
 <p>In some cases, such an analysis may not even yield feasible
 solutions. For example, consider Species 1, where its ranges do not
 overlap at all across climate scenarios. Taking the minimum out of
@@ -587,6 +601,7 @@ planning units.</p>
 <span>                   <span class="va">abundance_rast</span><span class="op">[[</span><span class="fl">4</span><span class="op">]</span><span class="op">]</span> <span class="op">&gt;</span> <span class="fl">0</span>,</span>
 <span>                   <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">abundance_rast</span><span class="op">[[</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">]</span><span class="op">]</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">abundance_min_1</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">'continuous'</span>, range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p><img src="climate-sdm_files/figure-html/unnamed-chunk-18-1.png" class="r-plt" alt="Map of Species 1 under different climates" style="display: block; margin: auto;"></p>
 </div>
 </div>
 <div class="section level2">
@@ -698,7 +713,9 @@ met across all of the replicates we provide to the problem.</p>
 <span>    <span class="fu">theme_bw</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu">theme</span><span class="op">(</span>panel.grid <span class="op">=</span> <span class="fu">element_blank</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
-<span><span class="fu">eval_soln_uncertain</span><span class="op">(</span><span class="va">rs2a</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">eval_soln_uncertain</span><span class="op">(</span><span class="va">rs2a</span><span class="op">)</span></span>
+<span><span class="co">#&gt; `stat_bin()` using `bins = 30`. Pick better value `binwidth`.</span></span></code></pre></div>
+<p><img src="climate-sdm_files/figure-html/unnamed-chunk-22-1.png" class="r-plt" alt="Feature representation across data replicates" style="display: block; margin: auto;"></p>
 <p>As the number of replicates increase, it becomes increasingly hard
 for the problem to find feasible solutions. It also increases the cost
 of the solution.</p>
@@ -719,7 +736,9 @@ supplied to the problem.</p>
 <span></span>
 <span><span class="va">rs2b</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/solve.html" class="external-link">solve</a></span><span class="op">(</span><span class="va">rp2b</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">eval_soln_uncertain</span><span class="op">(</span><span class="va">rs2b</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">eval_soln_uncertain</span><span class="op">(</span><span class="va">rs2b</span><span class="op">)</span></span>
+<span><span class="co">#&gt; `stat_bin()` using `bins = 30`. Pick better value `binwidth`.</span></span></code></pre></div>
+<p><img src="climate-sdm_files/figure-html/unnamed-chunk-23-1.png" class="r-plt" alt="Feature representation across data replicates, with a lower confidence level" style="display: block; margin: auto;"></p>
 <p>We see that the proportion of the targets that were met are all at
 least 90%. For Species 2, as it has a much wider representation in the
 landscape, the conservation target is met in much more than 90% of the
@@ -727,7 +746,12 @@ replicates.</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">eval_soln_uncertain</span><span class="op">(</span><span class="va">rs2b</span>, return_df <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu">group_by</span><span class="op">(</span><span class="va">groups</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu">summarise</span><span class="op">(</span>prop_target_met <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/summarize-generics.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">target_met</span> <span class="op">==</span> <span class="st">'Target met'</span><span class="op">)</span> <span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu">summarise</span><span class="op">(</span>prop_target_met <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/summarize-generics.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">target_met</span> <span class="op">==</span> <span class="st">'Target met'</span><span class="op">)</span> <span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 2 × 2</span></span></span>
+<span><span class="co">#&gt;   groups prop_target_met</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> s1               0.9  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> s2               0.975</span></span></code></pre></div>
 <p>Users can also evaluate the relative trade-offs between robustness
 and the costs of the solutions identified by examining the trade-off
 curve across different confidence level specifications.</p>
@@ -767,6 +791,7 @@ curve across different confidence level specifications.</p>
 <span>  <span class="fu">theme_bw</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">labs</span><span class="op">(</span>x <span class="op">=</span> <span class="st">'Confidence Level'</span>, y <span class="op">=</span> <span class="st">'Cost'</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">theme</span><span class="op">(</span>panel.grid <span class="op">=</span> <span class="fu">element_blank</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p><img src="climate-sdm_files/figure-html/unnamed-chunk-25-1.png" class="r-plt" alt="Cost trade-off between cost and robustness" style="display: block; margin: auto;"></p>
 <p>Do however note that the setting of <code>conf_level</code> to
 anything other than 1 will increase the solve times and can make your
 problem intractable for a large number of planning units/
@@ -780,6 +805,7 @@ realizations.</p>
 <span>  <span class="fu">theme_bw</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">labs</span><span class="op">(</span>x <span class="op">=</span> <span class="st">'Confidence Level'</span>, y <span class="op">=</span> <span class="st">'Solve times'</span>, title <span class="op">=</span> <span class="st">"Solve times using Chance Constraints (Gurobi)"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">theme</span><span class="op">(</span>panel.grid <span class="op">=</span> <span class="fu">element_blank</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p><img src="climate-sdm_files/figure-html/unnamed-chunk-26-1.png" class="r-plt" alt="Computational solve time trade-off with robustness relaxation" style="display: block; margin: auto;"></p>
 <p>Users should carefully evaluate whether it is necessary to adjust the
 <code>conf_level</code> parameter and understand the consequences it can
 have for solving larger problems.</p>

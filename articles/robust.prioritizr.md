@@ -48,6 +48,12 @@ N <- 5
 target <- N*2
 
 feature_1 <- matrix(rnorm(100, mean = mu, sd = sigma), nrow = N, ncol = N)
+```
+
+    ## Warning in matrix(rnorm(100, mean = mu, sd = sigma), nrow = N, ncol = N): data
+    ## length differs from size of matrix: [100 != 5 x 5]
+
+``` r
 feature_2 <- matrix(1.5, nrow = N, ncol = N)
 sim_features_not_robust_raster <- c(rast(feature_1),
                                     rast(feature_2))
@@ -68,6 +74,9 @@ names(s1) <- c('solution')
 
 plot(c(sim_features_not_robust_raster, sim_pu_raster, s1))
 ```
+
+![Features and cost of the prioritization
+problem](robust.prioritizr_files/figure-html/unnamed-chunk-4-1.png)
 
 In the prioritization process, planning units that have a higher number
 of `feature_1` in the planning unit will be selected over other planning
@@ -90,6 +99,9 @@ df %>%
   theme_bw() +
   theme(panel.grid = element_blank())
 ```
+
+![Ranking of feature 1 values and its prioritization
+outcomes](robust.prioritizr_files/figure-html/unnamed-chunk-5-1.png)
 
 This would give desirable results if the estimate of the number of
 features in planning units are accurate and do not carry uncertainty.
@@ -136,6 +148,9 @@ data.frame(feature_1 = unname(feature_1_targets)) %>%
   scale_fill_manual('', values = c('#d55e00', '#0072b2'), drop = FALSE) +
   theme(panel.grid = element_blank())
 ```
+
+![Feature 1 representation evaluated across the
+distribution](robust.prioritizr_files/figure-html/unnamed-chunk-6-1.png)
 
 The green vertical line depicts where we expected `feature_1` to be, and
 the orange bars shows the distribution of where `feature_1` would
@@ -189,6 +204,9 @@ names(soln) <- c("Non-robust Solution", "Robust Solution")
 plot(soln)
 ```
 
+![Prioritization outcome of the non-robust and robust
+solutions](robust.prioritizr_files/figure-html/unnamed-chunk-7-1.png)
+
 Using the same approach, we can evaluate the representation of the new
 solution `s2` across all the realizations of Feature 1.
 
@@ -212,6 +230,11 @@ data.frame(`not_robust` = unname(feature_1_targets),
   facet_wrap(vars(name), ncol = 1) +
   theme(panel.grid = element_blank())
 ```
+
+![Faceted histogram comparing the distribution of feature representation
+for the not-robust and robust solutions. The robust solution shows a
+much lower violation
+rate.](robust.prioritizr_files/figure-html/unnamed-chunk-8-1.png)
 
 The representation of Feature 1 is dramatically improved when evaluated
 across the entire distribution of Feature 1, with all realizations
@@ -240,6 +263,9 @@ s3 <- solve(p3)
 
 plot(s3)
 ```
+
+![Prioritization outcome of the robust minimum shortfall
+objective](robust.prioritizr_files/figure-html/unnamed-chunk-9-1.png)
 
 Using the same approach as before, we evaluate the full distribution of
 possible representations of `feature_1` across the realizations we have
@@ -271,6 +297,11 @@ data.frame(feature_1 = unname(feature_1_targets)) %>%
   theme(panel.grid = element_blank())
 ```
 
+![Histogram of feature 1 representation, showing the distribution of
+outcomes, with bars colored based on whether they are below or above the
+target. Vertical lines indicate the target and the expected
+target.](robust.prioritizr_files/figure-html/unnamed-chunk-10-1.png)
+
 Observe that while `prioritizr` sees `feature_1` as being achieved at
 the expected target, indicated in the green line, the actual
 representation as simulated from the distribution is nowhere near the
@@ -294,6 +325,9 @@ p4 <- problem(sim_pu_raster, sim_features_robust_raster) %>%
 s4 <- solve(p4)
 plot(s4)
 ```
+
+![Map of the robust minimum shortfall objective
+solution.](robust.prioritizr_files/figure-html/unnamed-chunk-11-1.png)
 
 Importantly, the relative improvement of the solution here will be
 limited by the budget constraint that was imposed on the function.
@@ -330,6 +364,11 @@ plot_df %>%
   facet_wrap(vars(name), ncol = 1) +
   theme(panel.grid = element_blank())
 ```
+
+![Faceted histogram comparing the distribution of feature representation
+for the not-robust and robust solutions. The robust solution shows a
+much lower violation
+rate.](robust.prioritizr_files/figure-html/unnamed-chunk-12-1.png)
 
 The robust approach is able to find a solution that has a much higher
 probability of reaching the species target because it is accurately able
@@ -377,6 +416,9 @@ names(fig_rast) <- c('Non-Robust Solution', 'Robust Solution')
 plot(fig_rast)
 ```
 
+![Map comparing the non-robust and robust solutions with a small
+budget.](robust.prioritizr_files/figure-html/unnamed-chunk-13-1.png)
+
 Here, the budget is constrained tightly at 5 cells. Robustness is
 typically achieved by selecting more planning units. Therefore, even
 though a robust solution is used, the solution did not improve much.
@@ -417,6 +459,11 @@ plot_df %>%
   facet_wrap(vars(name), ncol = 1) +
   theme(panel.grid = element_blank())
 ```
+
+![Faceted histogram comparing the distribution of feature representation
+for the not-robust and robust solutions with a small budget. The
+distributions are similar due to the tight budget
+constraint.](robust.prioritizr_files/figure-html/unnamed-chunk-14-1.png)
 
 We can see that the distribution of outcomes did not change much in this
 case. This is because the budget is tightly constrained, which means

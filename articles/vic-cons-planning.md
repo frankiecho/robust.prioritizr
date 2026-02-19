@@ -67,6 +67,9 @@ pa_plt <- ggplot() +
 pa_plt
 ```
 
+![Map of Victoria, Australia, showing current protected
+areas.](vic-cons-planning_files/figure-html/unnamed-chunk-6-1.png)
+
 We can visualize the projected occurrence of the brush-tailed
 rock-wallaby (*Petrogale penicillata*), a critically endangered species
 in Victoria. The figure below shows that the wallaby’s suitable habitat
@@ -82,6 +85,10 @@ names(wallaby_maps) <- paste0(pull(wallaby, scenario), ": ", pull(wallaby, times
 
 plot(wallaby_maps, axes = F, maxcell = 1e4, , fun= \() lines(study_area))
 ```
+
+![Maps of Victoria, Australia, showing projected habitat for the
+brush-tailed rock-wallaby in 1990, 2030, and
+2090.](vic-cons-planning_files/figure-html/unnamed-chunk-7-1.png)
 
 As the figure illustrates, the projected distribution of species can
 change dramatically depending on the time period and climate scenario.
@@ -122,6 +129,43 @@ species_details$species <- paste0(ifelse(species_details$proj == 'historic_basel
                                   species_details$species)
 groups <- species_details$species
 table(groups)
+#> groups
+#>         Anthochaera_phrygia             Burramys_parvus 
+#>                          16                          16 
+#>   Gymnobelideus_leadbeateri       h_Anthochaera_phrygia 
+#>                          16                           1 
+#>           h_Burramys_parvus h_Gymnobelideus_leadbeateri 
+#>                           1                           1 
+#>    h_Lichenostomus_melanops         h_Liopholis_guthega 
+#>                           1                           1 
+#>          h_Litoria_spenceri  h_Miniopterus_schreibersii 
+#>                           1                           1 
+#>          h_Mixophyes_balbus     h_Neophema_chrysogaster 
+#>                           1                           1 
+#>      h_Pedionomus_torquatus     h_Petrogale_penicillata 
+#>                           1                           1 
+#>           h_Philoria_frosti          h_Pseudomys_fumeus 
+#>                           1                           1 
+#>   h_Pseudophryne_corroboree   h_Pseudophryne_pengilleyi 
+#>                           1                           1 
+#>      h_Sarcophilus_harrisii         h_Stipiturus_mallee 
+#>                           1                           1 
+#>    h_Tympanocryptis_lineata      Lichenostomus_melanops 
+#>                           1                          16 
+#>           Liopholis_guthega            Litoria_spenceri 
+#>                          16                          16 
+#>    Miniopterus_schreibersii            Mixophyes_balbus 
+#>                          16                          16 
+#>       Neophema_chrysogaster        Pedionomus_torquatus 
+#>                          16                          16 
+#>       Petrogale_penicillata             Philoria_frosti 
+#>                          16                          16 
+#>            Pseudomys_fumeus     Pseudophryne_corroboree 
+#>                          16                          16 
+#>     Pseudophryne_pengilleyi        Sarcophilus_harrisii 
+#>                          16                          16 
+#>           Stipiturus_mallee      Tympanocryptis_lineata 
+#>                          16                          16
 ```
 
 ## Setting a Feasible Target
@@ -184,6 +228,16 @@ worst_case_occurrence <- species_details %>%
   arrange(max_relative_target)
 worst_case_occurrence %>%
   head()
+#> # A tibble: 6 × 9
+#>   species            worst_case  mean pct_20  cvar best_case max_relative_target
+#>   <chr>                   <dbl> <dbl>  <dbl> <dbl>     <dbl>               <dbl>
+#> 1 Liopholis_guthega           1  109.     17   5.5       220              0.0045
+#> 2 Burramys_parvus            17  238.     67  28.5       434              0.0392
+#> 3 Philoria_frosti            20  220.     48  29         448              0.0446
+#> 4 Sarcophilus_harri…        241 2170.    614 321        4131              0.0583
+#> 5 Pseudophryne_corr…         39  194.     81  56.5       311              0.125 
+#> 6 Litoria_spenceri          612 1653.   1132 766.       2156              0.284 
+#> # ℹ 2 more variables: pct20_relative_target <dbl>, worst_case_scenario <chr>
 ```
 
 This shows that if we are interested in a fully robust solution, the
@@ -259,12 +313,21 @@ rpv1 <- problem(cost, species) %>%
   add_robust_min_set_objective() %>%
   add_locked_in_constraints(pa) %>%
   add_default_solver(verbose = F)
+#> ℹ `groups` specifies that 18 feature groups contain a single feature.
+#> ℹ  As such, the robust optimization procedures cannot account for uncertainty
+#>   in these feature groups.
 
 rsv1 <- solve(rpv1)
+#> ℹ  The targets for these groups are transformed based on the `mean()` target
+#>   value.
 
 plot_planning_soln(rsv1) +
   ggtitle("Robust Solution (Target = 0.45%)")
 ```
+
+![Map of Victoria, Australia, showing the robust conservation planning
+solution with a 0.45%
+target.](vic-cons-planning_files/figure-html/unnamed-chunk-11-1.png)
 
 The problem solves as expected.
 
@@ -292,6 +355,10 @@ species_details %>%
   theme(panel.grid = element_blank(),
         legend.position = 'bottom')
 ```
+
+![Line plots showing the representation of each species across different
+climate scenarios and time-steps, with a horizontal line indicating the
+target.](vic-cons-planning_files/figure-html/unnamed-chunk-12-1.png)
 
 The plot shows the target is met in all cases. However, since the target
 was very low, there is clearly room to protect more habitat for many
@@ -331,8 +398,13 @@ rpv2 <- problem(cost, species) %>%
   add_binary_decisions() %>%
   robust.prioritizr::add_robust_min_set_objective(method = "chance") %>%
   add_default_solver(verbose = F)
+#> ℹ `groups` specifies that 18 feature groups contain a single feature.
+#> ℹ  As such, the robust optimization procedures cannot account for uncertainty
+#>   in these feature groups.
 
 rsv2 <- solve(rpv2)
+#> ℹ  The targets for these groups are transformed based on the `mean()` target
+#>   value.
 
 rs <- (plot_planning_soln(rsv1) +
   ggtitle("Robust (1% target)") +
@@ -343,6 +415,10 @@ rs <- (plot_planning_soln(rsv1) +
   theme(legend.position = 'bottom')
 rs
 ```
+
+![Side-by-side maps of Victoria, Australia, comparing the robust and
+partially robust conservation planning
+solutions.](vic-cons-planning_files/figure-html/unnamed-chunk-13-1.png)
 
 ``` r
 feature_rep_r2 <- eval_feature_representation_summary(rpv2, rsv2)
@@ -365,6 +441,10 @@ rsv2_representation %>%
         legend.position = 'bottom')
 ```
 
+![Line plots showing the representation of each species in the partially
+robust solution, with a dashed horizontal line indicating the
+target.](vic-cons-planning_files/figure-html/unnamed-chunk-14-1.png)
+
 We can also verify that indeed the relative targets are not breached for
 more than 20% of the climate projections/ time-steps. The planning
 solution limits the proportion where the target is breached to up to 25%
@@ -380,6 +460,15 @@ rsv2_representation %>%
   ) %>%
   arrange(-violation_pct) %>%
   head()
+#> # A tibble: 6 × 2
+#>   species                   violation_pct
+#>   <chr>                             <dbl>
+#> 1 Gymnobelideus_leadbeateri          0.25
+#> 2 Neophema_chrysogaster              0.25
+#> 3 Pedionomus_torquatus               0.25
+#> 4 Philoria_frosti                    0.25
+#> 5 Sarcophilus_harrisii               0.25
+#> 6 Tympanocryptis_lineata             0.25
 ```
 
 ## Varying the confidence level
@@ -421,8 +510,13 @@ rpv3 <- problem(cost, species) %>%
   add_binary_decisions() %>%
   robust.prioritizr::add_robust_min_set_objective(method = "chance") %>%
   add_default_solver(verbose = F)
+#> ℹ `data$features` specifies that 18 feature groups contain a single feature.
+#> ℹ  As such, the robust optimization procedures cannot account for uncertainty
+#>   in these feature groups.
 
 rsv3 <- solve(rpv3)
+#> ℹ  The targets for these groups are transformed based on the `mean()` target
+#>   value.
 
 comb_plt <- (plot_planning_soln(rsv1) +
   ggtitle("Robust (1% target)") +
@@ -436,6 +530,10 @@ comb_plt <- (plot_planning_soln(rsv1) +
 comb_plt +
   labs(caption = "* Robust up to 75% probability for some species")
 ```
+
+![Three maps of Victoria, Australia, comparing the robust, partially
+robust, and fully robust\* conservation planning
+solutions.](vic-cons-planning_files/figure-html/unnamed-chunk-16-1.png)
 
 ## Comparison with a Non-Robust Solution
 
@@ -468,6 +566,10 @@ comb_plt <- (plot_planning_soln(sv1) +
   theme(legend.position = 'bottom')
 comb_plt
 ```
+
+![Side-by-side maps of Victoria, Australia, comparing the non-robust and
+partially robust conservation planning
+solutions.](vic-cons-planning_files/figure-html/unnamed-chunk-17-1.png)
 
 While the non-robust solution may appear effective when evaluated
 against the historical baseline, it may potentially miss targets under
@@ -519,3 +621,8 @@ species_details %>%
         legend.position = 'bottom')+
   labs(caption = "* Robust up to 75% probability for some species")
 ```
+
+![Line plots comparing the representation of the Orange-bellied parrot
+for non-robust, partially robust, and fully robust\* solutions across
+different climate scenarios and
+time-steps.](vic-cons-planning_files/figure-html/unnamed-chunk-18-1.png)

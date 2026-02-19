@@ -133,6 +133,10 @@ data.frame(x, resp_1, resp_2) %>%
   ggtitle("Expected abundance of Species 1 and 2")
 ```
 
+![Line plot showing the expected abundance of Species 1 and Species 2 as
+a function of
+temperature.](climate-sdm_files/figure-html/unnamed-chunk-5-1.png)
+
 In this simulated landscape, we see that the range of species 1 is much
 smaller compared to species 2, because it has a much narrower climatic
 range.
@@ -146,6 +150,9 @@ baseline_rast <- c(rast(temp), rast(prec), rast(baseline_ab_1), rast(baseline_ab
 names(baseline_rast) <- c("Temperature (C)", "Precipitation (mm)", "Abundance (Species 1)", "Abundance (Species 2)")
 plot(baseline_rast)
 ```
+
+![Raster showing temperature, precipitation and abundance of the two
+species](climate-sdm_files/figure-html/unnamed-chunk-6-1.png)
 
 Under future climate change, the temperature and precipitation values
 are likely to change, resulting in a shift in the range of both species.
@@ -242,6 +249,9 @@ names(abundance_rast) <- c('ssp1_rcp26_ab_1',
 plot(abundance_rast)
 ```
 
+![Species distributions under different
+scenarios](climate-sdm_files/figure-html/unnamed-chunk-7-1.png)
+
 ## Model specification
 
 We start with a conservation problem where an analyst is tasked with
@@ -280,6 +290,9 @@ estimates across climate scenarios and its cost:
 ``` r
 plot(c(abundance_rast, costs_rast))
 ```
+
+![Species distributions under different scenarios and
+cost](climate-sdm_files/figure-html/unnamed-chunk-8-1.png)
 
 The solution identified must satisfy the following constraints:
 
@@ -332,6 +345,9 @@ s1 <- solve(p1)
 plot(s1)
 ```
 
+![Planning solution using standard
+prioritizr](climate-sdm_files/figure-html/unnamed-chunk-9-1.png)
+
 The challenge with this planning approach is that it does not account
 for other climates. As a result, the planning solution would fail to
 reach the targets in other climate scenarios, particularly under the
@@ -355,6 +371,9 @@ plot_solution_eval <- function(soln) {
 }
 plot_solution_eval(s1)
 ```
+
+![Evaluation of species representation across
+scenarios](climate-sdm_files/figure-html/unnamed-chunk-10-1.png)
 
 The planning solution identified is not robust to alternative climate
 scenarios, as the abundance levels within the identified protected area
@@ -400,6 +419,8 @@ the names. These groupings are then supplied to
 scenario_matrix <- str_split_fixed(names(abundance_rast), pattern = '_', n = 4)
 groups <- paste0("species_", scenario_matrix[,4]) # Extract the index in the fourth position
 groups
+#> [1] "species_1" "species_1" "species_1" "species_1" "species_2" "species_2"
+#> [7] "species_2" "species_2"
 ```
 
 Then, we can solve the problem using ‘robust.prioritizr’, supplying the
@@ -425,6 +446,9 @@ names(s1_combined) <- c('Non-robust', 'Robust')
 plot(s1_combined)
 ```
 
+![Planning solution of the non-robust and robust
+approaches](climate-sdm_files/figure-html/unnamed-chunk-12-1.png)
+
 The robust solution identified a lot more planning units compared to the
 non-robust solution. This is likely because a lot more planning units
 are needed to ensure that the species ranges are covered across multiple
@@ -436,6 +460,9 @@ across all of the specified climate scenarios:
 ``` r
 plot_solution_eval(rs1)
 ```
+
+![Evaluation of feature representation of the robust
+approach](climate-sdm_files/figure-html/unnamed-chunk-13-1.png)
 
 The total abundance in the robust PA network now exceeds the targets in
 every climate scenario.
@@ -480,6 +507,10 @@ s2a <- solve(p2a)
 plot_solution_eval(s2a)
 ```
 
+![Evaluation of feature representation of the solution of taking the
+most extreme climate
+scenario](climate-sdm_files/figure-html/unnamed-chunk-14-1.png)
+
 ### Adding a buffer to the target
 
 Increasing targets might appear to be an easy fix, but it does not
@@ -504,6 +535,9 @@ s2b <- solve(p2b)
 plot_solution_eval(s2b)
 ```
 
+![Feature representation of solution of adding a buffer to the
+target](climate-sdm_files/figure-html/unnamed-chunk-15-1.png)
+
 ### Taking the minimum value across scenarios
 
 A common misconception to why robust optimization does under the hood
@@ -525,6 +559,9 @@ abundance_min_2 <- c(abundance_rast[[5]] > 0,
 abundance_min_2 %>% plot()
 ```
 
+![Map of species 2 under different climate
+scenarios](climate-sdm_files/figure-html/unnamed-chunk-16-1.png)
+
 In this case, we see that there are still some overlap in species ranges
 across climate scenarios. If we use the minimum to represent the
 abundance for species 2, we can solve the problem, but still see that
@@ -544,6 +581,9 @@ s2c <- solve(p2c)
 plot_solution_eval(s2c)
 ```
 
+![Feature representation of taking the minimum value out of
+scenarios](climate-sdm_files/figure-html/unnamed-chunk-17-1.png)
+
 In some cases, such an analysis may not even yield feasible solutions.
 For example, consider Species 1, where its ranges do not overlap at all
 across climate scenarios. Taking the minimum out of abundance estimates
@@ -558,6 +598,9 @@ abundance_min_1 <- c(abundance_rast[[1]] > 0,
                    min(abundance_rast[[1:4]] > 0))
 abundance_min_1 %>% plot(type = 'continuous', range = c(0,1))
 ```
+
+![Map of Species 1 under different
+climates](climate-sdm_files/figure-html/unnamed-chunk-18-1.png)
 
 ## Tuning the level of robustness
 
@@ -678,7 +721,11 @@ eval_soln_uncertain <- function(soln, return_df = FALSE) {
     theme(panel.grid = element_blank())
 }
 eval_soln_uncertain(rs2a)
+#> `stat_bin()` using `bins = 30`. Pick better value `binwidth`.
 ```
+
+![Feature representation across data
+replicates](climate-sdm_files/figure-html/unnamed-chunk-22-1.png)
 
 As the number of replicates increase, it becomes increasingly hard for
 the problem to find feasible solutions. It also increases the cost of
@@ -703,7 +750,11 @@ rp2b <- problem(costs_rast, abundance_uncertainty) %>%
 rs2b <- solve(rp2b)
 
 eval_soln_uncertain(rs2b)
+#> `stat_bin()` using `bins = 30`. Pick better value `binwidth`.
 ```
+
+![Feature representation across data replicates, with a lower confidence
+level](climate-sdm_files/figure-html/unnamed-chunk-23-1.png)
 
 We see that the proportion of the targets that were met are all at least
 90%. For Species 2, as it has a much wider representation in the
@@ -714,6 +765,11 @@ replicates.
 eval_soln_uncertain(rs2b, return_df = TRUE) %>%
   group_by(groups) %>%
   summarise(prop_target_met = mean(target_met == 'Target met') )
+#> # A tibble: 2 × 2
+#>   groups prop_target_met
+#>   <chr>            <dbl>
+#> 1 s1               0.9  
+#> 2 s2               0.975
 ```
 
 Users can also evaluate the relative trade-offs between robustness and
@@ -758,6 +814,9 @@ chance_cons_df %>%
   theme(panel.grid = element_blank())
 ```
 
+![Cost trade-off between cost and
+robustness](climate-sdm_files/figure-html/unnamed-chunk-25-1.png)
+
 Do however note that the setting of `conf_level` to anything other than
 1 will increase the solve times and can make your problem intractable
 for a large number of planning units/ realizations.
@@ -772,6 +831,9 @@ chance_cons_df %>%
   labs(x = 'Confidence Level', y = 'Solve times', title = "Solve times using Chance Constraints (Gurobi)") +
   theme(panel.grid = element_blank())
 ```
+
+![Computational solve time trade-off with robustness
+relaxation](climate-sdm_files/figure-html/unnamed-chunk-26-1.png)
 
 Users should carefully evaluate whether it is necessary to adjust the
 `conf_level` parameter and understand the consequences it can have for
