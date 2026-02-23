@@ -127,7 +127,7 @@ plot(soln)
 See \link{robust_constraints} for an overview of all functions for adding
 robust constraints.
 
-Other functions for adding robust constraints:
+Other constraints: 
 \code{\link{add_variable_robust_constraints}()}
 }
 \concept{constraints}

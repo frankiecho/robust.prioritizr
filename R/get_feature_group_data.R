@@ -21,7 +21,30 @@ NULL
 #' feature, (`$confidence_level`) `numeric` confidence_level for each group,
 #' and ($target_trans`) `character` method for transforming targets.
 #'
-#' @noRd
+#' @examples
+#' # Get planning unit data
+#' pu <- get_sim_pu_raster()
+#'
+#' # Get feature data
+#' features <- get_sim_features()
+#'
+#' # Define the feature groups,
+#' # Here, we will assign the first 2 features to the group A, and
+#' # the remaining features to the group B
+#' groups <- c(rep("A", 2), rep("B", nlyr(features) - 2))
+#'
+#' # Build problem
+#' p <-
+#'   problem(pu, features) |>
+#'   add_robust_min_set_objective() |>
+#'   add_constant_robust_constraints(groups = groups, conf_level = 0.9) |>
+#'   add_relative_targets(0.1) |>
+#'   add_binary_decisions() |>
+#'   add_default_solver(verbose = FALSE)
+#' 
+#' feature_group_data <- get_feature_group_data(p)
+#' print(feature_group_data)
+#' 
 get_feature_group_data <- function(x) {
   # assert valid argument
   assert_required(x)

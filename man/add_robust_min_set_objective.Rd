@@ -215,7 +215,7 @@ Rockafellar RT & Uryasev S (2000) Optimization of conditional value-at-risk.
 See \link{robust_objectives} for an overview of all functions for adding
 robust objectives.
 
-Other functions for adding robust objectives:
+Other objectives: 
 \code{\link{add_robust_min_shortfall_objective}()}
 }
 \concept{objectives}
