@@ -2,7 +2,7 @@
 
 This is a resubmission. In this version I have:
 
-* I have replaced `\dontrun{}` in my examples with an `@examplesIf` statement such that the example runs conditionally on a user's environment if the code is run outside of a test environment. The reason why `@examplesIf` is more suitable than `\donttest{}` in this context is because the examples involves solving intensive mathematical problems that could take more than 5 seconds to run on CRAN in some variants of the check process, depending on hardware.
+* I have replaced `\dontrun{}` in my examples with an `@examplesIf` statement such that the example runs conditionally on a user's environment if the code is run outside of a test environment. The reason why `@examplesIf` is more suitable than `\donttest{}` in this context is because the examples involves solving intensive mathematical problems that could take more than 5 seconds to run on CRAN in some variants of the check process, depending on hardware. The `@examplesIf` statement uses a custom function in the package to check whether or not the code is run in a CMD CHECK environment.
 
 Dear CRAN volunteers,
 
