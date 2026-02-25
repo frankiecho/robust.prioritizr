@@ -50,7 +50,7 @@ reference:
       - robust_constraints
       - has_concept("constraints")
   - title: Data
-    desc:  Example datasets distributed with the package.
+    desc: Example datasets distributed with the package.
     contents:
       - data
       - get_vic_study_area
@@ -58,3 +58,6 @@ reference:
       - get_vic_pa
       - get_vic_species
       - get_vic_species_metadata
+  - title: Miscellaneous
+    contents:
+      - run_example

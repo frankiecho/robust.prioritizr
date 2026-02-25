@@ -79,6 +79,7 @@ Collate:
     'package.R'
     'robust_constraints.R'
     'robust_objectives.R'
+    'run_example.R'
     'transform_targets.R'
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3

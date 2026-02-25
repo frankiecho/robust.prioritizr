@@ -171,7 +171,7 @@ continuous variables to the problem.
 }
 
 \examples{
-\dontrun{
+\dontshow{if (robust.prioritizr::run_example()) withAutoprint(\{ # examplesIf}
 # Load packages
 library(prioritizr)
 library(terra)
@@ -201,8 +201,7 @@ soln <- solve(p)
 
 # Plot the solution
 plot(soln)
-}
-
+\dontshow{\}) # examplesIf}
 }
 \references{
 Charnes A & Cooper WW (1959) Chance-constrained programming.
