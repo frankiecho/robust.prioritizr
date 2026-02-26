@@ -1,7 +1,7 @@
 Package: robust.prioritizr
 Type: Package
 Title: Robust Systematic Conservation Prioritization
-Version: 1.0.1
+Version: 1.0.2
 Authors@R:
     c(person(c('Frankie'), 'Cho',
         email='frankie.cho@monash.edu', role = c('aut', 'cre', 'cph'),
@@ -79,6 +79,7 @@ Collate:
     'package.R'
     'robust_constraints.R'
     'robust_objectives.R'
+    'run_example.R'
     'transform_targets.R'
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3

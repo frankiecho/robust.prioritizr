@@ -88,8 +88,7 @@ NULL
 #'
 #' @family constraints
 #'
-#' @examples
-#' \dontrun{
+#' @examplesIf robust.prioritizr::run_example()
 #' # Load packages
 #' library(prioritizr)
 #' library(terra)
@@ -119,7 +118,7 @@ NULL
 #'
 #' # Plot the solution
 #' plot(soln)
-#' }
+#' 
 #'
 #' @name add_constant_robust_constraints
 NULL
