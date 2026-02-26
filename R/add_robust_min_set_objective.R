@@ -173,8 +173,7 @@
 #' An updated [prioritizr::problem()] object with the objective added
 #' to it.
 #'
-#' @examples
-#' \dontrun{
+#' @examplesIf robust.prioritizr::run_example()
 #' # Load packages
 #' library(prioritizr)
 #' library(terra)
@@ -204,7 +203,6 @@
 #'
 #' # Plot the solution
 #' plot(soln)
-#' }
 #'
 #' @name add_robust_min_set_objective
 #' @export

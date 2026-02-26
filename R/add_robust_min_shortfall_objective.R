@@ -173,8 +173,7 @@
 #'
 #' @family objectives
 #'
-#' @examples
-#' \dontrun{
+#' @examplesIf robust.prioritizr::run_example() 
 #' # Load packages
 #' library(prioritizr)
 #' library(terra)
@@ -206,7 +205,6 @@
 #'
 #' # Plot the solution
 #' plot(soln)
-#' }
 #'
 #' @name add_robust_min_shortfall_objective
 #' @export

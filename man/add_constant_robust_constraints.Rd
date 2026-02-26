@@ -90,7 +90,7 @@ groupings parameter).
 }
 
 \examples{
-\dontrun{
+\dontshow{if (robust.prioritizr::run_example()) withAutoprint(\{ # examplesIf}
 # Load packages
 library(prioritizr)
 library(terra)
@@ -120,8 +120,8 @@ soln <- solve(p)
 
 # Plot the solution
 plot(soln)
-}
 
+\dontshow{\}) # examplesIf}
 }
 \seealso{
 See \link{robust_constraints} for an overview of all functions for adding

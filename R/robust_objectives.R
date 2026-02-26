@@ -42,8 +42,7 @@ NULL
 #'
 #' @family overviews
 #'
-#' @examples
-#' \dontrun{
+#' @examplesIf robust.prioritizr::run_example()
 #' # Load packages
 #' library(prioritizr)
 #' library(terra)
@@ -82,6 +81,6 @@ NULL
 #' soln <- c(solve(p1), solve(p2))
 #' names(soln) <- c("robust min set", "robust min shortfall")
 #' plot(soln, axes = FALSE)
-#' }
+#' 
 #' @name robust_objectives
 NULL

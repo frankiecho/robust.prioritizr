@@ -40,7 +40,7 @@ feature group.
 }
 }
 \examples{
-\dontrun{
+\dontshow{if (robust.prioritizr::run_example()) withAutoprint(\{ # examplesIf}
 # Load packages
 library(prioritizr)
 library(terra)
@@ -94,7 +94,7 @@ names(soln) <- c(
 
 # Plot the solutions
 plot(soln)
-}
+\dontshow{\}) # examplesIf}
 }
 \seealso{
 Other overviews: 

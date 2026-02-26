@@ -42,7 +42,7 @@ This function provides a robust alternative to
 }
 }
 \examples{
-\dontrun{
+\dontshow{if (robust.prioritizr::run_example()) withAutoprint(\{ # examplesIf}
 # Load packages
 library(prioritizr)
 library(terra)
@@ -81,7 +81,7 @@ p2 <-
 soln <- c(solve(p1), solve(p2))
 names(soln) <- c("robust min set", "robust min shortfall")
 plot(soln, axes = FALSE)
-}
+\dontshow{\}) # examplesIf}
 }
 \seealso{
 Other overviews: 
