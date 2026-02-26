@@ -112,10 +112,10 @@ Other functions for adding robust constraints:
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
 # Load packages
 library(prioritizr)
 library(terra)
+#> terra 1.8.93
 
 # Get planning unit data
 pu <- get_sim_pu_raster()
@@ -139,8 +139,10 @@ p <-
 
 # Solve the problem
 soln <- solve(p)
+#> ℹ  The targets for these groups are transformed based on the `mean()` target
+#>   value.
 
 # Plot the solution
 plot(soln)
-} # }
+
 ```

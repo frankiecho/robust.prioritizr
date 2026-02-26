@@ -119,7 +119,6 @@ Other functions for adding robust constraints:
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
 # Load packages
 library(prioritizr)
 library(terra)
@@ -146,6 +145,11 @@ constraint_data <- tibble(
 
 # Display constraint data
 print(constraint_data)
+#> # A tibble: 2 × 2
+#>   features     conf_level
+#>   <named list>      <dbl>
+#> 1 <chr [2]>          0.95
+#> 2 <chr [3]>          0.5 
 
 # Build problem
 p <-
@@ -158,8 +162,9 @@ p <-
 
 # Solve the problem
 soln <- solve(p)
+#> ℹ  The targets for these groups are transformed based on the `mean()` target
+#>   value.
 
 # Plot the solution
 plot(soln)
-} # }
 ```

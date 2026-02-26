@@ -41,7 +41,6 @@ Other overviews:
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
 # Load packages
 library(prioritizr)
 library(terra)
@@ -78,7 +77,10 @@ p2 <-
 
 # Solve problems
 soln <- c(solve(p1), solve(p2))
+#> ℹ  The targets for these groups are transformed based on the `mean()` target
+#>   value.
+#> ℹ  The targets for these groups are transformed based on the `mean()` target
+#>   value.
 names(soln) <- c("robust min set", "robust min shortfall")
 plot(soln, axes = FALSE)
-} # }
 ```

@@ -41,3 +41,8 @@ Example datasets distributed with the package.
   [`get_vic_species()`](https://frankiecho.github.io/robust.prioritizr/reference/data.md)
   [`get_vic_species_metadata()`](https://frankiecho.github.io/robust.prioritizr/reference/data.md)
   : Conservation planning dataset for Victoria, Australia
+
+## Miscellaneous
+
+- [`run_example()`](https://frankiecho.github.io/robust.prioritizr/reference/run_example.md)
+  : Run example?

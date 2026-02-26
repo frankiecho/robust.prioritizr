@@ -40,7 +40,6 @@ Other overviews:
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
 # Load packages
 library(prioritizr)
 library(terra)
@@ -76,6 +75,11 @@ constraint_data <- tibble(
 
 # Display constraint data
 print(constraint_data)
+#> # A tibble: 2 × 2
+#>   features     conf_level
+#>   <named list>      <dbl>
+#> 1 <chr [2]>          0.95
+#> 2 <chr [3]>          0.5 
 
 # Build problem with variable robust constraints
 p2 <-
@@ -88,11 +92,14 @@ p2 <-
 
 # Solve the problems
 soln <- c(solve(p1), solve(p2))
+#> ℹ  The targets for these groups are transformed based on the `mean()` target
+#>   value.
+#> ℹ  The targets for these groups are transformed based on the `mean()` target
+#>   value.
 names(soln) <- c(
   "constant robust constraints", "variable robust constraints"
 )
 
 # Plot the solutions
 plot(soln)
-} # }
 ```
