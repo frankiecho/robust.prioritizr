@@ -11,7 +11,7 @@
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/frankiecho/robust.prioritizr/blob/master/DESCRIPTION)
+[`DESCRIPTION`](https://github.com/frankiecho/robust.prioritizr/blob/v1.0.2/DESCRIPTION)
 
 Cho F, Hanson JO (2026). *robust.prioritizr: Robust Systematic
 Conservation Prioritization*. R package version 1.0.2,

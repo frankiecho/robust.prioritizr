@@ -2,6 +2,8 @@
 
 ## robust.prioritizr 1.0.2
 
+CRAN release: 2026-03-03
+
 - Use `@examplesIf` instead of `\dontrun{}` for examples
 
 ## robust.prioritizr 1.0.1

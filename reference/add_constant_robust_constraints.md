@@ -115,7 +115,7 @@ Other functions for adding robust constraints:
 # Load packages
 library(prioritizr)
 library(terra)
-#> terra 1.8.93
+#> terra 1.9.1
 
 # Get planning unit data
 pu <- get_sim_pu_raster()
