@@ -1,3 +1,5 @@
+# robust.prioritizr 1.0.3
+
 # robust.prioritizr 1.0.2
 
 - Use `@examplesIf` instead of `\dontrun{}` for examples
