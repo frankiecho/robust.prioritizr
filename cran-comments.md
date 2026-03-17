@@ -1,18 +1,9 @@
-Thank you for reviewing this submission. In this new version, I have addressed the previous comments from CRAN volunteers (please see below).
+Dear CRAN volunteers,
 
-Cheers,
+Thank you for reviewing this patch. In this patch, I have rectified a small typo in the DESCRIPTION file.
 
+Best regards,
 Frankie Cho
-
-## Previous comments from CRAN volunteers
-
-* \dontrun{} should only be used if the example really cannot be executed (e.g. because of missing additional software, missing API keys, ...) by the user. That's why wrapping examples in \dontrun{} adds the comment ("# Not run:") as a warning for the user. Does not seem necessary. Please replace \dontrun with \donttest. Please unwrap the examples if they are executable in < 5 sec, or replace dontrun{} with \donttest{}. For more details: <https://contributor.r-project.org/cran-cookbook/general_issues.html#structuring-of-examples>
-
-  **I have updated the examples to remove the `\dontrun{}` commands. Since these examples may take longer than 5 seconds to complete, I have updated them to run conditionally when not executed during package checks (i.e., with the @examplesIf roxygen tag that implements the `if()` approach described in the cookbook).**
-
-* still no man/ folder and no documentation. Please omit the @noRd-keywords in some of your 'roxygen2' sections of your .R-files to render .Rd-files. Ideally, you also provide an @example tag to those functions.
-
-  **The package contains a man folder and documentation. After contacting the CRAN volunteer, they confirmed that this issue was due to a problem with downloading the package tarball and not the package submission.**
 
 ## R CMD check results
 
