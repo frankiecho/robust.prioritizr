@@ -2,6 +2,8 @@
 
 ## robust.prioritizr 1.0.3
 
+- Fix a small typo in the DESCRIPTION file
+
 ## robust.prioritizr 1.0.2
 
 CRAN release: 2026-03-03
