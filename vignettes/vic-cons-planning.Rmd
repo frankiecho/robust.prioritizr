@@ -400,6 +400,8 @@ comb_plt <- (plot_planning_soln(sv1) +
   guides(fill = 'none', color = 'none')) +
   plot_planning_soln(rsv2) +
   ggtitle("Partially Robust (25% target)") +
+    plot_planning_soln(rsv3) +
+  ggtitle("Fully Robust (25% target)") +
   plot_layout(guides = 'collect') &
   theme(legend.position = 'bottom')
 comb_plt
@@ -448,4 +450,81 @@ species_details %>%
   theme(panel.grid = element_blank(),
         legend.position = 'bottom')+
   labs(caption = "* Robust up to 75% probability for some species")
+```
+
+Add the CVaR solution here
+```{r}
+var_rob_cons_cvar <- var_rob_cons
+var_rob_cons_cvar$conf_level <- if_else(unique(groups) %in% relax_cons_species, 0.5, 0.9)
+
+rpv4 <- problem(cost, species) %>%
+  add_relative_targets(rt2) %>%
+  robust.prioritizr::add_variable_robust_constraints(var_rob_cons_cvar) %>%
+  add_locked_in_constraints(pa) %>%
+  add_binary_decisions() %>%
+  robust.prioritizr::add_robust_min_set_objective(method = "cvar") %>%
+  add_default_solver(verbose = F)
+
+csv4 <- compile(rpv4)
+A <- csv4$A()
+row_ids <- csv4$row_ids()
+col_ids <- csv4$col_ids()
+lb <- csv4$lb()
+ub <- csv4$ub()
+rhs <- csv4$rhs()
+
+lb[str_detect(col_ids, "cvar_s")]
+ub[str_detect(col_ids, "cvar_s")]
+
+link_id = which(A[1,]<0)
+link_id
+lb[link_id]
+ub[link_id]
+csv4$vtype()[link_id]
+
+image(A[str_detect(row_ids, "cvar"), str_detect(col_ids, "cvar")])
+
+sol <- rpv4$portfolio$run(csv4, rpv4$solver)
+lhs <- as.vector(csv4$A() %*% sol[[1]]$x)
+check <- data.frame(lhs = lhs,
+sense = csv4$sense(),
+rhs = csv4$rhs(),
+diff = lhs - csv4$rhs())
+sum(check$diff + 1e-10 < 0)
+
+```
+
+```{r}
+
+feature_rep_r_cvar <- eval_feature_representation_summary(rpv2, sv1) %>%
+  mutate(groups = groups) %>%
+  group_by(groups) %>%
+  summarise(
+    target = mean(rt2*total_amount),
+    cvar_held = mean(relative_held[relative_held <= quantile(relative_held, 0.5)]),
+    cvar_held_absolute = mean(absolute_held[absolute_held <= quantile(absolute_held, 0.5)]),
+  ) %>%
+    mutate(cvar_held_pct = cvar_held_absolute / target,
+     met_cvar_target = cvar_held_absolute >= target)
+```
+
+```{r}
+csv4 <- compile(rpv4)
+A <- csv4$A()
+row_id <- csv4$row_ids()
+col_id <- csv4$col_ids()
+image(A[str_detect(row_id, "cvar"), str_detect(col_id, "cvar")])
+A[str_detect(row_id, "spp_target"), str_detect(col_id, "pu")] %>% rowSums()
+rhs[str_detect(row_id, "spp_target")]
+```
+
+Check the size of the new protected area
+
+```{r}
+net_area = list(sv1, rsv2, rsv3) %>%
+  sapply(function(x) {
+    global(x - pa, fun = 'sum', na.rm = T)[[1]]
+  })
+
+
 ```
