@@ -61,9 +61,6 @@ bool rcpp_apply_robust_cvar_constraints(
     //current_col_idx = static_cast<std::size_t>(*std::max_element(ptr->_A_j.begin(), ptr->_A_j.end())) + 1;
     current_col_idx = static_cast<std::size_t>(ptr->_vtype.size());
   }
-  std::cout << current_col_idx << std::endl;
-  std::cout << ptr->_obj.size() << std::endl;
-  //current_col_idx = static_cast<std::size_t>(ptr->_obj.size())
 
   // --- Add New Variables: `eta_j` and `s_jk` ---
   // 1. `eta_j` variables (VaR level)
@@ -183,7 +180,7 @@ bool rcpp_apply_robust_cvar_constraints(
   for (std::size_t j = 0; j < n_groups; ++j)
     ptr->_rhs.push_back(cvar_main_targets_T_j[j]);
   for (std::size_t j = 0; j < n_groups; ++j)
-    ptr->_row_ids.push_back("cvar_main_j" + std::to_string(j));
+    ptr->_row_ids.push_back("cvar_main_j");
   for (std::size_t j = 0; j < n_groups; ++j)
     ptr->_sense.push_back(">=");
 

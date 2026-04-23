@@ -99,7 +99,9 @@ test_that("solve (single zone, conf_level < 1, method = chance)", {
     add_robust_min_set_objective(method = "chance") |>
     prioritizr::add_absolute_targets(5) |>
     add_constant_robust_constraints(
-      groups = x, conf_level = conf_level, target_trans = "none"
+      groups = x,
+      conf_level = conf_level,
+      target_trans = "none"
     ) |>
     prioritizr::add_binary_decisions() |>
     prioritizr::add_highs_solver(verbose = FALSE)
@@ -138,6 +140,17 @@ test_that("compile (single zone, conf_level < 1, method = cvar)", {
 
   # compile problem
   o <- prioritizr::compile(p)
+
+  # Check whether the lb and ub of CVaR constraints are correct
+  cvar_eta_lb = o$lb()[grepl('cvar_eta', o$col_ids())]
+  cvar_eta_ub = o$ub()[grepl('cvar_eta', o$col_ids())]
+  expect_all_true(cvar_eta_lb <= -1e10) # CVaR eta variable should have a very low lower bound
+  expect_all_true(cvar_eta_ub >= 1e10) # CVaR eta variable should have a very high upper bound
+
+  cvar_s_lb = o$lb()[grepl('cvar_s', o$col_ids())]
+  cvar_s_ub = o$ub()[grepl('cvar_s', o$col_ids())]
+  expect_all_equal(cvar_s_lb, 0) # CVaR s variable should have a 0 lower bound
+  expect_all_true(cvar_s_ub >= 1e10) # CVaR s variable should have a very high upper bound
 
   # run tests
   expect_s3_class(o, "OptimizationProblem")
@@ -193,7 +206,9 @@ test_that("compile (multiple zones, conf_level = 1, method = chance)", {
     prioritizr::problem(sim_pu_raster, sim_zones) |>
     add_robust_min_set_objective(method = "chance") |>
     add_constant_robust_constraints(
-      groups = x, conf_level = 1, target_trans = "none"
+      groups = x,
+      conf_level = 1,
+      target_trans = "none"
     ) |>
     prioritizr::add_relative_targets(matrix(0.1, ncol = 3, nrow = 5)) |>
     prioritizr::add_binary_decisions()
@@ -206,8 +221,7 @@ test_that("compile (multiple zones, conf_level = 1, method = chance)", {
   expect_snapshot(as.list(o))
   expect_true(
     all(
-      apply(as.matrix(o$A()), 1, sum)[seq_len(15)] >
-      o$rhs()[seq_len(15)]
+      apply(as.matrix(o$A()), 1, sum)[seq_len(15)] > o$rhs()[seq_len(15)]
     )
   )
 })
@@ -235,7 +249,9 @@ test_that("solve (multiple zones, conf_level = 1, method = chance)", {
     prioritizr::add_relative_targets(matrix(0.1, ncol = 3, nrow = 5)) |>
     prioritizr::add_binary_decisions() |>
     add_constant_robust_constraints(
-      groups = x, conf_level = 1, target_trans = "none"
+      groups = x,
+      conf_level = 1,
+      target_trans = "none"
     ) |>
     prioritizr::add_highs_solver(verbose = FALSE)
 
