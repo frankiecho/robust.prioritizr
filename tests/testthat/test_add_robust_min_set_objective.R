@@ -123,9 +123,11 @@ test_that("compile (single zone, conf_level < 1, method = cvar)", {
   # import data
   sim_pu_raster <- prioritizr::get_sim_pu_raster()
   sim_features <- prioritizr::get_sim_features()
+  locked_in_constraints <- prioritizr::get_sim_locked_in_raster()
 
   # prepare features and define feature groupings
   sim_features <- rep(prioritizr::get_sim_features(), 5)
+  values(sim_features)[(ncell(sim_features) - 1):ncell(sim_features), ] <- 0
   names(sim_features) <- paste0("feature_", seq_len(terra::nlyr(sim_features)))
   x <- rep_len(c("a", "b"), terra::nlyr(sim_features))
 
@@ -136,10 +138,22 @@ test_that("compile (single zone, conf_level < 1, method = cvar)", {
     prioritizr::add_absolute_targets(5) |>
     add_constant_robust_constraints(groups = x, conf_level = 0.5) |>
     prioritizr::add_binary_decisions() |>
+    #prioritizr::add_locked_in_constraints(locked_in_constraints) |>
     prioritizr::add_highs_solver(verbose = FALSE)
 
   # compile problem
   o <- prioritizr::compile(p)
+
+  # Check whether the main constraints form a diagonal matrix
+  cvar_main_constraints <- as.matrix(o$A()[
+    grepl('cvar_main_j', o$row_ids()),
+    grepl('cvar_eta', o$col_ids())
+  ])
+  expect_all_equal(
+    cvar_main_constraints[upper.tri(cvar_main_constraints, diag = FALSE)],
+    0
+  )
+  expect_all_true(diag(cvar_main_constraints) > 0)
 
   # Check whether the lb and ub of CVaR constraints are correct
   cvar_eta_lb = o$lb()[grepl('cvar_eta', o$col_ids())]
