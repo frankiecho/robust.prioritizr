@@ -127,7 +127,9 @@ test_that("compile (single zone, conf_level < 1, method = cvar)", {
 
   # prepare features and define feature groupings
   sim_features <- rep(prioritizr::get_sim_features(), 5)
-  values(sim_features)[(ncell(sim_features) - 1):ncell(sim_features), ] <- 0
+  terra::values(sim_features)[
+    (ncell(sim_features) - 1):ncell(sim_features),
+  ] <- 0
   names(sim_features) <- paste0("feature_", seq_len(terra::nlyr(sim_features)))
   x <- rep_len(c("a", "b"), terra::nlyr(sim_features))
 
