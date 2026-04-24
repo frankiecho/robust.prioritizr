@@ -233,7 +233,10 @@ rpv1 <- problem(cost, species) %>%
   add_locked_in_constraints(pa) %>%
   add_default_solver(verbose = F)
 
+start_time <- Sys.time()
 rsv1 <- solve(rpv1)
+end_time <- Sys.time()
+rsv1_time <- end_time - start_time
 
 plot_planning_soln(rsv1) +
   ggtitle("Robust Solution (Target = 0.45%)")
@@ -285,13 +288,16 @@ rpv2 <- problem(cost, species) %>%
   robust.prioritizr::add_robust_min_set_objective(method = "chance") %>%
   add_default_solver(verbose = F)
 
+start_time <- Sys.time()
 rsv2 <- solve(rpv2)
+end_time <- Sys.time()
+rsv2_time <- end_time - start_time
 
 rs <- (plot_planning_soln(rsv1) +
   ggtitle("Robust (1% target)") +
     guides(color = 'none', fill = 'none')) +
   plot_planning_soln(rsv2) +
-  ggtitle("Partially Robust (20% target)") +
+  ggtitle("Partially Robust (25% target)") +
   plot_layout(guides = 'collect') &
   theme(legend.position = 'bottom')
 rs
@@ -361,7 +367,10 @@ rpv3 <- problem(cost, species) %>%
   robust.prioritizr::add_robust_min_set_objective(method = "chance") %>%
   add_default_solver(verbose = F)
 
+start_time <- Sys.time()
 rsv3 <- solve(rpv3)
+end_time <- Sys.time()
+rsv3_time <- end_time - start_time
 
 comb_plt <- (plot_planning_soln(rsv1) +
   ggtitle("Robust (1% target)") +
@@ -466,7 +475,10 @@ rpv4 <- problem(cost, species) %>%
   robust.prioritizr::add_robust_min_set_objective(method = "cvar") %>%
   add_default_solver(verbose = F)
 
+start_time <- Sys.time()
 rsv4 <- solve(rpv4)
+end_time <- Sys.time()
+rsv4_time <- end_time - start_time
 
 plot_planning_soln(rsv4) +
   ggtitle("Robust (25% target, CVaR objective)")
@@ -489,4 +501,22 @@ feature_rep_r_cvar <- eval_feature_representation_summary(rpv4, rsv4) %>%
 
 # Check if the target is met across all species
 all(feature_rep_r_cvar$met_cvar_target)
+```
+
+# Computation time comparison
+
+In my testing, the CVaR constraint is able to find a solution at a fraction of the time given the same number of features.
+```{r}
+solve_times <- data.frame(
+  method = c('a. Robust solution\n(small target)','b. Partially robust\n(chance constraint)','c. Fully robust','d. Partially robust\n(CVaR constraint)'),
+  time = c(rsv1_time, rsv2_time, rsv3_time, rsv4_time)
+)
+
+ggplot(solve_times, aes(y = method, x = time)) +
+  geom_bar(stat = 'identity')+
+  theme_bw() +
+  scale_y_discrete(limits = rev)+
+  labs(y = "Method", x = "Solve time (seconds)")+
+  theme(panel.grid = element_blank(),
+        legend.position = 'bottom')
 ```
