@@ -18,7 +18,7 @@ conservation planning in Victoria, Australia. We will use data for
 historic and future species occurrence projections, conservation costs,
 and existing protected areas.
 
-## Dataset
+### Dataset
 
 First, we load the dataset bundled with the package. To achieve this, we
 will use the following functions.
@@ -96,7 +96,7 @@ change dramatically depending on the time period and climate scenario.
 these different scenarios, ensuring the final conservation plan meets
 its targets regardless of which future unfolds.
 
-## Feature Groupings
+### Feature Groupings
 
 A key concept in `robust.prioritizr` is the `groups` argument. In a
 standard `prioritizr` problem, each feature is a single data layer.
@@ -168,7 +168,7 @@ table(groups)
 #>                          16                          16
 ```
 
-## Setting a Feasible Target
+### Setting a Feasible Target
 
 When using a robust minimum set objective, it is crucial to set a target
 that is achievable across all scenarios. If a target for a species is
@@ -286,7 +286,7 @@ plot_planning_soln <- function(soln) {
 }
 ```
 
-## Solving the Robust Problem
+### Solving the Robust Problem
 
 The workflow for a robust problem is similar to `prioritizr`, but with
 the addition of robust-specific functions. Here is a breakdown of the
@@ -317,9 +317,12 @@ rpv1 <- problem(cost, species) %>%
 #> ℹ  As such, the robust optimization procedures cannot account for uncertainty
 #>   in these feature groups.
 
+start_time <- Sys.time()
 rsv1 <- solve(rpv1)
 #> ℹ  The targets for these groups are transformed based on the `mean()` target
 #>   value.
+end_time <- Sys.time()
+rsv1_time <- end_time - start_time
 
 plot_planning_soln(rsv1) +
   ggtitle("Robust Solution (Target = 0.45%)")
@@ -365,7 +368,7 @@ was very low, there is clearly room to protect more habitat for many
 species. This motivates exploring solutions with higher targets,
 potentially by relaxing the robustness constraints.
 
-## Relaxing robustness to increase the target
+### Relaxing robustness to increase the target
 
 As the previous example shows, enforcing targets to be held robustly
 across all scenarios and timesteps can be unrealistic. This limits the
@@ -402,15 +405,18 @@ rpv2 <- problem(cost, species) %>%
 #> ℹ  As such, the robust optimization procedures cannot account for uncertainty
 #>   in these feature groups.
 
+start_time <- Sys.time()
 rsv2 <- solve(rpv2)
 #> ℹ  The targets for these groups are transformed based on the `mean()` target
 #>   value.
+end_time <- Sys.time()
+rsv2_time <- end_time - start_time
 
 rs <- (plot_planning_soln(rsv1) +
   ggtitle("Robust (1% target)") +
     guides(color = 'none', fill = 'none')) +
   plot_planning_soln(rsv2) +
-  ggtitle("Partially Robust (20% target)") +
+  ggtitle("Partially Robust (25% target)") +
   plot_layout(guides = 'collect') &
   theme(legend.position = 'bottom')
 rs
@@ -471,7 +477,7 @@ rsv2_representation %>%
 #> 6 Tympanocryptis_lineata             0.25
 ```
 
-## Varying the confidence level
+### Varying the confidence level
 
 As we lower the confidence level for all species to aid the feasibility
 of the problem, the optimization problem also takes advantage of the
@@ -514,9 +520,12 @@ rpv3 <- problem(cost, species) %>%
 #> ℹ  As such, the robust optimization procedures cannot account for uncertainty
 #>   in these feature groups.
 
+start_time <- Sys.time()
 rsv3 <- solve(rpv3)
 #> ℹ  The targets for these groups are transformed based on the `mean()` target
 #>   value.
+end_time <- Sys.time()
+rsv3_time <- end_time - start_time
 
 comb_plt <- (plot_planning_soln(rsv1) +
   ggtitle("Robust (1% target)") +
@@ -535,7 +544,7 @@ comb_plt +
 robust, and fully robust\* conservation planning
 solutions.](vic-cons-planning_files/figure-html/unnamed-chunk-16-1.png)
 
-## Comparison with a Non-Robust Solution
+### Comparison with a Non-Robust Solution
 
 For comparison, we solve a standard `prioritizr` problem using only the
 historical baseline data and a higher target. We apply the same 25%
@@ -562,6 +571,8 @@ comb_plt <- (plot_planning_soln(sv1) +
   guides(fill = 'none', color = 'none')) +
   plot_planning_soln(rsv2) +
   ggtitle("Partially Robust (25% target)") +
+    plot_planning_soln(rsv3) +
+  ggtitle("Fully Robust (25% target)") +
   plot_layout(guides = 'collect') &
   theme(legend.position = 'bottom')
 comb_plt
@@ -626,3 +637,84 @@ species_details %>%
 for non-robust, partially robust, and fully robust\* solutions across
 different climate scenarios and
 time-steps.](vic-cons-planning_files/figure-html/unnamed-chunk-18-1.png)
+
+Likewise, we can repeat the calculation to use the CVaR constraints.
+This ensures that the average of the “tail” of the distribution of
+feature representation always exceeds our targets.
+
+``` r
+var_rob_cons_cvar <- var_rob_cons
+var_rob_cons_cvar$groups <- unique(groups)
+var_rob_cons_cvar$conf_level <- if_else(unique(groups) %in% relax_cons_species, 0.5, 0.875)
+
+rpv4 <- problem(cost, species) %>%
+  add_relative_targets(rt2) %>%
+  robust.prioritizr::add_variable_robust_constraints(var_rob_cons_cvar) %>%
+  add_locked_in_constraints(pa) %>%
+  add_binary_decisions() %>%
+  robust.prioritizr::add_robust_min_set_objective(method = "cvar") %>%
+  add_default_solver(verbose = F)
+#> ℹ `data$features` specifies that 18 feature groups contain a single feature.
+#> ℹ  As such, the robust optimization procedures cannot account for uncertainty
+#>   in these feature groups.
+
+start_time <- Sys.time()
+rsv4 <- solve(rpv4)
+#> ℹ  The targets for these groups are transformed based on the `mean()` target
+#>   value.
+end_time <- Sys.time()
+rsv4_time <- end_time - start_time
+
+plot_planning_soln(rsv4) +
+  ggtitle("Robust (25% target, CVaR objective)")
+```
+
+![](vic-cons-planning_files/figure-html/unnamed-chunk-19-1.png)
+
+We can evaluate whether the new protected areas actually meet the
+targets by checking whether the Conditional Value-at-Risk metric exceeds
+the targets.
+
+``` r
+feature_rep_r_cvar <- eval_feature_representation_summary(rpv4, rsv4) %>%
+  mutate(groups = groups) %>%
+  left_join(var_rob_cons_cvar, by = 'groups') %>%
+  summarise(
+    target = mean(rt2*total_amount),
+    # Linearized CVaR calculation
+    cvar_held_absolute = mean(absolute_held[absolute_held <= quantile(absolute_held, 1-conf_level)]),
+    .by = groups
+  ) %>%
+  mutate(
+    met_cvar_target = cvar_held_absolute >= target - 1e-6 # Add tiny tolerance
+  )
+
+# Check if the target is met across all species
+all(feature_rep_r_cvar$met_cvar_target)
+#> [1] TRUE
+```
+
+## Computation time comparison
+
+In my testing, the CVaR constraint is able to find a solution at a
+fraction of the time given the same number of features.
+
+``` r
+solve_times <- data.frame(
+  method = c('a. Robust solution\n(small target)','b. Partially robust\n(chance constraint)','c. Fully robust','d. Partially robust\n(CVaR constraint)'),
+  time = c(rsv1_time, rsv2_time, rsv3_time, rsv4_time)
+)
+
+ggplot(solve_times, aes(y = method, x = time)) +
+  geom_bar(stat = 'identity')+
+  theme_bw() +
+  scale_y_discrete(limits = rev)+
+  labs(y = "Method", x = "Solve time (seconds)")+
+  theme(panel.grid = element_blank(),
+        legend.position = 'bottom') +
+  ggtitle("Solve times of different methods")
+#> Don't know how to automatically pick scale for object of type <difftime>.
+#> Defaulting to continuous.
+```
+
+![](vic-cons-planning_files/figure-html/unnamed-chunk-21-1.png)

@@ -26,7 +26,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">robust.prioritizr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -87,9 +87,9 @@
 for systematic conservation planning in Victoria, Australia. We will use
 data for historic and future species occurrence projections,
 conservation costs, and existing protected areas.</p>
-<div class="section level2">
-<h2 id="dataset">Dataset<a class="anchor" aria-label="anchor" href="#dataset"></a>
-</h2>
+<div class="section level3">
+<h3 id="dataset">Dataset<a class="anchor" aria-label="anchor" href="#dataset"></a>
+</h3>
 <p>First, we load the dataset bundled with the package. To achieve this,
 we will use the following functions.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
@@ -151,9 +151,9 @@ change dramatically depending on the time period and climate scenario.
 integrating these different scenarios, ensuring the final conservation
 plan meets its targets regardless of which future unfolds.</p>
 </div>
-<div class="section level2">
-<h2 id="feature-groupings">Feature Groupings<a class="anchor" aria-label="anchor" href="#feature-groupings"></a>
-</h2>
+<div class="section level3">
+<h3 id="feature-groupings">Feature Groupings<a class="anchor" aria-label="anchor" href="#feature-groupings"></a>
+</h3>
 <p>A key concept in <code>robust.prioritizr</code> is the
 <code>groups</code> argument. In a standard <code>prioritizr</code>
 problem, each feature is a single data layer. However,
@@ -221,9 +221,9 @@ groups.</p>
 <span><span class="co">#&gt;           Stipiturus_mallee      Tympanocryptis_lineata </span></span>
 <span><span class="co">#&gt;                          16                          16</span></span></code></pre></div>
 </div>
-<div class="section level2">
-<h2 id="setting-a-feasible-target">Setting a Feasible Target<a class="anchor" aria-label="anchor" href="#setting-a-feasible-target"></a>
-</h2>
+<div class="section level3">
+<h3 id="setting-a-feasible-target">Setting a Feasible Target<a class="anchor" aria-label="anchor" href="#setting-a-feasible-target"></a>
+</h3>
 <p>When using a robust minimum set objective, it is crucial to set a
 target that is achievable across all scenarios. If a target for a
 species is higher than its total predicted occurrence in even one
@@ -329,9 +329,9 @@ as follows.</p>
 <span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="va">plt</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
 </div>
-<div class="section level2">
-<h2 id="solving-the-robust-problem">Solving the Robust Problem<a class="anchor" aria-label="anchor" href="#solving-the-robust-problem"></a>
-</h2>
+<div class="section level3">
+<h3 id="solving-the-robust-problem">Solving the Robust Problem<a class="anchor" aria-label="anchor" href="#solving-the-robust-problem"></a>
+</h3>
 <p>The workflow for a robust problem is similar to
 <code>prioritizr</code>, but with the addition of robust-specific
 functions. Here is a breakdown of the problem construction:</p>
@@ -366,9 +366,12 @@ protected areas.</li>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span>  As such, the robust optimization procedures cannot account for uncertainty</span></span>
 <span><span class="co">#&gt;   in these feature groups.</span></span>
 <span></span>
+<span><span class="va">start_time</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.time</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">rsv1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/solve.html" class="external-link">solve</a></span><span class="op">(</span><span class="va">rpv1</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span>  The targets for these groups are transformed based on the `mean()` target</span></span>
 <span><span class="co">#&gt;   value.</span></span>
+<span><span class="va">end_time</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.time</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">rsv1_time</span> <span class="op">&lt;-</span> <span class="va">end_time</span> <span class="op">-</span> <span class="va">start_time</span></span>
 <span></span>
 <span><span class="fu">plot_planning_soln</span><span class="op">(</span><span class="va">rsv1</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"Robust Solution (Target = 0.45%)"</span><span class="op">)</span></span></code></pre></div>
@@ -402,9 +405,9 @@ target was very low, there is clearly room to protect more habitat for
 many species. This motivates exploring solutions with higher targets,
 potentially by relaxing the robustness constraints.</p>
 </div>
-<div class="section level2">
-<h2 id="relaxing-robustness-to-increase-the-target">Relaxing robustness to increase the target<a class="anchor" aria-label="anchor" href="#relaxing-robustness-to-increase-the-target"></a>
-</h2>
+<div class="section level3">
+<h3 id="relaxing-robustness-to-increase-the-target">Relaxing robustness to increase the target<a class="anchor" aria-label="anchor" href="#relaxing-robustness-to-increase-the-target"></a>
+</h3>
 <p>As the previous example shows, enforcing targets to be held robustly
 across all scenarios and timesteps can be unrealistic. This limits the
 maximum feasible target we can adopt for the planning solution. This
@@ -439,15 +442,18 @@ projections and time-steps.</p>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span>  As such, the robust optimization procedures cannot account for uncertainty</span></span>
 <span><span class="co">#&gt;   in these feature groups.</span></span>
 <span></span>
+<span><span class="va">start_time</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.time</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">rsv2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/solve.html" class="external-link">solve</a></span><span class="op">(</span><span class="va">rpv2</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span>  The targets for these groups are transformed based on the `mean()` target</span></span>
 <span><span class="co">#&gt;   value.</span></span>
+<span><span class="va">end_time</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.time</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">rsv2_time</span> <span class="op">&lt;-</span> <span class="va">end_time</span> <span class="op">-</span> <span class="va">start_time</span></span>
 <span></span>
 <span><span class="va">rs</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="fu">plot_planning_soln</span><span class="op">(</span><span class="va">rsv1</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"Robust (1% target)"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/guides.html" class="external-link">guides</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">'none'</span>, fill <span class="op">=</span> <span class="st">'none'</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">plot_planning_soln</span><span class="op">(</span><span class="va">rsv2</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"Partially Robust (20% target)"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"Partially Robust (25% target)"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://patchwork.data-imaginist.com/reference/plot_layout.html" class="external-link">plot_layout</a></span><span class="op">(</span>guides <span class="op">=</span> <span class="st">'collect'</span><span class="op">)</span> <span class="op">&amp;</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">'bottom'</span><span class="op">)</span></span>
 <span><span class="va">rs</span></span></code></pre></div>
@@ -497,9 +503,9 @@ guthega</em>).</p>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> Sarcophilus_harrisii               0.25</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> Tympanocryptis_lineata             0.25</span></span></code></pre></div>
 </div>
-<div class="section level2">
-<h2 id="varying-the-confidence-level">Varying the confidence level<a class="anchor" aria-label="anchor" href="#varying-the-confidence-level"></a>
-</h2>
+<div class="section level3">
+<h3 id="varying-the-confidence-level">Varying the confidence level<a class="anchor" aria-label="anchor" href="#varying-the-confidence-level"></a>
+</h3>
 <p>As we lower the confidence level for all species to aid the
 feasibility of the problem, the optimization problem also takes
 advantage of the lowered confidence level to help further reduce the
@@ -540,9 +546,12 @@ the other species meets its targets robustly across all scenarios.</p>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span>  As such, the robust optimization procedures cannot account for uncertainty</span></span>
 <span><span class="co">#&gt;   in these feature groups.</span></span>
 <span></span>
+<span><span class="va">start_time</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.time</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">rsv3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/solve.html" class="external-link">solve</a></span><span class="op">(</span><span class="va">rpv3</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span>  The targets for these groups are transformed based on the `mean()` target</span></span>
 <span><span class="co">#&gt;   value.</span></span>
+<span><span class="va">end_time</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.time</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">rsv3_time</span> <span class="op">&lt;-</span> <span class="va">end_time</span> <span class="op">-</span> <span class="va">start_time</span></span>
 <span></span>
 <span><span class="va">comb_plt</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="fu">plot_planning_soln</span><span class="op">(</span><span class="va">rsv1</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"Robust (1% target)"</span><span class="op">)</span> <span class="op">+</span></span>
@@ -557,9 +566,9 @@ the other species meets its targets robustly across all scenarios.</p>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>caption <span class="op">=</span> <span class="st">"* Robust up to 75% probability for some species"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="vic-cons-planning_files/figure-html/unnamed-chunk-16-1.png" class="r-plt" alt="Three maps of Victoria, Australia, comparing the robust, partially robust, and fully robust* conservation planning solutions." style="display: block; margin: auto;"></p>
 </div>
-<div class="section level2">
-<h2 id="comparison-with-a-non-robust-solution">Comparison with a Non-Robust Solution<a class="anchor" aria-label="anchor" href="#comparison-with-a-non-robust-solution"></a>
-</h2>
+<div class="section level3">
+<h3 id="comparison-with-a-non-robust-solution">Comparison with a Non-Robust Solution<a class="anchor" aria-label="anchor" href="#comparison-with-a-non-robust-solution"></a>
+</h3>
 <p>For comparison, we solve a standard <code>prioritizr</code> problem
 using only the historical baseline data and a higher target. We apply
 the same 25% target to the problem, but only solve this using the
@@ -584,6 +593,8 @@ historical baseline data.</p>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/guides.html" class="external-link">guides</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="st">'none'</span>, color <span class="op">=</span> <span class="st">'none'</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">plot_planning_soln</span><span class="op">(</span><span class="va">rsv2</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"Partially Robust (25% target)"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu">plot_planning_soln</span><span class="op">(</span><span class="va">rsv3</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"Fully Robust (25% target)"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://patchwork.data-imaginist.com/reference/plot_layout.html" class="external-link">plot_layout</a></span><span class="op">(</span>guides <span class="op">=</span> <span class="st">'collect'</span><span class="op">)</span> <span class="op">&amp;</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">'bottom'</span><span class="op">)</span></span>
 <span><span class="va">comb_plt</span></span></code></pre></div>
@@ -637,6 +648,78 @@ Orange-bellied parrot representation falls below the desired target.</p>
 <span>        legend.position <span class="op">=</span> <span class="st">'bottom'</span><span class="op">)</span><span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>caption <span class="op">=</span> <span class="st">"* Robust up to 75% probability for some species"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="vic-cons-planning_files/figure-html/unnamed-chunk-18-1.png" class="r-plt" alt="Line plots comparing the representation of the Orange-bellied parrot for non-robust, partially robust, and fully robust* solutions across different climate scenarios and time-steps." style="display: block; margin: auto;"></p>
+<p>Likewise, we can repeat the calculation to use the CVaR constraints.
+This ensures that the average of the “tail” of the distribution of
+feature representation always exceeds our targets.</p>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">var_rob_cons_cvar</span> <span class="op">&lt;-</span> <span class="va">var_rob_cons</span></span>
+<span><span class="va">var_rob_cons_cvar</span><span class="op">$</span><span class="va">groups</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">groups</span><span class="op">)</span></span>
+<span><span class="va">var_rob_cons_cvar</span><span class="op">$</span><span class="va">conf_level</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/if_else.html" class="external-link">if_else</a></span><span class="op">(</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">groups</span><span class="op">)</span> <span class="op"><a href="https://rspatial.github.io/terra/reference/match.html" class="external-link">%in%</a></span> <span class="va">relax_cons_species</span>, <span class="fl">0.5</span>, <span class="fl">0.875</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">rpv4</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://prioritizr.net/reference/problem.html" class="external-link">problem</a></span><span class="op">(</span><span class="va">cost</span>, <span class="va">species</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://prioritizr.net/reference/add_relative_targets.html" class="external-link">add_relative_targets</a></span><span class="op">(</span><span class="va">rt2</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu">robust.prioritizr</span><span class="fu">::</span><span class="fu"><a href="../reference/add_variable_robust_constraints.html">add_variable_robust_constraints</a></span><span class="op">(</span><span class="va">var_rob_cons_cvar</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://prioritizr.net/reference/add_locked_in_constraints.html" class="external-link">add_locked_in_constraints</a></span><span class="op">(</span><span class="va">pa</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://prioritizr.net/reference/add_binary_decisions.html" class="external-link">add_binary_decisions</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu">robust.prioritizr</span><span class="fu">::</span><span class="fu"><a href="../reference/add_robust_min_set_objective.html">add_robust_min_set_objective</a></span><span class="op">(</span>method <span class="op">=</span> <span class="st">"cvar"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://prioritizr.net/reference/add_default_solver.html" class="external-link">add_default_solver</a></span><span class="op">(</span>verbose <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> `data$features` specifies that 18 feature groups contain a single feature.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span>  As such, the robust optimization procedures cannot account for uncertainty</span></span>
+<span><span class="co">#&gt;   in these feature groups.</span></span>
+<span></span>
+<span><span class="va">start_time</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.time</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">rsv4</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/solve.html" class="external-link">solve</a></span><span class="op">(</span><span class="va">rpv4</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span>  The targets for these groups are transformed based on the `mean()` target</span></span>
+<span><span class="co">#&gt;   value.</span></span>
+<span><span class="va">end_time</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.time</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">rsv4_time</span> <span class="op">&lt;-</span> <span class="va">end_time</span> <span class="op">-</span> <span class="va">start_time</span></span>
+<span></span>
+<span><span class="fu">plot_planning_soln</span><span class="op">(</span><span class="va">rsv4</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"Robust (25% target, CVaR objective)"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="vic-cons-planning_files/figure-html/unnamed-chunk-19-1.png" class="r-plt" alt="" style="display: block; margin: auto;"></p>
+<p>We can evaluate whether the new protected areas actually meet the
+targets by checking whether the Conditional Value-at-Risk metric exceeds
+the targets.</p>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">feature_rep_r_cvar</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://prioritizr.net/reference/eval_feature_representation_summary.html" class="external-link">eval_feature_representation_summary</a></span><span class="op">(</span><span class="va">rpv4</span>, <span class="va">rsv4</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>groups <span class="op">=</span> <span class="va">groups</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span><span class="va">var_rob_cons_cvar</span>, by <span class="op">=</span> <span class="st">'groups'</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span></span>
+<span>    target <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/summarize-generics.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">rt2</span><span class="op">*</span><span class="va">total_amount</span><span class="op">)</span>,</span>
+<span>    <span class="co"># Linearized CVaR calculation</span></span>
+<span>    cvar_held_absolute <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/summarize-generics.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">absolute_held</span><span class="op">[</span><span class="va">absolute_held</span> <span class="op">&lt;=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">absolute_held</span>, <span class="fl">1</span><span class="op">-</span><span class="va">conf_level</span><span class="op">)</span><span class="op">]</span><span class="op">)</span>,</span>
+<span>    .by <span class="op">=</span> <span class="va">groups</span></span>
+<span>  <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
+<span>    met_cvar_target <span class="op">=</span> <span class="va">cvar_held_absolute</span> <span class="op">&gt;=</span> <span class="va">target</span> <span class="op">-</span> <span class="fl">1e-6</span> <span class="co"># Add tiny tolerance</span></span>
+<span>  <span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Check if the target is met across all species</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/all.html" class="external-link">all</a></span><span class="op">(</span><span class="va">feature_rep_r_cvar</span><span class="op">$</span><span class="va">met_cvar_target</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="computation-time-comparison">Computation time comparison<a class="anchor" aria-label="anchor" href="#computation-time-comparison"></a>
+</h2>
+<p>In my testing, the CVaR constraint is able to find a solution at a
+fraction of the time given the same number of features.</p>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">solve_times</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span>  method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'a. Robust solution\n(small target)'</span>,<span class="st">'b. Partially robust\n(chance constraint)'</span>,<span class="st">'c. Fully robust'</span>,<span class="st">'d. Partially robust\n(CVaR constraint)'</span><span class="op">)</span>,</span>
+<span>  time <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">rsv1_time</span>, <span class="va">rsv2_time</span>, <span class="va">rsv3_time</span>, <span class="va">rsv4_time</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">solve_times</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">method</span>, x <span class="op">=</span> <span class="va">time</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_bar.html" class="external-link">geom_bar</a></span><span class="op">(</span>stat <span class="op">=</span> <span class="st">'identity'</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_discrete.html" class="external-link">scale_y_discrete</a></span><span class="op">(</span>limits <span class="op">=</span> <span class="va">rev</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>y <span class="op">=</span> <span class="st">"Method"</span>, x <span class="op">=</span> <span class="st">"Solve time (seconds)"</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>panel.grid <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_blank</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>        legend.position <span class="op">=</span> <span class="st">'bottom'</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"Solve times of different methods"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Don't know how to automatically pick scale for object of type <span style="color: #0000BB;">&lt;difftime&gt;</span>.</span></span>
+<span><span class="co">#&gt; Defaulting to continuous.</span></span></code></pre></div>
+<p><img src="vic-cons-planning_files/figure-html/unnamed-chunk-21-1.png" class="r-plt" alt="" style="display: block; margin: auto;"></p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
