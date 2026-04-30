@@ -58,7 +58,8 @@ bool rcpp_apply_robust_cvar_constraints(
   // These will be appended after all existing columns (which include x_i variables).
   std::size_t current_col_idx = 0;
   if (!ptr->_A_j.empty()) {
-    current_col_idx = static_cast<std::size_t>(*std::max_element(ptr->_A_j.begin(), ptr->_A_j.end())) + 1;
+    //current_col_idx = static_cast<std::size_t>(*std::max_element(ptr->_A_j.begin(), ptr->_A_j.end())) + 1;
+    current_col_idx = static_cast<std::size_t>(ptr->_vtype.size());
   }
 
   // --- Add New Variables: `eta_j` and `s_jk` ---
@@ -67,7 +68,7 @@ bool rcpp_apply_robust_cvar_constraints(
   for (std::size_t j = 0; j < n_groups; ++j)
     ptr->_obj.push_back(0.0); // Not directly in objective for this formulation
   for (std::size_t j = 0; j < n_groups; ++j)
-    ptr->_col_ids.push_back("cvar_eta_" + std::to_string(j));
+    ptr->_col_ids.push_back("cvar_eta");
   for (std::size_t j = 0; j < n_groups; ++j)
     ptr->_vtype.push_back("C"); // Continuous
   for (std::size_t j = 0; j < n_groups; ++j)
@@ -76,12 +77,14 @@ bool rcpp_apply_robust_cvar_constraints(
     ptr->_ub.push_back(std::numeric_limits<double>::infinity()); // Unconstrained upper bound
   current_col_idx += n_groups;
 
+  // std::cout << current_col_idx << std::endl;
+
   // 2. `s_jk` variables (shortfall)
   std::size_t col_start_s = current_col_idx;
   for (std::size_t k_idx = 0; k_idx < n_realizations; ++k_idx)
     ptr->_obj.push_back(0.0); // Not directly in objective
   for (std::size_t k_idx = 0; k_idx < n_realizations; ++k_idx)
-    ptr->_col_ids.push_back("cvar_s_" + std::to_string(k_idx));
+    ptr->_col_ids.push_back("cvar_s");
   for (std::size_t k_idx = 0; k_idx < n_realizations; ++k_idx)
     ptr->_vtype.push_back("C"); // Continuous
   for (std::size_t k_idx = 0; k_idx < n_realizations; ++k_idx)
@@ -177,7 +180,7 @@ bool rcpp_apply_robust_cvar_constraints(
   for (std::size_t j = 0; j < n_groups; ++j)
     ptr->_rhs.push_back(cvar_main_targets_T_j[j]);
   for (std::size_t j = 0; j < n_groups; ++j)
-    ptr->_row_ids.push_back("cvar_main_j" + std::to_string(j));
+    ptr->_row_ids.push_back("cvar_main_j");
   for (std::size_t j = 0; j < n_groups; ++j)
     ptr->_sense.push_back(">=");
 
