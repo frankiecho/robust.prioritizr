@@ -1,5 +1,12 @@
 # Changelog
 
+## robust.prioritizr 1.1.0
+
+- Fixed a matrix index mismatch issue in the robust CVaR constraint that
+  caused infeasibility errors for problems. Problem can be replicated
+  when there are zeros in the feature data that can cause the matrix
+  size and inferred index to be calculated incorrectly
+
 ## robust.prioritizr 1.0.3
 
 CRAN release: 2026-03-17

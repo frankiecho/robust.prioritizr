@@ -57,6 +57,7 @@ expected abundance declines rapidly once temperature changes away from
 its optimal temperature.
 
 ``` r
+
 set.seed(19895894)
 N <- 10
 
@@ -142,6 +143,7 @@ smaller compared to species 2, because it has a much narrower climatic
 range.
 
 ``` r
+
 # Baseline occurrences for species 1 and 2
 baseline_ab_1 <- rpois_matrix(exp_ab_1(temp, prec))
 baseline_ab_2 <- rpois_matrix(exp_ab_2(temp, prec))
@@ -188,6 +190,7 @@ area network that accounts for these future changes in climate niches?
 plot(abundance_rast)
 
 ``` r
+
 # Baseline temp and precipitation
 temp_ssp1_rcp26 <- temp
 prec_ssp1_rcp26 <- prec
@@ -288,6 +291,7 @@ specified conservation cost. In the diagram below, we plot the abundance
 estimates across climate scenarios and its cost:
 
 ``` r
+
 plot(c(abundance_rast, costs_rast))
 ```
 
@@ -330,6 +334,7 @@ representation target for species j (taken as 20 for all species at the
 moment).
 
 ``` r
+
 target <- 20
 abundance_ssp2_rcp45 <- abundance_rast[[c('ssp2_rcp45_ab_1',
                                          'ssp2_rcp45_ab_2')]]
@@ -354,6 +359,7 @@ reach the targets in other climate scenarios, particularly under the
 extreme climate scenario SSP5-RCP8.5.
 
 ``` r
+
 plot_solution_eval <- function(soln) {
   representation_rs1 <- values(abundance_rast * soln) %>%
     apply(2, sum, na.rm = T)
@@ -414,6 +420,7 @@ the names. These groupings are then supplied to
 `add_*_robust_constraints` .
 
 ``` r
+
 # Recall that the abundance raster is ordered by scenario, then by species,
 # i.e. species_1_scenario_1, species_1_scenario_2 etc.
 scenario_matrix <- str_split_fixed(names(abundance_rast), pattern = '_', n = 4)
@@ -431,6 +438,7 @@ scenarios. We can use the robust minimum set objective by invoking
 `add_robust_min_set_objective`.
 
 ``` r
+
 rp1 <- problem(costs_rast, abundance_rast) %>%
   add_constant_robust_constraints(groups = groups) %>%
   add_absolute_targets(target) %>%
@@ -458,6 +466,7 @@ We can examine whether the robust solution indeed meets the targets
 across all of the specified climate scenarios:
 
 ``` r
+
 plot_solution_eval(rs1)
 ```
 
@@ -494,6 +503,7 @@ planning solution that jointly considers all, not just one, climate
 scenario.
 
 ``` r
+
 abundance_ssp5_rcp85 <- abundance_rast[[c('ssp5_rcp85_ab_1',
                                          'ssp5_rcp85_ab_2')]]
 p2a <- problem(costs_rast, abundance_ssp5_rcp85) %>%
@@ -524,6 +534,7 @@ simple demonstration, we see that even multiplying the target by 3 does
 not solve the problem.
 
 ``` r
+
 p2b <- problem(costs_rast, abundance_ssp2_rcp45) %>%
   add_min_set_objective() %>%
   add_absolute_targets(target * 3) %>%
@@ -553,6 +564,7 @@ broader climatic niches) are present in the dataset by taking the
 minimum of the abundance estimates across climate scenarios:
 
 ``` r
+
 abundance_min_2 <- c(abundance_rast[[5]] > 0,
                    abundance_rast[[8]] > 0,
                    min(abundance_rast[[5:8]] > 0))
@@ -570,6 +582,7 @@ abundance levels exceeding the target by a substantial margin (leading
 to higher costs).
 
 ``` r
+
 abundance_min <- abundance_ssp2_rcp45
 abundance_min[[2]] <- min(abundance_rast[[5:8]]) # Only set that for species 2
 p2c <- problem(costs_rast, abundance_min) %>%
@@ -593,6 +606,7 @@ problem would be infeasible. As seen in the figure below, the minimum
 value of the abundance levels are all zero in all planning units.
 
 ``` r
+
 abundance_min_1 <- c(abundance_rast[[1]] > 0,
                    abundance_rast[[4]] > 0,
                    min(abundance_rast[[1:4]] > 0))
@@ -642,6 +656,7 @@ example with a total of 40 realizations of uncertainty in this problem,
 with `n_replicates` replicates for each climate scenario.
 
 ``` r
+
 n_replicates <- 10
 
 # Simulate abundance levels given future climates
@@ -662,6 +677,7 @@ To fit this into ‘robust.prioritizr’, we bring these replicates into 1
 single multilayer raster.
 
 ``` r
+
 species_1_realizations <- c(rast(ssp1_rcp26_ab_1),
                             rast(ssp2_rcp45_ab_1),
                             rast(ssp4_rcp60_ab_1),
@@ -690,6 +706,7 @@ do not alter the confidence level parameter, we can expect the target to
 be met across all planning units.
 
 ``` r
+
 rp2a <- problem(costs_rast, abundance_uncertainty) %>%
   add_constant_robust_constraints(groups = groups_uncertainty) %>%
   add_absolute_targets(target) %>%
@@ -704,6 +721,7 @@ Fortunately, a solution can be found. We can see that the target is met
 across all of the replicates we provide to the problem.
 
 ``` r
+
 eval_soln_uncertain <- function(soln, return_df = FALSE) {
   dist <- values(soln * abundance_uncertainty) %>%
     unname %>%
@@ -739,6 +757,7 @@ meet the objective in at least 90% of the random realizations supplied
 to the problem.
 
 ``` r
+
 # Note that "method = 'chance'" may not be scalable to larger problems
 rp2b <- problem(costs_rast, abundance_uncertainty) %>%
   add_constant_robust_constraints(groups = groups_uncertainty, conf_level = .9) %>%
@@ -762,6 +781,7 @@ landscape, the conservation target is met in much more than 90% of the
 replicates.
 
 ``` r
+
 eval_soln_uncertain(rs2b, return_df = TRUE) %>%
   group_by(groups) %>%
   summarise(prop_target_met = mean(target_met == 'Target met') )
@@ -777,6 +797,7 @@ the costs of the solutions identified by examining the trade-off curve
 across different confidence level specifications.
 
 ``` r
+
 conf_level_vect <- seq(0.5, 1, 0.1)
 solve_chance_cons <- function(c) {
                  p <- problem(costs_rast, abundance_uncertainty) %>%
@@ -822,6 +843,7 @@ Do however note that the setting of `conf_level` to anything other than
 for a large number of planning units/ realizations.
 
 ``` r
+
 chance_cons_df %>%
   ggplot(aes(x = conf_level, y = solve_times)) +
   geom_point() +

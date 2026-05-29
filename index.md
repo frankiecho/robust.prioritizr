@@ -26,12 +26,17 @@ and the conditional value-at-risk problem (Rockafellar & Uryasev 2000,
 <doi:10.21314/JOR.2000.038>). For more information, please see the video
 below.
 
+# An error occurred.
+
+Unable to execute JavaScript.
+
 ## Installation
 
 You can install the official version of the package from CRAN with the
 following *R* code.
 
 ``` r
+
 install.packages("robust.prioritizr")
 ```
 
@@ -39,6 +44,7 @@ Alternatively, you can install the development version from the online
 code repository with the following *R* code.
 
 ``` r
+
 if (!require(remotes)) install.packages("remotes")
 remotes::install_github("frankiecho/robust.prioritizr")
 ```
@@ -72,6 +78,7 @@ Below, we provide an example showing how to do this with some simulated
 data.
 
 ``` r
+
 # Load packages
 library(robust.prioritizr)
 library(prioritizr)
@@ -79,6 +86,7 @@ library(terra)
 ```
 
 ``` r
+
 # Get planning unit data
 pu <- get_sim_pu_raster()
 
@@ -102,6 +110,7 @@ print(pu)
 ```
 
 ``` r
+
 print(features)
 ```
 
@@ -118,6 +127,7 @@ print(features)
 ```
 
 ``` r
+
 # Define the feature groups.
 # Here, we have data for 5 layers. Let's pretend that the first two layers
 # correspond to different climate projections (i.e., alternative outcomes) for
@@ -136,6 +146,7 @@ print(groups)
 ```
 
 ``` r
+
 # Build problem based on the robust minimum set objective,
 # targets to secure 10% of each species, and a confidence level of
 # 90% to obtain a solution that can meet the targets in a manner
@@ -158,6 +169,7 @@ soln <- solve(p)
 ```
 
 ``` r
+
 # Preview solution
 print(soln)
 ```
@@ -176,6 +188,7 @@ print(soln)
 ```
 
 ``` r
+
 # Plot the solution
 plot(soln, main = "Robust prioritization", axes = FALSE)
 ```

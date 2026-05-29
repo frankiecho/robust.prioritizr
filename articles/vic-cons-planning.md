@@ -1,6 +1,7 @@
 # Example using Victoria, Australia
 
 ``` r
+
 library(prioritizr)
 library(robust.prioritizr)
 library(terra)
@@ -24,6 +25,7 @@ First, we load the dataset bundled with the package. To achieve this, we
 will use the following functions.
 
 ``` r
+
 species <- get_vic_species()
 cost <- get_vic_cost()
 pa <- get_vic_pa()
@@ -54,6 +56,7 @@ which act as locked-in constraints that must be selected as part of a
 planning solution.
 
 ``` r
+
 pa_categorical <- pa
 levels(pa_categorical) <- data.frame(id = 0:1, cover = c("Not PA", "Current PA"))
 pa_plt <- ggplot() +
@@ -77,6 +80,7 @@ is projected to shrink considerably under a high-emissions climate
 scenario.
 
 ``` r
+
 wallaby <- species_details %>%
   filter(species == 'Petrogale_penicillata' & timestep %in% c(1990, 2030, 2090))
 wallaby_ids <- pull(wallaby, id)
@@ -125,6 +129,7 @@ groups - the historic baseline (with a “h\_” prefix) and the future
 groups.
 
 ``` r
+
 species_details$species <- paste0(ifelse(species_details$proj == 'historic_baseline_1990', "h_", ""),
                                   species_details$species)
 groups <- species_details$species
@@ -209,6 +214,7 @@ maximum relative target we can use in the problem to ensure that our
 problem is still feasible.
 
 ``` r
+
 global_sum_species <- global(species, fun = 'sum', na.rm = TRUE) %>%
   as.data.frame() %>%
   rownames_to_column("name")
@@ -264,6 +270,7 @@ To visualize the planning solutions, we also define a helper function as
 follows.
 
 ``` r
+
 # Function to plot a planning solution
 plot_planning_soln <- function(soln) {
   soln[soln==1] <- 2
@@ -306,6 +313,7 @@ problem construction:
   Selects the solver to use.
 
 ``` r
+
 rt <- .0045
 rpv1 <- problem(cost, species) %>%
   add_relative_targets(rt) %>%
@@ -338,6 +346,7 @@ We can now verify that the target was met for all species across all
 scenarios and time-steps.
 
 ``` r
+
 feature_rep_r <- global(species * rsv1, fun = 'sum', na.rm = T) %>%
   as.data.frame() %>%
   rownames_to_column('name')
@@ -392,6 +401,7 @@ ensuring that the solution is feasible and reasonably robust under most
 climate projections and time-steps.
 
 ``` r
+
 rt2 <- 0.25
 
 rpv2 <- problem(cost, species) %>%
@@ -427,6 +437,7 @@ partially robust conservation planning
 solutions.](vic-cons-planning_files/figure-html/unnamed-chunk-13-1.png)
 
 ``` r
+
 feature_rep_r2 <- eval_feature_representation_summary(rpv2, rsv2)
 worst_case_occurrence$rt2 <- rt2*worst_case_occurrence$mean
 rsv2_representation <- species_details %>%
@@ -458,6 +469,7 @@ solution limits the proportion where the target is breached to up to 25%
 to conserve, such as the Snowy Mountains skink (*Liopholis guthega*).
 
 ``` r
+
 rsv2_representation %>%
   left_join(worst_case_occurrence, by = 'species') %>%
   group_by(species) %>%
@@ -494,6 +506,7 @@ apply, while ensuring the other species meets its targets robustly
 across all scenarios.
 
 ``` r
+
 var_rob_cons <- tibble::tibble(
   features = split(names(species), groups)[unique(groups)],
   conf_level = 1
@@ -552,6 +565,7 @@ target to the problem, but only solve this using the historical baseline
 data.
 
 ``` r
+
 is_historic_baseline <- species_details %>%
   filter(scenario == 'historic_baseline') %>%
   pull(id)
@@ -591,6 +605,7 @@ total number of climate projections/ time-steps where the Orange-bellied
 parrot representation falls below the desired target.
 
 ``` r
+
 spotlight_species <- 'Neophema_chrysogaster'
 
 selected_species <- species_details %>%
@@ -643,6 +658,7 @@ This ensures that the average of the “tail” of the distribution of
 feature representation always exceeds our targets.
 
 ``` r
+
 var_rob_cons_cvar <- var_rob_cons
 var_rob_cons_cvar$groups <- unique(groups)
 var_rob_cons_cvar$conf_level <- if_else(unique(groups) %in% relax_cons_species, 0.5, 0.875)
@@ -676,6 +692,7 @@ targets by checking whether the Conditional Value-at-Risk metric exceeds
 the targets.
 
 ``` r
+
 feature_rep_r_cvar <- eval_feature_representation_summary(rpv4, rsv4) %>%
   mutate(groups = groups) %>%
   left_join(var_rob_cons_cvar, by = 'groups') %>%
@@ -700,6 +717,7 @@ In my testing, the CVaR constraint is able to find a solution at a
 fraction of the time given the same number of features.
 
 ``` r
+
 solve_times <- data.frame(
   method = c('a. Robust solution\n(small target)','b. Partially robust\n(chance constraint)','c. Fully robust','d. Partially robust\n(CVaR constraint)'),
   time = c(rsv1_time, rsv2_time, rsv3_time, rsv4_time)

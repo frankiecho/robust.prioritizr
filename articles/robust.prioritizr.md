@@ -1,6 +1,7 @@
 # Getting started with robust systematic conservation planning
 
 ``` r
+
 library(terra)
 library(prioritizr)
 library(robust.prioritizr)
@@ -39,6 +40,7 @@ and takes on the value 1.5 across all planning units.
 We solve this problem in `prioritizr`.
 
 ``` r
+
 set.seed(500)
 
 mu <- 1
@@ -54,6 +56,7 @@ feature_1 <- matrix(rnorm(100, mean = mu, sd = sigma), nrow = N, ncol = N)
     ## length differs from size of matrix: [100 != 5 x 5]
 
 ``` r
+
 feature_2 <- matrix(1.5, nrow = N, ncol = N)
 sim_features_not_robust_raster <- c(rast(feature_1),
                                     rast(feature_2))
@@ -84,6 +87,7 @@ units with less of `feature_1`. As shown below, `prioritizr` selects the
 planning units with the highest estimated number of features.
 
 ``` r
+
 df <- data.frame(
   feature_1 = values(sim_features_not_robust_raster[[1]]),
   solution = values(s1)
@@ -126,6 +130,7 @@ realizations. We can estimate how likely it is that our solution
 violates the target constraint.
 
 ``` r
+
 # Number of simulations
 n_sims <- 500
 sim_feature_1 <- replicate(n_sims, matrix(rnorm(N^2, mean = mu, sd = sigma), nrow = N, ncol = N)) %>%
@@ -181,6 +186,7 @@ The core of the `robust.prioritizr` approach is the use of `groupings`,
 that tell the algorithm which
 
 ``` r
+
 ## Note: here I exploited the fact that the min set objective does not actually use the feature groupings behind the scenes
 ## Note: add_relative_targets will be a bit tricky to interpret as the "number of features" in each realization is different... will need to override with the max of the group (i.e. relative to the maximum of number of features across all realisations), or the mean... need to be transparent
 
@@ -211,6 +217,7 @@ Using the same approach, we can evaluate the representation of the new
 solution `s2` across all the realizations of Feature 1.
 
 ``` r
+
 feature_1_targets_robust <- values(sim_feature_1 * s2) %>%
   apply(2, sum) %>%
   unname
@@ -251,6 +258,7 @@ of `prioritizr`, focusing again on minimizing the shortfall of
 `feature_1` to the target.
 
 ``` r
+
 budget <- target*2
 
 p3 <- problem(sim_pu_raster, sim_features_not_robust_raster) %>%
@@ -272,6 +280,7 @@ possible representations of `feature_1` across the realizations we have
 simulated above.
 
 ``` r
+
 feature_1_outcomes <- sim_feature_1 * s3
 feature_1_targets <- values(feature_1_outcomes) %>%
   apply(2, sum) %>%
@@ -315,6 +324,7 @@ quantified as the minimum value in the distribution of representation
 for `feature_1`.
 
 ``` r
+
 p4 <- problem(sim_pu_raster, sim_features_robust_raster) %>%
   add_constant_robust_constraints(groups = feature_groupings, conf_level = 1) %>%
   add_absolute_targets(target) %>%
@@ -333,6 +343,7 @@ Importantly, the relative improvement of the solution here will be
 limited by the budget constraint that was imposed on the function.
 
 ``` r
+
 feature_1_targets_robust <- values(sim_feature_1 * s4) %>%
   apply(2, sum) %>%
   unname
@@ -381,6 +392,7 @@ imposed on it. Consider these alternative problems with the same
 formulation, but a much smaller budget.
 
 ``` r
+
 # Use a small budget
 small_budget <- 5
 
@@ -424,6 +436,7 @@ typically achieved by selecting more planning units. Therefore, even
 though a robust solution is used, the solution did not improve much.
 
 ``` r
+
 representation_summary <- eval_feature_representation_summary(p6, s6)
 
 expected_robust_target <- representation_summary %>%

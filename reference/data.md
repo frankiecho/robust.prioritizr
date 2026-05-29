@@ -238,35 +238,35 @@ print(vic_study_area)
 #>        <int>                                                  <MULTIPOLYGON [m]>
 #> 1          1 (((877278.1 -4231443, 881550.9 -4231443, 881550.9 -4239988, 877278…
 print(vic_cost)
-#> class       : SpatRaster 
+#> class       : SpatRaster
 #> size        : 145, 189, 1  (nrow, ncol, nlyr)
 #> resolution  : 4272.776, 4272.776  (x, y)
 #> extent      : 787549.8, 1595105, -4355353, -3735800  (xmin, xmax, ymin, ymax)
-#> coord. ref. : GDA94 / Australian Albers (EPSG:3577) 
-#> source      : vic_cost.tif 
-#> name        : hfp2013_merisINT 
-#> min value   :          1.00000 
-#> max value   :         46.99466 
+#> coord. ref. : GDA94 / Australian Albers (EPSG:3577)
+#> source      : vic_cost.tif
+#> name        : hfp2013_merisINT
+#> min value   :                1
+#> max value   :        46.994663
 print(vic_species)
-#> class       : SpatRaster 
+#> class       : SpatRaster
 #> size        : 145, 189, 306  (nrow, ncol, nlyr)
 #> resolution  : 4272.776, 4272.776  (x, y)
 #> extent      : 787549.8, 1595105, -4355353, -3735800  (xmin, xmax, ymin, ymax)
-#> coord. ref. : GDA94 / Australian Albers (EPSG:3577) 
-#> source      : vic_species.tif 
-#> names       : amphi~_2030, amphi~_2050, amphi~_2070, amphi~_2090, amphi~_2030, amphi~_2050, ... 
-#> min values  :           0,           0,           0,           0,           0,           0, ... 
-#> max values  :           1,           1,           1,           1,           1,           1, ... 
+#> coord. ref. : GDA94 / Australian Albers (EPSG:3577)
+#> source      : vic_species.tif
+#> names       : amphi~_2030, amphi~_2050, amphi~_2070, amphi~_2090, amphi~_2030, amphi~_2050, ...
+#> min values  :           0,           0,           0,           0,           0,           0, ...
+#> max values  :           1,           1,           1,           1,           1,           1, ...
 print(vic_pa)
-#> class       : SpatRaster 
+#> class       : SpatRaster
 #> size        : 145, 189, 1  (nrow, ncol, nlyr)
 #> resolution  : 4272.776, 4272.776  (x, y)
 #> extent      : 787549.8, 1595105, -4355353, -3735800  (xmin, xmax, ymin, ymax)
-#> coord. ref. : GDA94 / Australian Albers (EPSG:3577) 
-#> source      : vic_pa.tif 
-#> name        : layer 
-#> min value   :     0 
-#> max value   :     1 
+#> coord. ref. : GDA94 / Australian Albers (EPSG:3577)
+#> source      : vic_pa.tif
+#> name        : layer
+#> min value   :     0
+#> max value   :     1
 
 # visualize data
 plot(vic_study_area, main = "vic_study_area")
