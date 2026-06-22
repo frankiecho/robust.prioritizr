@@ -1,0 +1,9 @@
+bibentry(
+  bibtype = "Misc",
+  title = "robust.prioritizr: Robust Systematic Conservation Prioritization",
+  author = c(person("Frankie H. T.", "Cho"), person("Jeffrey O.", "Hanson")),
+  year = "2026",
+  publisher = "EcoEvoRxiv",
+  url = "https://ecoevorxiv.org/repository/view/13602/",
+  doi = "10.32942/X2609W"
+)

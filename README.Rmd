@@ -114,6 +114,13 @@ print(soln)
 plot(soln, main = "Robust prioritization", axes = FALSE)
 ```
 
+## Citation
+
+To cite package ‘robust.prioritizr’ in publications use:
+
+Cho, F. H. T., & Hanson, J. O. (2026). robust.prioritizr: Robust Systematic Conservation Prioritization. EcoEvoRxiv. https://doi.org/10.32942/X2609W
+
+
 ## Getting help
 
 If you have any questions about the 'robust.prioritizr' package or

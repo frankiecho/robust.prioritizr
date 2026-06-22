@@ -40,3 +40,5 @@ inst/doc
 .vscode/
 .claude/
 .vscode/
+/.quarto/
+**/*.quarto_ipynb

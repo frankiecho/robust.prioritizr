@@ -1,6 +1,11 @@
 Dear CRAN volunteers,
 
-In this version I have updated the package documentation to ensure compliance with the "ropensci-review-tools/autotest" package and added new "Software Review Roclets" (SRR) tags ("ropensci-review-tools/srr") to prepare the package for a review process in rOpenSci. Thank you.
+In this version I have:
+* Updated the package documentation to ensure compliance with the "ropensci-review-tools/autotest" package
+* Added new "Software Review Roclets" (SRR) tags ("ropensci-review-tools/srr") to prepare the package for a review process in rOpenSci. 
+* Updated citation keys to a preprint manuscript of the package.
+
+Thank you.
 
 Best regards,
 Frankie Cho
