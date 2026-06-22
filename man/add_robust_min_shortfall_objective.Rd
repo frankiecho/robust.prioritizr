@@ -219,6 +219,6 @@ Charnes A & Cooper WW (1959) Chance-constrained programming.
 }
 \seealso{
 Other functions for adding robust objectives:
-\code{\link{add_robust_min_set_objective}()}
+\code{\link[=add_robust_min_set_objective]{add_robust_min_set_objective()}}
 }
 \concept{objectives}

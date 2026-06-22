@@ -13,7 +13,7 @@
 #'
 #' Check if an object only has finite values?
 #'
-#' @param object.
+#' @param object object
 #'
 #' @return A `logical` value.
 #'

@@ -140,7 +140,7 @@
 #'
 #' @seealso
 #' The code used to prepare this dataset are available online
-#' (<https://github.com/jeffreyhanson/robust.prioritizr.data>),
+#' (),
 #'
 #' @docType data
 #'
@@ -246,7 +246,14 @@ get_vic_species_metadata <- function() {
   ))
   # define relevant columns
   col_names <- c(
-    "id", "name", "species", "class", "proj", "timestep", "scenario", "sum"
+    "id",
+    "name",
+    "species",
+    "class",
+    "proj",
+    "timestep",
+    "scenario",
+    "sum"
   )
   # return data with relevant columns
   x[, col_names, drop = FALSE]

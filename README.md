@@ -3,15 +3,6 @@
 
 # Robust Systematic Conservation Prioritization in R
 
-<!-- badges: start -->
-
-[![Lifecycle:
-stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
-[![R-CMD-check-Ubuntu](https://img.shields.io/github/actions/workflow/status/frankiecho/robust.prioritizr/R-CMD-check.yaml?branch=master)](https://github.com/frankiecho/robust.prioritizr/actions)
-[![Coverage-Status](https://img.shields.io/codecov/c/github/frankiecho/robust.prioritizr?label=Coverage)](https://app.codecov.io/gh/frankiecho/robust.prioritizr/branch/master)
-[![CRAN
-status](https://www.r-pkg.org/badges/version/robust.prioritizr)](https://CRAN.R-project.org/package=robust.prioritizr)
-<!-- badges: end -->
 
 The ‘robust.prioritizr’ package provides robust optimization techniques
 for systematic conservation prioritization. This is important because
@@ -57,7 +48,7 @@ code repository with the following *R* code.
 
 ``` r
 if (!require(remotes)) install.packages("remotes")
-remotes::install_github("frankiecho/robust.prioritizr")
+# Removed for double blind
 ```
 
 ## Example usage
@@ -193,4 +184,4 @@ plot(soln, main = "Robust prioritization", axes = FALSE)
 
 If you have any questions about the ‘robust.prioritizr’ package or
 suggestions for improving it, please [post an issue on the code
-repository](https://github.com/frankiecho/robust.prioritizr/issues).
+repository]().

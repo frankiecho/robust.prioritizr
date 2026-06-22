@@ -13,7 +13,7 @@
 #'
 #' Check if an object has only proportion values?
 #'
-#' @param object.
+#' @param object object
 #'
 #' @return A `logical` value.
 #'

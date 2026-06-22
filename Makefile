@@ -72,13 +72,13 @@ wbcheck:
 	R --slave -e "devtools::check_win_devel()"
 
 jhwbcheck:
-	R --slave -e "devtools::check_win_devel(email = 'jeffrey.hanson@uqconnect.edu.au')"
+	R --slave -e "devtools::check_win_devel(email = 'email')"
 
 solarischeck:
-	R --slave -e "rhub::check(platform = 'solaris-x86-patched', email = 'jeffrey.hanson@uqconnect.edu.au', show_status = FALSE)"
+	R --slave -e "rhub::check(platform = 'solaris-x86-patched', email = 'email', show_status = FALSE)"
 
 asancheck:
-	R --slave -e "rhub::check(platform = 'linux-x86_64-rocker-gcc-san', email = 'jeffrey.hanson@uqconnect.edu.au', show_status = FALSE)"
+	R --slave -e "rhub::check(platform = 'linux-x86_64-rocker-gcc-san', email = 'email', show_status = FALSE)"
 
 spellcheck:
 	R --slave -e "devtools::document();devtools::spell_check()"

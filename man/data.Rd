@@ -11,7 +11,7 @@
 \title{Conservation planning dataset for Victoria, Australia}
 \format{
 \describe{
-\item{\code{get_vic_study_area()}}{\code{\link[sf:sf]{sf::st_sf()}} object.}
+\item{\code{get_vic_study_area()}}{\code{\link[sf:st_sf]{sf::st_sf()}} object.}
 \item{\code{get_vic_cost()}}{\code{\link[terra:rast]{terra::rast()}} object}
 \item{\code{get_vic_species()}}{\code{\link[terra:rast]{terra::rast()}} object}
 \item{\code{get_vic_pa()}}{\code{\link[terra:rast]{terra::rast()}} object}
@@ -58,7 +58,7 @@ The following functions are provided to import the dataset:
 \describe{
 
 \item{\code{get_vic_study_area()}}{
-A \code{\link[sf:sf]{sf::st_sf()}} object containing the spatial boundary of the Victoria,
+A \code{\link[sf:st_sf]{sf::st_sf()}} object containing the spatial boundary of the Victoria,
 Australia (derived from Global Administrative Areas 2024).
 }
 
@@ -209,6 +209,6 @@ ecosystems. \emph{One Earth}, 3:371--382.
 }
 \seealso{
 The code used to prepare this dataset are available online
-(\url{https://github.com/jeffreyhanson/robust.prioritizr.data}),
+(),
 }
 \keyword{datasets}

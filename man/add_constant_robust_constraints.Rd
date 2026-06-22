@@ -128,6 +128,6 @@ See \link{robust_constraints} for an overview of all functions for adding
 robust constraints.
 
 Other functions for adding robust constraints:
-\code{\link{add_variable_robust_constraints}()}
+\code{\link[=add_variable_robust_constraints]{add_variable_robust_constraints()}}
 }
 \concept{constraints}

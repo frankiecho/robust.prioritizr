@@ -149,6 +149,6 @@ plot(soln)
 }
 \seealso{
 Other functions for adding robust constraints:
-\code{\link{add_constant_robust_constraints}()}
+\code{\link[=add_constant_robust_constraints]{add_constant_robust_constraints()}}
 }
 \concept{constraints}

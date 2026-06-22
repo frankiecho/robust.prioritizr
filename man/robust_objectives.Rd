@@ -84,7 +84,7 @@ plot(soln, axes = FALSE)
 \dontshow{\}) # examplesIf}
 }
 \seealso{
-Other overviews: 
+Other overviews:
 \code{\link{robust_constraints}}
 }
 \concept{overviews}

@@ -2,13 +2,6 @@ Package: robust.prioritizr
 Type: Package
 Title: Robust Systematic Conservation Prioritization
 Version: 1.1.0
-Authors@R:
-    c(person(c('Frankie'), 'Cho',
-        email='frankie.cho@monash.edu', role = c('aut', 'cre', 'cph'),
-        comment = c(ORCID = '0000-0003-1369-4980')),
-      person(c('Jeffrey', 'O'), 'Hanson',
-        email='jeffrey.hanson@uqconnect.edu.au', role = c('aut'),
-        comment = c(ORCID = '0000-0002-4716-6134')))
 Description:
     Systematic conservation prioritization with robust optimization techniques.
     This is important because
@@ -32,8 +25,6 @@ Description:
 Encoding: UTF-8
 License: GPL (>= 3)
 Language: en-US
-URL: https://github.com/frankiecho/robust.prioritizr, https://frankiecho.github.io/robust.prioritizr/
-BugReports: https://github.com/frankiecho/robust.prioritizr/issues
 VignetteBuilder: knitr
 LazyData: true
 Imports:
@@ -82,7 +73,6 @@ Collate:
     'run_example.R'
     'transform_targets.R'
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.3
 Config/testthat/edition: 3
 Config/Needs/website:
     tibble,
@@ -93,3 +83,4 @@ Config/Needs/website:
     tidyterra,
     dplyr,
     piggyback
+Config/roxygen2/version: 8.0.0

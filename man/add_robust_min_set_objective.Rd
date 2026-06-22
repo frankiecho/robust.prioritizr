@@ -215,6 +215,6 @@ See \link{robust_objectives} for an overview of all functions for adding
 robust objectives.
 
 Other functions for adding robust objectives:
-\code{\link{add_robust_min_shortfall_objective}()}
+\code{\link[=add_robust_min_shortfall_objective]{add_robust_min_shortfall_objective()}}
 }
 \concept{objectives}

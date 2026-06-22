@@ -31,14 +31,12 @@
 #'
 #' @seealso
 #' Useful links:
-#' * Package website (<https://frankiecho.github.io/robust.prioritizr/>)
-#' * Source code repository (<https://github.com/frankiecho/robust.prioritizr>)
-#' * Report bugs (<https://github.com/frankiecho/robust.prioritizr/issues>)
+#' * Package website ()
+#' * Source code repository ()
+#' * Report bugs ()
 #'
 #' @author
-#'  Authors:
-#' * Frankie Cho \email{frankie.cho@qut.edu.au} ([ORCID](https://orcid.org/0000-0003-1369-4980))
-#' * Jeffrey O Hanson \email{jeffrey.hanson@uqconnect.edu.au} ([ORCID](https://orcid.org/0000-0002-4716-6134))
+#' Removed for double blind review
 #'
 #' @name robust.prioritizr
 #' @docType package
@@ -47,7 +45,9 @@
 
 # avoid CRAN check NOTES due to R6 classes
 # see: https://github.com/r-lib/R6/issues/230
-if (getRversion() >= "2.15.1")  utils::globalVariables(c("self"))
+if (getRversion() >= "2.15.1") {
+  utils::globalVariables(c("self"))
+}
 
 # define imports
 #' @importFrom Rcpp evalCpp

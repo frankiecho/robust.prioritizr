@@ -37,15 +37,11 @@ Example using Victoria, Australia.
 \seealso{
 Useful links:
 \itemize{
-\item Package website (\url{https://frankiecho.github.io/robust.prioritizr/})
-\item Source code repository (\url{https://github.com/frankiecho/robust.prioritizr})
-\item Report bugs (\url{https://github.com/frankiecho/robust.prioritizr/issues})
+\item Package website ()
+\item Source code repository ()
+\item Report bugs ()
 }
 }
 \author{
-Authors:
-\itemize{
-\item Frankie Cho \email{frankie.cho@qut.edu.au} (\href{https://orcid.org/0000-0003-1369-4980}{ORCID})
-\item Jeffrey O Hanson \email{jeffrey.hanson@uqconnect.edu.au} (\href{https://orcid.org/0000-0002-4716-6134}{ORCID})
-}
+Removed for double blind review
 }

@@ -97,7 +97,7 @@ plot(soln)
 \dontshow{\}) # examplesIf}
 }
 \seealso{
-Other overviews: 
+Other overviews:
 \code{\link{robust_objectives}}
 }
 \concept{overviews}
