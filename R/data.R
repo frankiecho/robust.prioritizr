@@ -142,24 +142,6 @@
 #' The code used to prepare this dataset are available online
 #' (<https://github.com/jeffreyhanson/robust.prioritizr.data>),
 #'
-#' @docType data
-#'
-#' @name data
-#'
-#' @aliases get_vic_study_area
-#' @aliases get_vic_cost
-#' @aliases get_vic_pa
-#' @aliases get_vic_species
-#' @aliases get_vic_species_metadata
-#'
-#' @format \describe{
-#'   \item{`get_vic_study_area()`}{[sf::st_sf()] object.}
-#'   \item{`get_vic_cost()`}{[terra::rast()] object}
-#'   \item{`get_vic_species()`}{[terra::rast()] object}
-#'   \item{`get_vic_pa()`}{[terra::rast()] object}
-#'   \item{`vic_species_metadata()`}{[tibble::tibble()] object}
-#' }
-#'
 #' @keywords datasets
 #'
 #' @references
@@ -178,33 +160,16 @@
 #' Change in terrestrial human footprint drives continued loss of intact
 #' ecosystems. *One Earth*, 3:371--382.
 #'
+#' @return A [sf::st_sf()] object containing the spatial boundary of Victoria,
+#'   Australia.
+#'
 #' @examples
-#' # load spatial R packages
-#' library(sf)
-#' library(terra)
-#'
-#' # load data
+#' # see the "Example using Victoria, Australia" vignette for full usage:
+#' # vignette("vic-cons-planning", package = "robust.prioritizr")
+#' \dontrun{
 #' vic_study_area <- get_vic_study_area()
-#' vic_cost <- get_vic_cost()
-#' vic_species <- get_vic_species()
-#' vic_pa <- get_vic_pa()
-#'  vic_species_metadata <- get_vic_species_metadata()
+#' }
 #'
-#' # preview data
-#' print(vic_species_metadata)
-#' print(vic_study_area)
-#' print(vic_cost)
-#' print(vic_species)
-#' print(vic_pa)
-#'
-#' # visualize data
-#' plot(vic_study_area, main = "vic_study_area")
-#' plot(vic_cost, main = "vic_cost")
-#' plot(vic_species, main = "vic_species")
-#' plot(vic_pa, main = "vic_pa")
-NULL
-
-#' @rdname data
 #' @export
 get_vic_study_area <- function() {
   sf::read_sf(
@@ -212,7 +177,8 @@ get_vic_study_area <- function() {
   )
 }
 
-#' @rdname data
+#' @rdname get_vic_study_area
+#' @return A [terra::rast()] object containing opportunity costs.
 #' @export
 get_vic_cost <- function() {
   terra::rast(
@@ -220,7 +186,8 @@ get_vic_cost <- function() {
   )
 }
 
-#' @rdname data
+#' @rdname get_vic_study_area
+#' @return A [terra::rast()] object containing existing protected area locations.
 #' @export
 get_vic_pa <- function() {
   terra::rast(
@@ -228,7 +195,8 @@ get_vic_pa <- function() {
   )
 }
 
-#' @rdname data
+#' @rdname get_vic_study_area
+#' @return A [terra::rast()] object containing species distribution layers.
 #' @export
 get_vic_species <- function() {
   terra::rast(
@@ -236,7 +204,8 @@ get_vic_species <- function() {
   )
 }
 
-#' @rdname data
+#' @rdname get_vic_study_area
+#' @return A [tibble::tibble()] containing metadata for each species distribution layer.
 #' @export
 get_vic_species_metadata <- function() {
   # import data
