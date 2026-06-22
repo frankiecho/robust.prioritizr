@@ -13,6 +13,12 @@
 #' for the entire solution or (ii) a `numeric` vector to specify
 #' a separate budget for each management zone.
 #'
+#' @srrstats {G2.0, G2.0a} Function validates input types and lengths via
+#'   assertthat assertions and roxygen parameter documentation.
+#' @srrstats {G2.1, G2.1a} Type checking for all inputs (budget, method) is
+#'   enforced; x must be a ConservationProblem object.
+#' @srrstats {G2.3, G2.3a} The method parameter is restricted to valid options
+#'   ('chance', 'cvar') via explicit validation.
 #'
 #' @details
 #' The robust minimum shortfall objective seeks to find the set of planning
@@ -206,6 +212,22 @@
 #' # Plot the solution
 #' plot(soln)
 #'
+#' @srrstats {G1.0} Charnes & Cooper (1959) and Rockafellar & Uryasev (2000)
+#'   are cited in @references.
+#' @srrstats {G1.3} Probabilistic constraints, confidence level, CVaR, and
+#'   chance constraint programming are defined in the Details section.
+#' @srrstats {G2.0, G2.0a} budget is asserted to be a single positive number.
+#' @srrstats {G2.1, G2.1a} assertthat::is.number(budget) enforces type;
+#'   documented in @param.
+#' @srrstats {G2.3a} method restricted to "chance" or "cvar" via assert().
+#' @srrstats {G2.3b} tolower() applied to method for case-insensitive input.
+#' @srrstats {G2.6} is_conservation_problem(x) validates the primary input.
+#' @srrstats {G3.0} No floating-point equality comparisons; solver tolerance
+#'   is managed by the ILP solver.
+#' @srrstats {SP4.0, SP4.0a} solve() returns a SpatRaster matching the class
+#'   of the input planning unit raster.
+#' @srrstats {SP4.2} @return explicitly documents the class of the return
+#'   value.
 #' @name add_robust_min_shortfall_objective
 #' @export
 add_robust_min_shortfall_objective <- function(x, budget) {

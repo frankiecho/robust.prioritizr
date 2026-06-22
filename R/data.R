@@ -11,14 +11,14 @@
 #'
 #' @details
 #' Briefly, this dataset contains
-#' `r terra::global(get_vic_cost(), "notNA")[[1]]` planning units and
-#' `r length(unique(get_vic_species_metadata()$species))` terrestrial vertebrate
-#' species For each species, the dataset contains the present-day spatial
+#' 12,988 planning units and
+#' 18 terrestrial vertebrate
+#' species. For each species, the dataset contains the present-day spatial
 #' distribution for the species as well as projections for the species' future
 #' spatial distribution at
-#' `r length(unique(get_vic_species_metadata()$timestep)) - 1`
+#' 4
 #' time periods based on
-#' `r length(unique(get_vic_species_metadata()$scenario)) - 1`
+#' 4
 #' combinations of climate models and scenarios.
 #' To account for existing conservation efforts, the dataset also
 #' contains the locations of existing protected areas.
@@ -52,7 +52,7 @@
 #' A [terra::rast()] object containing the present-day and potential future
 #' spatial distributions of terrestrial vertebrate species
 #' (derived from Archibald *et al.* 2024).
-#' This object contains a `r terra::nlyr(get_vic_species())` layers,
+#' This object contains 306 layers,
 #' where each layer corresponds to the predicted spatial distribution of a
 #' particular species at a particular point in time based on a particular
 #' climate scenario. For a given layer, grid cells denote planning units.
@@ -160,6 +160,20 @@
 #' Change in terrestrial human footprint drives continued loss of intact
 #' ecosystems. *One Earth*, 3:371--382.
 #'
+#' @srrstats {G5.0} Simulation datasets from prioritizr (get_sim_pu_raster,
+#'   get_sim_features) are used as standard reference datasets in tests.
+#' @srrstats {G5.1} get_sim_pu_raster() and get_sim_features() from prioritizr
+#'   are exported; this package's own get_vic_* functions are exported and
+#'   documented for use in confirming tests and examples.
+#' @srrstats {SP2.0} Spatial data (SpatRaster and sf objects) are only accepted
+#'   in their standard, well-established classes as specified.
+#' @srrstats {SP2.3} Spatial data is loaded from native formats (.tif, .shp)
+#'   via terra::rast() and sf::read_sf() rather than binary formats.
+#' @srrstats {SP2.5} Spatial raster data includes coordinate reference system
+#'   information via terra objects; sf objects include CRS via sf standards.
+#' @srrstats {SP4.1} Units are preserved in returned SpatRaster objects
+#'   consistent with input data.
+#' @srrstats {SP4.2} @return documents the class of each return value.
 #' @return A [sf::st_sf()] object containing the spatial boundary of Victoria,
 #'   Australia.
 #'

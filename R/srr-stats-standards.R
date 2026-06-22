@@ -36,7 +36,7 @@ NULL
 #' @srrstatsNA {G2.16} Undefined values (NaN, Inf) handled by optimization solver in prioritizr.
 #' @srrstatsNA {G3.1, G3.1a} Covariance algorithms handled by prioritizr's solver, not this package.
 #' @srrstatsNA {G4.0} Package does not write files; operates on in-memory ConservationProblem objects.
-#' @srrstatsNA {G5.4b, G5.4c} No previous implementations to compare against; correctness via trivial cases (conf_level=1).
+#' @srrstatsNA {G5.4b, G5.4c} Vignette provides comparison with existing prioritizr implementations.
 #' @srrstatsNA {G5.5, G5.7} Extended testing managed in tests/testthat/ directory with appropriate documentation.
 #' @srrstatsNA {G5.6b, G5.9, G5.9a, G5.9b, G5.10, G5.11, G5.11a, G5.12} Extended test suite configuration managed in tests/.
 #' @srrstatsNA {SP2.5a, SP2.8, SP2.9} Spatial input validation and preprocessing inherited from prioritizr, terra, and sf packages.
@@ -44,5 +44,4 @@ NULL
 #' @srrstatsNA {SP4.0b} Return class determined by prioritizr's ConservationProblem.
 #' @srrstatsNA {SP5.0, SP5.1, SP5.2, SP5.3} Plotting and visualization provided by prioritizr.
 #' @srrstatsNA {SP6.0, SP6.1, SP6.1a, SP6.1b, SP6.2, SP6.3, SP6.4, SP6.5, SP6.6} Coordinate transformation and geographic testing inherited from terra and sf packages.
-#' @noRd
 NULL

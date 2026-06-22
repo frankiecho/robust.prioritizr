@@ -7,7 +7,7 @@
 add_robust_min_shortfall_objective(x, budget)
 }
 \arguments{
-\item{x}{\code{\link[prioritizr:problem]{prioritizr::problem()}} object.}
+\item{x}{A \code{ConservationProblem} object (i.e., \code{\link[prioritizr:problem]{prioritizr::problem()}}).}
 
 \item{budget}{\code{numeric} value specifying the maximum expenditure of
 the prioritization. For problems with multiple zones, the argument
@@ -16,8 +16,8 @@ for the entire solution or (ii) a \code{numeric} vector to specify
 a separate budget for each management zone.}
 }
 \value{
-An updated \code{\link[prioritizr:problem]{prioritizr::problem()}} object with the objective added
-to it.
+An updated \code{ConservationProblem} object (i.e., \code{\link[prioritizr:problem]{prioritizr::problem()}}) with
+the objective added to it.
 }
 \description{
 Add an objective to a conservation planning problem that minimizes the
@@ -219,6 +219,6 @@ Charnes A & Cooper WW (1959) Chance-constrained programming.
 }
 \seealso{
 Other functions for adding robust objectives:
-\code{\link{add_robust_min_set_objective}()}
+\code{\link[=add_robust_min_set_objective]{add_robust_min_set_objective()}}
 }
 \concept{objectives}

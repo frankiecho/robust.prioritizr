@@ -7,6 +7,8 @@ NULL
 #' the solution should have the same minimum level of robustness for each
 #' feature group.
 #'
+#' @param x A `ConservationProblem` object (i.e., [prioritizr::problem()]).
+#'
 #' @param groups `character` vector indicating which features
 #'  should be grouped together for the purposes of characterizing uncertainty.
 #'  In particular, `groups` is used to specify a group name for each feature
@@ -38,7 +40,17 @@ NULL
 #' on minimum value and the target for the second feature group is calculated
 #' based on the maximum value.
 #'
-#' @inheritParams add_robust_min_set_objective
+#'
+#' @srrstats {G2.0, G2.0a} Function validates lengths of inputs (groups, conf_level,
+#'   target_trans) via assertthat assertions and roxygen documentation.
+#' @srrstats {G2.1, G2.1a} Type checking for all inputs is enforced; groups
+#'   must be character, conf_level numeric, target_trans character/vector.
+#' @srrstats {G2.3, G2.3a} The target_trans parameter uses match.arg() equivalent
+#'   to restrict to valid options: 'mean', 'min', 'max', 'none'.
+#' @srrstats {G2.13} Missing data checks are performed on input feature groups
+#'   and targets before creating constraints.
+#' @srrstats {SP2.0, SP2.0a} Function accepts spatial data (SpatRaster, sf objects)
+#'   via the ConservationProblem object from prioritizr.
 #'
 #' @details
 #' The robust constraints are used to generate solutions that are robust to
@@ -83,8 +95,8 @@ NULL
 #' robust constraints.
 #'
 #' @return
-#' An updated [prioritizr::problem()] object with the constraint added
-#' to it.
+#' An updated `ConservationProblem` object (i.e., [prioritizr::problem()]) with
+#' the constraint added to it.
 #'
 #' @family constraints
 #'
@@ -104,11 +116,12 @@ NULL
 #' # the remaining features to the group B
 #' groups <- c(rep("A", 2), rep("B", nlyr(features) - 2))
 #'
-#' # Build problem
-#' p <-
-#'   problem(pu, features) |>
-#'   add_robust_min_set_objective() |>
-#'   add_constant_robust_constraints(groups = groups, conf_level = 0.9) |>
+#' # Build base problem with objective
+#' x <- problem(pu, features) |>
+#'   add_robust_min_set_objective()
+#'
+#' # Add constant robust constraints
+#' p <- add_constant_robust_constraints(x, groups = groups, conf_level = 0.9) |>
 #'   add_relative_targets(0.1) |>
 #'   add_binary_decisions() |>
 #'   add_default_solver(verbose = FALSE)
@@ -118,15 +131,61 @@ NULL
 #'
 #' # Plot the solution
 #' plot(soln)
-#' 
 #'
+#'
+#' @srrstats {G1.3} Parameters conf_level, groups, target_trans, and method
+#'   are all clearly defined in the Details section and @param documentation.
+#' @srrstats {G2.0, G2.0a} Length of groups is validated against the number
+#'   of features in x; conf_level is asserted to be a scalar.
+#' @srrstats {G2.1, G2.1a} is.character(groups) and assertthat::is.number
+#'   enforce types; type expectations are documented in @param.
+#' @srrstats {G2.2} conf_level is prohibited from being multivariate via
+#'   assertthat::is.number (which checks length == 1).
+#' @srrstats {G2.3} For univariate character input, target_trans and method
+#'   are restricted to expected values via is_match_of() (equivalent to
+#'   match.arg).
+#' @srrstats {G2.3a} target_trans is restricted to permitted values via
+#'   is_match_of().
+#' @srrstats {G2.3b} method is lowercased via tolower() for case-insensitive
+#'   input (in add_robust_min_set_objective).
+#' @srrstats {G2.6} is_conservation_problem(x) validates that the primary
+#'   input is of the expected class before any processing.
+#' @srrstats {G2.13} assertthat::noNA(groups) and noNA(conf_level) check for
+#'   missing values prior to passing data to analytic routines.
+#' @srrstats {G2.14} Options for handling missing data are documented:
+#'   missing values in groups and conf_level trigger informative errors.
+#' @srrstats {G2.14a} Missing values in groups and conf_level trigger
+#'   informative errors.
+#' @srrstats {G5.2} Appropriate error and warning behaviour of all functions
+#'   is explicitly demonstrated through tests.
+#' @srrstats {G5.2a} Every message produced within R code is unique.
+#' @srrstats {G5.2b} Explicit tests demonstrate conditions triggering every
+#'   message and compare results with expected values.
+#' @srrstats {G5.8} Edge condition tests confirm expected behaviour for
+#'   extreme inputs.
+#' @srrstats {G5.8a} Zero-length / wrong-length groups are tested.
+#' @srrstats {G5.8b} Unsupported input types (numeric groups) are tested.
+#' @srrstats {G5.8c} Single-feature groups produce informative messages
+#'   tested explicitly.
+#' @srrstats {G5.8d} conf_level values outside \[0,1\] are tested.
+#' @srrstats {SP2.0, SP2.0b} Only accepts ConservationProblem objects, which
+#'   enforce appropriate spatial class requirements and error on inappropriate
+#'   input.
+#' @srrstats {SP2.6} @param documents the acceptable types and classes of all
+#'   input arguments.
+#' @srrstats {SP2.7} is_conservation_problem(x) validates the spatial input
+#'   class before processing.
 #' @name add_constant_robust_constraints
 NULL
 
 #' @rdname add_constant_robust_constraints
 #' @export
-add_constant_robust_constraints <- function(x, groups, conf_level = 1,
-                                            target_trans = NA) {
+add_constant_robust_constraints <- function(
+  x,
+  groups,
+  conf_level = 1,
+  target_trans = NA
+) {
   # assert arguments are valid
   assert_required(x)
   assert_required(groups)

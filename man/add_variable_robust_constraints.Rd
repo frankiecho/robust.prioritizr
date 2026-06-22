@@ -7,15 +7,15 @@
 add_variable_robust_constraints(x, data)
 }
 \arguments{
-\item{x}{\code{\link[prioritizr:problem]{prioritizr::problem()}} object.}
+\item{x}{A \code{ConservationProblem} object (i.e., \code{\link[prioritizr:problem]{prioritizr::problem()}}).}
 
 \item{data}{\code{\link[tibble:tibble]{tibble::tibble()}} data frame containing information on the
 feature groups and confidence level associated with each group.
 Defaults to 1, corresponding to a maximally robust solution.}
 }
 \value{
-An updated \code{\link[prioritizr:problem]{prioritizr::problem()}} object with the constraint added
-to it.
+An updated \code{ConservationProblem} object (i.e., \code{\link[prioritizr:problem]{prioritizr::problem()}}) with
+the constraint added to it.
 }
 \description{
 Add robust constraints to a conservation problem to allow
@@ -131,11 +131,12 @@ constraint_data <- tibble(
 # Display constraint data
 print(constraint_data)
 
-# Build problem
-p <-
-  problem(pu, features) |>
-  add_robust_min_set_objective() |>
-  add_variable_robust_constraints(data = constraint_data) |>
+# Build base problem with objective
+x <- problem(pu, features) |>
+  add_robust_min_set_objective()
+
+# Add variable robust constraints
+p <- add_variable_robust_constraints(x, data = constraint_data) |>
   add_relative_targets(0.1) |>
   add_binary_decisions() |>
   add_default_solver(verbose = FALSE)
@@ -149,6 +150,6 @@ plot(soln)
 }
 \seealso{
 Other functions for adding robust constraints:
-\code{\link{add_constant_robust_constraints}()}
+\code{\link[=add_constant_robust_constraints]{add_constant_robust_constraints()}}
 }
 \concept{constraints}

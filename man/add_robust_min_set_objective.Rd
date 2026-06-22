@@ -7,7 +7,7 @@
 add_robust_min_set_objective(x, method = "chance")
 }
 \arguments{
-\item{x}{\code{\link[prioritizr:problem]{prioritizr::problem()}} object.}
+\item{x}{A \code{ConservationProblem} object (i.e., \code{\link[prioritizr:problem]{prioritizr::problem()}}).}
 
 \item{method}{\code{character} value with the name of the probabilistic
 constraint formulation method. Available options include the (\code{"chance"})
@@ -17,8 +17,8 @@ Defaults to \code{"chance"}. See the Details section for further information
 on these methods.}
 }
 \value{
-An updated \code{\link[prioritizr:problem]{prioritizr::problem()}} object with the objective added
-to it.
+An updated \code{ConservationProblem} object (i.e., \code{\link[prioritizr:problem]{prioritizr::problem()}}) with
+the objective added to it.
 }
 \description{
 Add an objective to a conservation planning problem that minimizes the cost
@@ -187,10 +187,11 @@ features <- get_sim_features()
 # the remaining features to the group B
 groups <- c(rep("A", 2), rep("B", nlyr(features) - 2))
 
-# Build problem with chance constraint programming method
-p <-
-  problem(pu, features) |>
-  add_robust_min_set_objective(method = "cvar") |>
+# Create base problem
+x <- problem(pu, features)
+
+# Add robust minimum set objective (using CVaR method)
+p <- add_robust_min_set_objective(x, method = "cvar") |>
   add_constant_robust_constraints(groups = groups, conf_level = 0.9) |>
   add_binary_decisions() |>
   add_relative_targets(0.1) |>
@@ -215,6 +216,6 @@ See \link{robust_objectives} for an overview of all functions for adding
 robust objectives.
 
 Other functions for adding robust objectives:
-\code{\link{add_robust_min_shortfall_objective}()}
+\code{\link[=add_robust_min_shortfall_objective]{add_robust_min_shortfall_objective()}}
 }
 \concept{objectives}

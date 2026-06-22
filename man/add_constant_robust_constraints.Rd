@@ -7,7 +7,7 @@
 add_constant_robust_constraints(x, groups, conf_level = 1, target_trans = NA)
 }
 \arguments{
-\item{x}{\code{\link[prioritizr:problem]{prioritizr::problem()}} object.}
+\item{x}{A \code{ConservationProblem} object (i.e., \code{\link[prioritizr:problem]{prioritizr::problem()}}).}
 
 \item{groups}{\code{character} vector indicating which features
 should be grouped together for the purposes of characterizing uncertainty.
@@ -41,8 +41,8 @@ on minimum value and the target for the second feature group is calculated
 based on the maximum value.}
 }
 \value{
-An updated \code{\link[prioritizr:problem]{prioritizr::problem()}} object with the constraint added
-to it.
+An updated \code{ConservationProblem} object (i.e., \code{\link[prioritizr:problem]{prioritizr::problem()}}) with
+the constraint added to it.
 }
 \description{
 Add robust constraints to a conservation problem to specify that
@@ -106,11 +106,12 @@ features <- get_sim_features()
 # the remaining features to the group B
 groups <- c(rep("A", 2), rep("B", nlyr(features) - 2))
 
-# Build problem
-p <-
-  problem(pu, features) |>
-  add_robust_min_set_objective() |>
-  add_constant_robust_constraints(groups = groups, conf_level = 0.9) |>
+# Build base problem with objective
+x <- problem(pu, features) |>
+  add_robust_min_set_objective()
+
+# Add constant robust constraints
+p <- add_constant_robust_constraints(x, groups = groups, conf_level = 0.9) |>
   add_relative_targets(0.1) |>
   add_binary_decisions() |>
   add_default_solver(verbose = FALSE)
@@ -128,6 +129,6 @@ See \link{robust_constraints} for an overview of all functions for adding
 robust constraints.
 
 Other functions for adding robust constraints:
-\code{\link{add_variable_robust_constraints}()}
+\code{\link[=add_variable_robust_constraints]{add_variable_robust_constraints()}}
 }
 \concept{constraints}

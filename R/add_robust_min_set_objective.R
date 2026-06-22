@@ -4,7 +4,7 @@
 #' of the solution while ensuring that the solution is robust to uncertainty for
 #' each feature group.
 #'
-#' @param x [prioritizr::problem()] object.
+#' @param x A `ConservationProblem` object (i.e., [prioritizr::problem()]).
 #'
 #' @param method `character` value with the name of the probabilistic
 #' constraint formulation method. Available options include the (`"chance"`)
@@ -12,6 +12,13 @@
 #' or the conditional value-at-risk method (Rockafellar and Uryasev 2000),
 #' Defaults to `"chance"`. See the Details section for further information
 #' on these methods.
+#'
+#' @srrstats {G2.0, G2.0a} Function validates input types and lengths via
+#'   assertthat assertions and roxygen parameter documentation.
+#' @srrstats {G2.1, G2.1a} Type checking for method parameter is enforced via
+#'   validation routines; x must be a ConservationProblem object.
+#' @srrstats {G2.3, G2.3a} The method parameter is restricted to valid options
+#'   ('chance', 'cvar') via explicit validation.
 #'
 #' @details
 #' The robust minimum set objective seeks to find the set of planning units at
@@ -170,8 +177,8 @@
 #' @family objectives
 #'
 #' @return
-#' An updated [prioritizr::problem()] object with the objective added
-#' to it.
+#' An updated `ConservationProblem` object (i.e., [prioritizr::problem()]) with
+#' the objective added to it.
 #'
 #' @examplesIf robust.prioritizr::run_example()
 #' # Load packages
@@ -189,10 +196,11 @@
 #' # the remaining features to the group B
 #' groups <- c(rep("A", 2), rep("B", nlyr(features) - 2))
 #'
-#' # Build problem with chance constraint programming method
-#' p <-
-#'   problem(pu, features) |>
-#'   add_robust_min_set_objective(method = "cvar") |>
+#' # Create base problem
+#' x <- problem(pu, features)
+#'
+#' # Add robust minimum set objective (using CVaR method)
+#' p <- add_robust_min_set_objective(x, method = "cvar") |>
 #'   add_constant_robust_constraints(groups = groups, conf_level = 0.9) |>
 #'   add_binary_decisions() |>
 #'   add_relative_targets(0.1) |>
@@ -204,6 +212,32 @@
 #' # Plot the solution
 #' plot(soln)
 #'
+#' @srrstats {G1.0} Charnes & Cooper (1959) and Rockafellar & Uryasev (2000)
+#'   are cited in @references.
+#' @srrstats {G1.3} Probabilistic constraints, confidence level, CVaR, and
+#'   chance constraint programming are defined in the Details section.
+#' @srrstats {G2.0, G2.0a} method is asserted to be a single string;
+#'   validated against permitted values.
+#' @srrstats {G2.1, G2.1a} assertthat::is.string(method) enforces type;
+#'   documented in @param.
+#' @srrstats {G2.3a} method restricted to "chance" or "cvar" via assert().
+#' @srrstats {G2.3b} tolower() applied to method for case-insensitive input.
+#' @srrstats {G2.6} is_conservation_problem(x) validates the primary input.
+#' @srrstats {G3.0} No floating-point equality comparisons; solver tolerance
+#'   is managed by the ILP solver (e.g., HiGHS).
+#' @srrstats {SP4.0, SP4.0a} solve() returns a SpatRaster matching the class
+#'   of the input planning unit raster.
+#' @srrstats {SP4.2} @return explicitly documents the class of the return
+#'   value.
+#' @srrstats {G5.3} Absence of NA and out-of-range values in solve() return
+#'   objects is explicitly tested.
+#' @srrstats {G5.4} Correctness tests confirm LP matrix structure for fixed
+#'   test datasets via expect_snapshot.
+#' @srrstats {G5.4a} Correctness tested against trivial case (conf_level = 1
+#'   recovers non-robust result) and structural LP matrix snapshots.
+#' @srrstats {G5.6} Parameter recovery tests confirm solve() meets specified
+#'   targets for data with known properties.
+#' @srrstats {G5.6a} Tests succeed within solver tolerance.
 #' @name add_robust_min_set_objective
 #' @export
 add_robust_min_set_objective <- function(x, method = "chance") {

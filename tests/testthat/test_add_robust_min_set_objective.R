@@ -1,3 +1,17 @@
+# @srrstats {G5.0} Tests use prioritizr::get_sim_pu_raster() and
+#   get_sim_features() - standard shared datasets with known properties.
+# @srrstats {G5.3} solve() return values are checked for no NA/undefined:
+#   expect_gte(min, 0) and expect_lte(max, 1) on terra::global output.
+# @srrstats {G5.4} Correctness confirmed via expect_snapshot of LP matrix
+#   and solve() output matching known targets.
+# @srrstats {G5.4a} Correctness tested against trivial case (conf_level = 1
+#   recovers result equivalent to non-robust prioritizr).
+# @srrstats {G5.6} solve() tests confirm relative_held >= target for known
+#   input data, confirming parameter recovery.
+# @srrstats {G5.6a} Parameter recovery tests succeed within solver tolerance.
+# @srrstats {SP4.0} solve() return value is in same class as input data.
+# @srrstats {SP4.0a} expect_s4_class(s, "SpatRaster") confirms return class.
+
 test_that("compile (single zone, conf_level < 1, method = chance)", {
   # import data
   sim_pu_raster <- prioritizr::get_sim_pu_raster()

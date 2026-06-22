@@ -15,6 +15,14 @@
 #' are altered according to the target transformation methods specified
 #' by `feature_group_data`.
 #'
+#' @srrstats {G2.7, G2.8} Accepts multiple input types (data.frame, list)
+#'   and converts to uniform structure for processing.
+#' @srrstats {G2.9} Issues diagnostic messages when target values are being
+#'   transformed via the cat/cli functions (lines 63-100).
+#' @srrstats {G3.0} diff(range(x, na.rm = TRUE)) > 1e-5 avoids floating-point
+#'   equality comparison when checking for target variability.
+#' @srrstats {G2.15} na.rm = TRUE is used explicitly in all aggregate calls
+#'   (range, diff) to avoid propagating NA values.
 #' @noRd
 transform_targets <- function(target_data, feature_group_data) {
   # assert arguments are valid

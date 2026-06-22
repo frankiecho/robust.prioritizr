@@ -1,3 +1,31 @@
+# @srrstats {G5.0} Tests use prioritizr::get_sim_pu_raster() and
+#   get_sim_features() - standard shared datasets with known properties.
+# @srrstats {G5.1} Simulation datasets are exported from prioritizr.
+# @srrstats {G5.2} Appropriate error and warning behaviour of all functions
+#   is explicitly demonstrated below.
+# @srrstats {G5.2a} Every message produced by stop()/warning()/message() in
+#   add_constant_robust_constraints() is unique.
+# @srrstats {G5.2b} Explicit tests demonstrate conditions which trigger every
+#   message, comparing results with expected values.
+# @srrstats {G5.3} Return values from solve() are checked to contain no NA
+#   or undefined values (see test_add_robust_min_set_objective.R).
+# @srrstats {G5.4} Correctness tests confirm the LP matrix structure matches
+#   expected output for fixed test datasets via expect_snapshot.
+# @srrstats {G5.4a} For this novel method, correctness is tested against
+#   trivial cases (conf_level = 1 recovers non-robust result) and structural
+#   LP matrix snapshots.
+# @srrstats {G5.6} Parameter recovery tests confirm that the implementation
+#   produces expected results for data with known properties.
+# @srrstats {G5.6a} Parameter recovery tests succeed within solver tolerance
+#   (relative_held >= target).
+# @srrstats {G5.8} Edge condition tests confirm expected behaviour for
+#   data with extreme properties.
+# @srrstats {G5.8a} Zero-length groups vector tested via wrong-length test.
+# @srrstats {G5.8b} Data of unsupported types tested (e.g. numeric groups).
+# @srrstats {G5.8c} Single-feature groups (all-identical group) warned.
+# @srrstats {G5.8d} Groups vector longer than number of features tested.
+# @srrstats {SP2.0b} Errors (not warnings) are raised for invalid inputs.
+
 test_that("invalid arguments", {
   # import data
   sim_pu_raster <- prioritizr::get_sim_pu_raster()

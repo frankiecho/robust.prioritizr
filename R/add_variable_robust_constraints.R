@@ -12,12 +12,21 @@ NULL
 #' species, and only moderately robust to uncertainty in the spatial
 #' distribution of widespread species.
 #'
-#' @inheritParams add_robust_min_set_objective
 #'
+#' @param x A `ConservationProblem` object (i.e., [prioritizr::problem()]).
 #' @param data [tibble::tibble()] data frame containing information on the
 #' feature groups and confidence level associated with each group.
 #'  Defaults to 1, corresponding to a maximally robust solution.
 #  See the Data format section for further information on this parameter.
+#'
+#' @srrstats {G2.0, G2.0a} Function validates input data frame structure and
+#'   column types via assertthat assertions and roxygen documentation.
+#' @srrstats {G2.1, G2.1a} Type checking for all inputs is enforced; data must
+#'   be a tibble with required columns of appropriate types.
+#' @srrstats {G2.13} Missing data checks are performed on input data and
+#'   confidence levels before creating constraints.
+#' @srrstats {SP2.0, SP2.0a} Function accepts spatial data via ConservationProblem
+#'   objects (SpatRaster and sf compatible inputs).
 #'
 #' @inherit add_constant_robust_constraints details
 #'
@@ -89,11 +98,12 @@ NULL
 #' # Display constraint data
 #' print(constraint_data)
 #'
-#' # Build problem
-#' p <-
-#'   problem(pu, features) |>
-#'   add_robust_min_set_objective() |>
-#'   add_variable_robust_constraints(data = constraint_data) |>
+#' # Build base problem with objective
+#' x <- problem(pu, features) |>
+#'   add_robust_min_set_objective()
+#'
+#' # Add variable robust constraints
+#' p <- add_variable_robust_constraints(x, data = constraint_data) |>
 #'   add_relative_targets(0.1) |>
 #'   add_binary_decisions() |>
 #'   add_default_solver(verbose = FALSE)
@@ -104,6 +114,28 @@ NULL
 #' # Plot the solution
 #' plot(soln)
 #'
+#' @srrstats {G1.3} Parameters data, conf_level, groups, and target_trans are
+#'   all clearly defined in the Details section and @param documentation.
+#' @srrstats {G2.0, G2.0a} Length of data$features is validated against the
+#'   number of features in x.
+#' @srrstats {G2.1, G2.1a} is.data.frame(data), is.list(data$features), and
+#'   is.numeric(data$conf_level) enforce types; expectations documented in
+#'   @param.
+#' @srrstats {G2.2} Scalar conf_level values per group are enforced.
+#' @srrstats {G2.3a} target_trans is restricted to permitted values via
+#'   all_match_of().
+#' @srrstats {G2.6} is_conservation_problem(x) validates the primary input
+#'   class before any processing.
+#' @srrstats {G2.7} data argument accepts both data.frame and tibble, as
+#'   documented in @param.
+#' @srrstats {G2.8} data$target_trans is coerced to NA_character_ to
+#'   standardise type before further processing.
+#' @srrstats {G2.13} assertthat::has_name checks ensure required columns are
+#'   present; missing values raise informative errors.
+#' @srrstats {G2.14a} Missing or invalid values in data trigger errors.
+#' @srrstats {SP2.0, SP2.0b} Only accepts ConservationProblem objects.
+#' @srrstats {SP2.6} @param documents acceptable types for all parameters.
+#' @srrstats {SP2.7} is_conservation_problem(x) validates spatial input class.
 #' @name add_variable_robust_constraints
 NULL
 
@@ -152,7 +184,7 @@ add_variable_robust_constraints <- function(x, data) {
   assert(
     all(
       unlist(data$features, recursive = TRUE, use.names = FALSE) %in%
-      prioritizr::feature_names(x)
+        prioritizr::feature_names(x)
     ),
     msg = c(
       "!" = paste(
