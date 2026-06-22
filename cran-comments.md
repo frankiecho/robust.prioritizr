@@ -1,6 +1,6 @@
 Dear CRAN volunteers,
 
-Thank you for reviewing this minor version update. In this version, I fixed a bug in the C++ code in `rcpp_apply_robust_cvar_constraint.cpp` due to a bug that would cause an index mismatch when there are zeros in the feature data. I have also added examples for using this function in the vignette `vic-cons-planning.Rmd`.
+In this version I have updated the package documentation to ensure compliance with the "ropensci-review-tools/autotest" package and added new "Software Review Roclets" (SRR) tags ("ropensci-review-tools/srr") to prepare the package for a review process in rOpenSci. Thank you.
 
 Best regards,
 Frankie Cho

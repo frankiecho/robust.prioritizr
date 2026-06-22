@@ -38,3 +38,5 @@ Meta/*
 .Ruserdata
 inst/doc
 .vscode/
+.claude/
+.vscode/
