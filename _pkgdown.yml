@@ -52,7 +52,6 @@ reference:
   - title: Data
     desc: Example datasets distributed with the package.
     contents:
-      - data
       - get_vic_study_area
       - get_vic_cost
       - get_vic_pa

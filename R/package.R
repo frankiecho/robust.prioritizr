@@ -42,7 +42,7 @@
 #'
 #' @srrstats {G1.0} Primary references (Charnes & Cooper 1959; Rockafellar &
 #'   Uryasev 2000) are cited in DESCRIPTION and all main function documentation.
-#' @srrstats {G1.1} Package description documents that this is the first
+#' @srrstats {G1.1} This is the first
 #'   implementation within R of chance-constrained programming and CVaR-based
 #'   robust optimization for systematic conservation prioritization.
 #' @srrstats {G1.2} A life cycle statement is provided in CONTRIBUTING.md, and
