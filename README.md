@@ -28,12 +28,6 @@ and the conditional value-at-risk problem (Rockafellar & Uryasev 2000,
 <doi:10.21314/JOR.2000.038>). For more information, please see the video
 below.
 
-<div style="display: flex; justify-content: center;">
-
-<iframe style="aspect-ratio: 16 / 9; width: 100% !important;" src="https://www.youtube.com/embed/Xbok5fLMsY0?si=QxZRWjKvFCTDTvbT" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-
-</div>
-
 ## Installation
 
 You can install the official version of the package from CRAN with the
